@@ -1,0 +1,11 @@
+{
+  "fixtureOnly": true,
+  "sourceComplete": false,
+  "publicationAllowed": false,
+  "status": "draft",
+  "source": "Exact passage supplied in the current user conversation",
+  "provisionLabel": "Draft section 4203 subsection d",
+  "text": "The legally effective receipt time shall be the time at which the submission first enters an authorized Federal intake system, and not the time at which—",
+  "expectedQuestion": "Does the clock wait until an employee reads my submission?",
+  "expectedBehavior": "Explain the draft's receipt-time rule with its exact source. Do not present it as current law, the complete bill, or a case-specific determination of FTCA presentment."
+}

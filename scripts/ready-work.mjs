@@ -1,0 +1,12 @@
+import { readFile } from 'node:fs/promises';
+const url=new URL('../registry/prs.json',import.meta.url);
+const registry=JSON.parse(await readFile(url,'utf8'));
+if(registry.repository!=='neophilism/Ask-Bill'||registry.planVerified!==true)throw Error('Unexpected source registry');
+const acceptedArg=process.argv.indexOf('--accepted');
+const accepted=acceptedArg<0?[]:JSON.parse(await readFile(process.argv[acceptedArg+1],'utf8'));
+if(!Array.isArray(accepted)||accepted.some(x=>typeof x!=='string'))throw Error('--accepted requires a JSON array of accepted unit IDs');
+const known=new Set(registry.units.map(u=>u.id));
+if(accepted.some(id=>!known.has(id)))throw Error('Unknown accepted unit ID');
+const allowed=new Set(accepted);
+const ready=registry.units.filter(u=>!allowed.has(u.id)&&u.dependsOn.every(id=>allowed.has(id))&&u.externalDependencies.length===0&&u.externalPrerequisites.length===0);
+console.log(JSON.stringify({graphOnly:true,note:'Not completion evidence: require real merged PR, current-head tests and operational acceptance.',ready:ready.map(({id,title,phase,gate})=>({id,title,phase,gate}))},null,2));

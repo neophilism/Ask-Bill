@@ -1,0 +1,14 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { parsePrRegistry,titleWorkUnitIds } from '../registry/pr-contract.mjs';
+import { validateFiles } from '../scripts/validate-pr-registry.mjs';
+const repository='neophilism/Ask-Bill';
+const doc=JSON.parse(await readFile(new URL('../registry/prs.json',import.meta.url),'utf8'));
+const check=d=>parsePrRegistry(JSON.stringify(d),repository);
+test('foundation plan validates and has all 112 approved original units',async()=>{const r=await validateFiles();assert.equal(r.planned,112);assert.equal(r.edges,490)});
+test('wrong repository, invented denominator and bad timestamps fail closed',()=>{assert.throws(()=>parsePrRegistry(JSON.stringify(doc),'wrong/repo'));assert.throws(()=>check({...doc,plannedPrCount:111}));assert.throws(()=>check({...doc,observedAt:'garbage'}))});
+test('missing dependency and cycle fail closed',()=>{const missing=structuredClone(doc);missing.units[1].dependsOn=['AB-999'];assert.throws(()=>check(missing));const cycle=structuredClone(doc);cycle.units[0].dependsOn=['AB-112'];assert.throws(()=>check(cycle))});
+test('PR numbers cannot be inferred from ordinal positions',()=>{assert.equal(doc.units.length,112);assert(doc.units.every(u=>Array.isArray(u.prs)));assert.deepEqual(titleWorkUnitIds('AB-002: Toolchain workspace'),['AB-002']);assert.deepEqual(titleWorkUnitIds('Unrelated work'),[])});
+test('duplicate mapping and suspicious external prerequisite fail',()=>{const bad=structuredClone(doc);bad.units[0].prs=[1,1];assert.throws(()=>check(bad));const invalid=structuredClone(doc);invalid.units[0].externalDependencies=[{repository,unitId:'AB-002'}];assert.throws(()=>check(invalid))});
+test('stale or invented PR evidence cannot pass schema',()=>{const bad=structuredClone(doc);bad.pullRequests=[{number:1,id:1,title:'AB-001: fake',state:'merged'}];assert.throws(()=>check(bad))});

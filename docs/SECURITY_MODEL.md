@@ -1,0 +1,9 @@
+# Security and privacy boundaries (foundation threat model)
+
+Trusted anchors: immutable source digest and exact version, publisher role scoped by server-side authorization, audited publish approval, manifest integrity, and server-generated signed expiry-limited access to private objects. The assistant/model voice/character layer is untrusted presentation, never a legal authority.
+
+Threats to address before production: hostile legislative text or publisher uploads as prompt injection; fabricated/cross-version citations; XSS via rendered legal text; malicious PDFs/DOCX/embedded XML and zip bombs; CSRF, broken role control and publisher account takeover; private document and user question leakage to LLM/TTS/telemetry; replayed job/outbox actions; model-answer amplification; under-13 data collection without real authorization; tracking through stored audio/transcripts; insecure 3D asset imports; worker double publication; adversarial source swapping; and availability/cost exhaustion.
+
+Mitigations specified across units: bounded parsers with quarantined inputs; immutable original bytes and provenance; claim-to-span validation with abstention; deterministic cue controller; sanitization/CSP; MFA for publishing; tenancy authorization on all private data; explicit provider agreements and retention; usage limits/rate limits/circuit breaker/manual kill switch; database transactional outbox/idempotency; scoped cloud identities; dependency and secret scanning; real evidence from negative, integration, load and browser tests.
+
+No human-auditor/paid pen-test/E2EESA pre-certification blocker. Actual vulnerabilities are still actionable blockers for the affected release. Component-level E2EESA applicability should be assessed honestly; server-side AI processing is **not** end-to-end private from the provider. Public read-only functionality should work without AI, audio or user identity.

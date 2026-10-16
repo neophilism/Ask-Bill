@@ -1,0 +1,16 @@
+{
+  "name": "ask-bill",
+  "private": true,
+  "version": "0.0.0-foundation",
+  "type": "module",
+  "description": "Ask Bill foundation and 112-unit approved PR registry (not an application build)",
+  "scripts": {
+    "check": "node scripts/check.mjs",
+    "registry:validate": "node scripts/validate-pr-registry.mjs",
+    "ready": "node scripts/ready-work.mjs",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=22.0.0 <25"
+  }
+}

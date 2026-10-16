@@ -1,0 +1,7 @@
+{
+  "docs/ARCHITECTURE.md": "d7b14a57da3e9aee8bd885b90757bf628cd8d611ec3f8433048dfc8c1d96bd21",
+  "docs/DEVELOPMENT_PLAN.md": "083d121d8ed9089e9a02c907f60a0da5de2f393c6da19042ea66a47629f71fe2",
+  "spec/CONTRACTS.ts": "603d6e4991eb3d9137ac6de42ce2795ae376c754eb3e17c2ecffae030615dc0d",
+  "spec/SYSTEM.mmd": "5278f564e8d6ba59e26e8545d520b239e16cfb8a5a63229bf1be5b048b00f90b",
+  "fixtures/electronic-filing-excerpt.json": "95e430a8c48fcc0b4971098cd062e08d1ca0931b8a781c697feb943aa963a9d2"
+}
