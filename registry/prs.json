@@ -4,7 +4,7 @@
   "roadmapVersion": 1,
   "planVerified": true,
   "plannedPrCount": 112,
-  "observedAt": "2026-10-16T22:03:23Z",
+  "observedAt": "2026-10-16T22:11:56Z",
   "approval": {
     "basis": "Owner explicitly directed the complete Ask Bill architecture and PR plan (16 October 2026) and installation of foundational commit.",
     "source": "docs/DEVELOPMENT_PLAN.md"
@@ -249,7 +249,9 @@
       "id": "AB-007",
       "title": "Database schema migrations and access boundaries",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        7
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -270,7 +272,7 @@
         "Migrate an empty and populated database, test authorization on guessed IDs, and exercise expand then rollback compatibility."
       ],
       "rollback": "Roll back application code to the compatible schema; avoid destructive down migrations.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F1",
       "gate": "G1",
@@ -4489,6 +4491,18 @@
       "url": "https://github.com/neophilism/Ask-Bill/pull/6",
       "createdAt": "2026-10-16T22:01:39Z",
       "updatedAt": "2026-10-16T22:01:39Z",
+      "mergedAt": null,
+      "closedAt": null,
+      "draft": true
+    },
+    {
+      "id": 7,
+      "number": 7,
+      "title": "AB-007: Tenant-isolated PostgreSQL foundation and scoped queries (partial)",
+      "state": "open",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/7",
+      "createdAt": "2026-10-16T22:08:42Z",
+      "updatedAt": "2026-10-16T22:08:42Z",
       "mergedAt": null,
       "closedAt": null,
       "draft": true

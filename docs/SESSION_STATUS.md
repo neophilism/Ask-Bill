@@ -1,6 +1,6 @@
 # Ask Bill session checkpoint (live GitHub observation)
 
-Observed: 2026-10-16T22:03:23Z UTC. Repository: `neophilism/Ask-Bill`. Default branch remains the original README-only `main` checkpoint; no implementation PR has merged. This file is a dated observation, not live CI evidence.
+Observed: 2026-10-16T22:11:56Z UTC. Repository: `neophilism/Ask-Bill`. Default branch remains the original README-only `main` checkpoint; no implementation PR has merged. This file is a dated observation, not live CI evidence.
 
 ## Verified PR stack and tested heads
 
@@ -12,8 +12,9 @@ Observed: 2026-10-16T22:03:23Z UTC. Repository: `neophilism/Ask-Bill`. Default b
 | AB-004 | #4 | `ab-003-runtime-contracts` | `67a2fc094829ea0c7578d3608a356e822a3db355` | Open, draft |
 | AB-005 | #5 | `ab-003-runtime-contracts` | `7bba51b6808be810ea015f05609b654d21d5393e` | Open, draft |
 | AB-006 | #6 | `ab-004-reader-preview` | `1fa879e899e041f3bba86a4b3547dd31b403e9ad` | Open, draft |
+| AB-007 | #7 | `ab-005-environment-adapters` | `8e34141ae190a3dd6a71070a5adcaad984f0d22d` | Open, draft |
 
-AB-005 is a sibling from AB-003, not a dependency of AB-004 or AB-006. The active `registry/prs.json` now records these six real PR mappings; all six remain **in progress** rather than accepted. The original 112 IDs, 490 dependency links, release requirements and pinned source scope are unchanged.
+AB-005 is a sibling from AB-003, not a dependency of AB-004 or AB-006. The active `registry/prs.json` now records these seven real PR mappings; all seven remain **in progress** rather than accepted. The original 112 IDs, 490 dependency links, release requirements and pinned source scope are unchanged.
 
 ## Actual verification and outstanding gates
 
@@ -23,7 +24,11 @@ AB-005 is a sibling from AB-003, not a dependency of AB-004 or AB-006. The activ
 - AB-004: 3 local preview HTTP/rendering and negative tests passed; not the complete React/Next public UI, and no browser axe/responsive screenshot test was performed.
 - AB-005: 4 local configuration tests passed on a separate sibling branch. An affected MinIO container image was removed and optional PostgreSQL updated to 17.11-alpine3.24; no storage daemon was launched.
 - AB-006: 4 local asset integrity tests passed on its branch. Only a test fixture exists, not the real Bill 3D model; the `--require-character` gate deliberately fails.
-- All six PRs are open. GitHub has not reported successful required CI runs for their tested heads. No merge, accepted full milestone, deployment, independent security certification or running live service is claimed.
+- All seven PRs are open. GitHub has not reported successful required CI runs for their tested heads. No merge, accepted full milestone, deployment, independent security certification or running live service is claimed.
+
+- AB-007: PostgreSQL 17 tenant-scoped DDL/query contracts; 3 local TypeScript/structural tests passed, no live database migration, role-isolation test or data authorization evidence.
+- A synthetic local worktree combination of the AB-003/004/005/006/007 code passed 24 of 24 tests under Node 22.16.0 with TypeScript 5.8.3. This is **not** a single merged PR or Node 24/CircleCI result.
+- Chromium local markup/CSS/JS visual checks captured a 1280px layout without horizontal overflow, a 320px layout without horizontal overflow, answered the sample question, adjusted text size and toggled the placeholder; reduced-motion preference was also observed. The local Chromium network navigation was blocked by environment policy, so the browser used server-fetched exact HTML with separately injected repository CSS/JS. A later JavaScript-disabled browser check stalled and is **not passed**. Screenshots were saved in the local work session but are not currently committed to the repository.
 
 ## Safe follow-on work
 
