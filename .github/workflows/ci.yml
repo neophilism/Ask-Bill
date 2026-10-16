@@ -35,3 +35,14 @@ jobs:
           else
             echo "Foundation-only stage: application workspace not yet present"
           fi
+
+  database:
+    name: database / PostgreSQL tenancy and migrations
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Run isolated PostgreSQL 17 migration and tenant isolation tests
+        run: bash tests/postgres/integration.sh
