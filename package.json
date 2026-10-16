@@ -17,7 +17,9 @@
     "build": "pnpm -r --workspace-concurrency=1 run build",
     "typecheck": "pnpm run build && pnpm -r --workspace-concurrency=1 run typecheck",
     "test": "pnpm run build && node --test tests/*.test.mjs",
-    "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm registry:validate && pnpm check"
+    "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm registry:validate && pnpm check",
+    "preview": "pnpm --filter @ask-bill/web preview",
+    "preview:export": "node scripts/export-offline-preview.mjs"
   },
   "devDependencies": {
     "typescript": "5.8.3"
