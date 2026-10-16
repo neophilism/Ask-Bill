@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "owner": "Ask Bill",
+  "storagePolicy": "immutable-hash-addressed",
+  "entries": [
+    {
+      "id": "verification-fixture",
+      "kind": "test",
+      "path": "assets/test/source.txt",
+      "storage": "repository",
+      "sha256": "9099bc7cfac3816f33bd870d53369815dbc655d520102d00dedcea713f117e97",
+      "bytes": 47,
+      "license": "CC0-1.0",
+      "attribution": "Ask Bill original test fixture",
+      "requiredForRelease": false
+    }
+  ]
+}

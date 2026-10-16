@@ -18,7 +18,8 @@
     "typecheck": "pnpm run build && pnpm -r --workspace-concurrency=1 run typecheck",
     "test": "pnpm run build && node --test tests/*.test.mjs",
     "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm registry:validate && pnpm check",
-    "preview": "pnpm --filter @ask-bill/web preview"
+    "preview": "pnpm --filter @ask-bill/web preview",
+    "assets:validate": "node tools/assets/verify.mjs"
   },
   "devDependencies": {
     "typescript": "5.8.3"

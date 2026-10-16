@@ -31,6 +31,7 @@ jobs:
             corepack pnpm typecheck
             corepack pnpm test
             corepack pnpm build
+            corepack pnpm assets:validate
             corepack pnpm registry:validate
       - save_cache:
           key: ask-bill-pnpm-v1-{{ checksum "pnpm-lock.yaml" }}
