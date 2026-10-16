@@ -47,6 +47,8 @@ importers:
 
   packages/jobs: {}
 
+  packages/privacy: {}
+
   packages/storage: {}
 
   packages/contracts: {}
