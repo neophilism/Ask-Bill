@@ -4,7 +4,7 @@
   "roadmapVersion": 1,
   "planVerified": true,
   "plannedPrCount": 112,
-  "observedAt": "2026-10-16T22:55:30Z",
+  "observedAt": "2026-10-16T23:00:20Z",
   "approval": {
     "basis": "Owner explicitly directed the complete Ask Bill architecture and PR plan (16 October 2026) and installation of foundational commit.",
     "source": "docs/DEVELOPMENT_PLAN.md"
@@ -288,7 +288,9 @@
       "id": "AB-008",
       "title": "Publisher authentication roles and MFA",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        8
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -310,7 +312,7 @@
         "Run CSRF, expired-session, privilege-escalation, role-change and MFA recovery tests using a real staging auth adapter when configured."
       ],
       "rollback": "Revoke affected sessions and disable publisher writes while retaining published read access.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F1",
       "gate": "G1",
@@ -4487,13 +4489,13 @@
       "id": 6,
       "number": 6,
       "title": "AB-006: Immutable asset manifest and integrity gates (partial)",
-      "state": "open",
+      "state": "closed",
       "url": "https://github.com/neophilism/Ask-Bill/pull/6",
       "createdAt": "2026-10-16T22:01:39Z",
-      "updatedAt": "2026-10-16T22:12:04Z",
-      "mergedAt": null,
-      "closedAt": null,
-      "draft": true
+      "updatedAt": "2026-10-16T22:57:44Z",
+      "mergedAt": "2026-10-16T22:57:44Z",
+      "closedAt": "2026-10-16T22:57:44Z",
+      "draft": false
     },
     {
       "id": 7,
@@ -4506,6 +4508,18 @@
       "mergedAt": "2026-10-16T22:53:26Z",
       "closedAt": "2026-10-16T22:53:26Z",
       "draft": false
+    },
+    {
+      "id": 8,
+      "number": 8,
+      "title": "AB-008: Publisher role authorization, session and MFA fixture safeguards (partial)",
+      "state": "open",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/8",
+      "createdAt": "2026-10-16T22:59:40Z",
+      "updatedAt": "2026-10-16T22:59:40Z",
+      "mergedAt": null,
+      "closedAt": null,
+      "draft": true
     }
   ]
 }
