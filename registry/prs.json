@@ -4,7 +4,7 @@
   "roadmapVersion": 1,
   "planVerified": true,
   "plannedPrCount": 112,
-  "observedAt": "2026-10-16T21:07:51Z",
+  "observedAt": "2026-10-16T22:55:30Z",
   "approval": {
     "basis": "Owner explicitly directed the complete Ask Bill architecture and PR plan (16 October 2026) and installation of foundational commit.",
     "source": "docs/DEVELOPMENT_PLAN.md"
@@ -14,7 +14,9 @@
       "id": "AB-001",
       "title": "Repository binding and canonical plan",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        1
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [],
@@ -33,7 +35,7 @@
         "Run the shared parser, cycle and dependency checks, and compare every unit with this plan; test that a changed repository identity is rejected."
       ],
       "rollback": "Restore prior planning files without discarding any approved scope or real PR evidence.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "completed",
       "operationalAcceptance": "not_run",
       "phase": "F1",
       "gate": "G1",
@@ -49,7 +51,9 @@
       "id": "AB-002",
       "title": "Toolchain workspace and CircleCI",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        2
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -71,7 +75,7 @@
         "Run the cold-install pipeline and deliberate type-error negative test on a disposable branch; retain head-bound CI IDs."
       ],
       "rollback": "Revert workspace changes and preserve the registry plus reproducible toolchain manifest.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "completed",
       "operationalAcceptance": "not_run",
       "phase": "F1",
       "gate": "G1",
@@ -87,7 +91,9 @@
       "id": "AB-003",
       "title": "Runtime contracts and architecture decisions",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        3
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -108,7 +114,7 @@
         "Round-trip valid fixtures and fuzz unknown fields, Unicode boundaries, oversize inputs and incompatible schema versions."
       ],
       "rollback": "Pin consumers to the prior contract version and reject incompatible messages.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "completed",
       "operationalAcceptance": "not_run",
       "phase": "F1",
       "gate": "G1",
@@ -124,7 +130,9 @@
       "id": "AB-004",
       "title": "Accessible product shell and design tokens",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        4
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -145,7 +153,7 @@
         "Run keyboard and axe checks plus responsive screenshots of every core state; test failed JavaScript hydration."
       ],
       "rollback": "Keep the semantic reader and disable incomplete interactive panels through a feature flag.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F1",
       "gate": "G1",
@@ -161,7 +169,9 @@
       "id": "AB-005",
       "title": "Environment adapters and local development",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        5
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -183,7 +193,7 @@
         "Start from a clean machine profile and verify secrets never enter client bundles or committed examples."
       ],
       "rollback": "Disable affected live adapters and keep local fixture mode working.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F1",
       "gate": "G1",
@@ -199,7 +209,9 @@
       "id": "AB-006",
       "title": "Binary asset ownership and reproducibility",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        6
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -221,7 +233,7 @@
         "Delete cached assets, re-fetch a test source, validate hashes and verify an intentionally broken pointer is detected."
       ],
       "rollback": "Restore the previous asset manifest and keep old immutable runtime assets available.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F1",
       "gate": "G1",
@@ -237,7 +249,9 @@
       "id": "AB-007",
       "title": "Database schema migrations and access boundaries",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        7
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -258,7 +272,7 @@
         "Migrate an empty and populated database, test authorization on guessed IDs, and exercise expand then rollback compatibility."
       ],
       "rollback": "Roll back application code to the compatible schema; avoid destructive down migrations.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F1",
       "gate": "G1",
@@ -4408,5 +4422,90 @@
       }
     }
   ],
-  "pullRequests": []
+  "pullRequests": [
+    {
+      "id": 1,
+      "number": 1,
+      "title": "AB-001: Bind Ask Bill architecture and 112-unit canonical plan",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/1",
+      "createdAt": "2026-10-16T21:13:35Z",
+      "updatedAt": "2026-10-16T22:39:26Z",
+      "mergedAt": "2026-10-16T22:39:25Z",
+      "closedAt": "2026-10-16T22:39:25Z",
+      "draft": false
+    },
+    {
+      "id": 2,
+      "number": 2,
+      "title": "AB-002: Pinned TypeScript workspace and CircleCI application checks",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/2",
+      "createdAt": "2026-10-16T21:32:25Z",
+      "updatedAt": "2026-10-16T22:40:55Z",
+      "mergedAt": "2026-10-16T22:40:55Z",
+      "closedAt": "2026-10-16T22:40:55Z",
+      "draft": false
+    },
+    {
+      "id": 3,
+      "number": 3,
+      "title": "AB-003: Runtime validation for sources, citations, events and character manifests",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/3",
+      "createdAt": "2026-10-16T21:50:28Z",
+      "updatedAt": "2026-10-16T22:42:15Z",
+      "mergedAt": "2026-10-16T22:42:15Z",
+      "closedAt": "2026-10-16T22:42:15Z",
+      "draft": false
+    },
+    {
+      "id": 4,
+      "number": 4,
+      "title": "AB-004: Accessible local reader preview and source-status safeguards (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/4",
+      "createdAt": "2026-10-16T21:55:12Z",
+      "updatedAt": "2026-10-16T22:50:33Z",
+      "mergedAt": "2026-10-16T22:50:33Z",
+      "closedAt": "2026-10-16T22:50:33Z",
+      "draft": false
+    },
+    {
+      "id": 5,
+      "number": 5,
+      "title": "AB-005: Independent environment, private capability gating and offline fixtures",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/5",
+      "createdAt": "2026-10-16T21:58:15Z",
+      "updatedAt": "2026-10-16T22:48:39Z",
+      "mergedAt": "2026-10-16T22:48:39Z",
+      "closedAt": "2026-10-16T22:48:39Z",
+      "draft": false
+    },
+    {
+      "id": 6,
+      "number": 6,
+      "title": "AB-006: Immutable asset manifest and integrity gates (partial)",
+      "state": "open",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/6",
+      "createdAt": "2026-10-16T22:01:39Z",
+      "updatedAt": "2026-10-16T22:12:04Z",
+      "mergedAt": null,
+      "closedAt": null,
+      "draft": true
+    },
+    {
+      "id": 7,
+      "number": 7,
+      "title": "AB-007: Tenant-isolated PostgreSQL foundation and scoped queries (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/7",
+      "createdAt": "2026-10-16T22:08:42Z",
+      "updatedAt": "2026-10-16T22:53:26Z",
+      "mergedAt": "2026-10-16T22:53:26Z",
+      "closedAt": "2026-10-16T22:53:26Z",
+      "draft": false
+    }
+  ]
 }

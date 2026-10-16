@@ -1,16 +1,23 @@
-# Agent session checkpoint
+# Ask Bill — verified repository development checkpoint
 
-Date: 2026-10-16T21:07:51Z
-Repository: `neophilism/Ask-Bill`
+Checked 2026-10-16T22:55:30Z UTC. Repository: `neophilism/Ask-Bill`. Ask Bill is an independent product; no external unrelated company/product dependencies exist.
 
-## Observed before foundation
+## Live GitHub work items
 
-Default branch `main` contained one README checkpoint and one root commit `df58fdf9db133f5e9059a5897e917b434ec052af`. No Ask Bill application or pull request was visible at inspection.
+| Unit | GitHub PR | State | Acceptance |
+|---|---|---|---|
+| AB-001 | #1 | merged | scoped implementation accepted |
+| AB-002 | #2 | merged | scoped implementation accepted |
+| AB-003 | #3 | merged | scoped implementation accepted |
+| AB-004 | #4 | merged | partial / not operationally accepted |
+| AB-005 | #5 | merged | partial / not operationally accepted |
+| AB-006 | #6 | open draft | partial / not operationally accepted |
+| AB-007 | #7 | merged | partial / not operationally accepted |
 
-## Changes in this foundation unit
+The canonical registry contains the exact approved **112 original units**, **490 dependencies** and observed PR references. PR state is not equivalent to full product completion.
 
-AB-001 creates the approved 112-unit active registry, complete narrative architecture and PR plan, original Bill asset requirements, contracts/fixtures, evidence template, operational handoff, security scope, merge preflight and executable foundation validator. These files represent specification and delivery controls, **not** live product completion.
+PRs #1, #2 and #3 merged after exact-head GitHub Actions foundation/workspace validation; PR #4 additionally passed the real localhost Chromium reader smoke at both desktop and 320px with disabled-JavaScript and reduced-motion checks; PR #5 passed strict configuration tests; PR #7 passed actual ephemeral PostgreSQL 17 migration replay and two-tenant row isolation tests, and the PostgreSQL startup race was fixed and retested before merge. PR #6 remains unmerged pending head-bound quality, browser and database checks for its rebased asset-manifest changes.
 
-## Follow-up required after the GitHub write
+No finished original `Bill.blend`/`Bill.glb`, complete public React/Next.js website, live AI/TTS/STT, fully sourced public bills, deployed domain or production database exists yet; these remain scheduled units and release gates. Current reader is a legitimate offline/local demo with an incomplete source fixture and static placeholder. Real provider credentials and live staging resources are not verified. Do not claim launch readiness.
 
-Refresh observed branch/PR/commit/CI statuses from GitHub; record AB-001's actual PR number and accepted evidence only after merge/tests. AB-002 is the next planned toolchain/app-scaffold unit. Next sessions must replace this checkpoint with newly verified live facts, not assume this entry remains current.
+Next: run latest PR #6 CI and merge if passing, continue the explicitly approved phase plan in dependency order, and keep production acceptance separate from passing local/unit tests.
