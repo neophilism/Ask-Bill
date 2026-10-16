@@ -14,12 +14,18 @@ importers:
 
   apps/api:
     dependencies:
+      '@ask-bill/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
       '@ask-bill/core':
         specifier: workspace:*
         version: link:../../packages/core
 
   apps/web:
     dependencies:
+      '@ask-bill/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
       '@ask-bill/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -29,6 +35,8 @@ importers:
       '@ask-bill/core':
         specifier: workspace:*
         version: link:../../packages/core
+
+  packages/contracts: {}
 
   packages/core: {}
 
