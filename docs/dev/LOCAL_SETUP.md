@@ -10,7 +10,7 @@ The AB-004 reader preview adds `pnpm preview`. Run it on that branch (or after i
 
 ## Optional backing services
 
-`infra/local/compose.yaml` defines localhost-only PostgreSQL and S3-compatible MinIO services, each behind its own Docker Compose profile. Set `ASK_BILL_DEV_DB_PASSWORD`, `ASK_BILL_DEV_STORAGE_USER`, `ASK_BILL_DEV_STORAGE_PASSWORD` in your private terminal environment (never in Git). Invoke `docker compose -f infra/local/compose.yaml --profile db --profile storage up -d` only when those services are needed. This compose file is not proof of a running database or working storage adapter.
+`infra/local/compose.yaml` defines localhost-only an optional loopback-only PostgreSQL 17.11 instance. Set `ASK_BILL_DEV_DB_PASSWORD` in your private terminal environment (never in Git). Invoke `docker compose -f infra/local/compose.yaml --profile db up -d` only when database work is needed. Storage remains disabled until a supported, patched backend is selected and tested. The previously proposed MinIO community image was removed due to GHSA-xh8f-g2qw-gcm7 affecting its final OSS release; do not restore that image. This compose file is not proof of a running database.
 
 ## Provider toggles
 
