@@ -38,6 +38,8 @@ importers:
 
   packages/config: {}
 
+  packages/db: {}
+
   packages/contracts: {}
 
   packages/core: {}

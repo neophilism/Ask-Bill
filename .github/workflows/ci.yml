@@ -58,3 +58,13 @@ jobs:
         env:
           ASK_BILL_BROWSER_REQUIRE_HTTP: '1'
         run: python tests/browser/test_reader_browser.py
+  database:
+    name: database / PostgreSQL tenancy and migrations
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Run isolated PostgreSQL 17 migration and tenant isolation tests
+        run: bash tests/postgres/integration.sh
