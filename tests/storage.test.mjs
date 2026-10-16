@@ -17,7 +17,7 @@ test('short-lived upload ticket binds to exact publisher, key, bytes, hash and M
 });
 test('tampering, tenant substitutions and guessed filenames fail closed',()=>{
  const c=make();const ticket=c.issueUpload({publisherId:a,key,sha256:data.sha256,size:data.bytes,mime:data.mime});
- denied('INVALID_SIGNATURE',()=>c.verifyUpload({ticket:ticket.slice(0,-1)+'X',publisherId:a,key,content:buf,mime:data.mime}));
+ denied('INVALID_SIGNATURE',()=>c.verifyUpload({ticket:ticket.slice(0,-1)+(ticket.endsWith('X')?'Y':'X'),publisherId:a,key,content:buf,mime:data.mime}));
  denied('OBJECT_FORBIDDEN',()=>c.verifyUpload({ticket,publisherId:b,key:b+'/bill.pdf',content:buf,mime:data.mime}));
  denied('OBJECT_FORBIDDEN',()=>c.verifyUpload({ticket,publisherId:a,key:a+'/new.pdf',content:buf,mime:data.mime}));
  denied('OBJECT_INTEGRITY_FAILED',()=>c.verifyUpload({ticket,publisherId:a,key,content:Buffer.from('%PDF-1.7\n2 0 obj'),mime:data.mime}));
