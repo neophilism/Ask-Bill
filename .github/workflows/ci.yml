@@ -1,0 +1,37 @@
+name: Ask Bill CI
+on:
+  pull_request:
+  push:
+    branches: [main, 'ab-*']
+permissions:
+  contents: read
+concurrency:
+  group: ask-bill-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  quality:
+    name: quality / foundation and workspace
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - name: Validate approved plan and regression tests
+        run: npm run check
+      - name: Install workspace and test application (when present)
+        shell: bash
+        run: |
+          if test -f pnpm-lock.yaml; then
+            corepack enable
+            corepack pnpm install --frozen-lockfile
+            corepack pnpm verify
+            if node -e 'process.exit(Object.prototype.hasOwnProperty.call(require("./package.json").scripts,"assets:validate") ? 0 : 1)'; then
+              corepack pnpm assets:validate
+            fi
+          else
+            echo "Foundation-only stage: application workspace not yet present"
+          fi
