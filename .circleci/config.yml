@@ -6,9 +6,38 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Validate canonical PR registry and foundation
+          name: Validate canonical registry and source scope
           command: npm run check
+  workspace:
+    docker:
+      - image: cimg/node:24.19.0
+    steps:
+      - checkout
+      - run:
+          name: Activate pinned package manager
+          command: |
+            corepack enable
+            corepack pnpm --version
+      - restore_cache:
+          keys:
+            - ask-bill-pnpm-v1-{{ checksum "pnpm-lock.yaml" }}
+      - run:
+          name: Cold install using exact lockfile
+          command: corepack pnpm install --frozen-lockfile
+      - run:
+          name: Static lint, TypeScript check, regression tests and build
+          command: |
+            corepack pnpm lint
+            corepack pnpm typecheck
+            corepack pnpm test
+            corepack pnpm build
+            corepack pnpm registry:validate
+      - save_cache:
+          key: ask-bill-pnpm-v1-{{ checksum "pnpm-lock.yaml" }}
+          paths:
+            - ~/.local/share/pnpm/store
 workflows:
-  foundation:
+  foundation_and_workspace:
     jobs:
       - foundation
+      - workspace
