@@ -4,7 +4,7 @@
   "roadmapVersion": 1,
   "planVerified": true,
   "plannedPrCount": 112,
-  "observedAt": "2026-10-16T23:00:20Z",
+  "observedAt": "2026-10-16T23:04:14Z",
   "approval": {
     "basis": "Owner explicitly directed the complete Ask Bill architecture and PR plan (16 October 2026) and installation of foundational commit.",
     "source": "docs/DEVELOPMENT_PLAN.md"
@@ -328,7 +328,9 @@
       "id": "AB-009",
       "title": "Object storage signed access and manifests",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        9
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -350,7 +352,7 @@
         "Test unauthorized object enumeration, replay, MIME spoofing, corrupt upload and expiration with the staging storage adapter."
       ],
       "rollback": "Revoke upload capability and restore prior published manifests; keep immutable objects unchanged.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F1",
       "gate": "G1",
@@ -4513,10 +4515,22 @@
       "id": 8,
       "number": 8,
       "title": "AB-008: Publisher role authorization, session and MFA fixture safeguards (partial)",
-      "state": "open",
+      "state": "closed",
       "url": "https://github.com/neophilism/Ask-Bill/pull/8",
       "createdAt": "2026-10-16T22:59:40Z",
-      "updatedAt": "2026-10-16T22:59:40Z",
+      "updatedAt": "2026-10-16T23:02:21Z",
+      "mergedAt": "2026-10-16T23:02:21Z",
+      "closedAt": "2026-10-16T23:02:21Z",
+      "draft": false
+    },
+    {
+      "id": 9,
+      "number": 9,
+      "title": "AB-009: Tenant-bound signed quarantine capabilities and storage controls (partial)",
+      "state": "open",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/9",
+      "createdAt": "2026-10-16T23:03:47Z",
+      "updatedAt": "2026-10-16T23:03:47Z",
       "mergedAt": null,
       "closedAt": null,
       "draft": true
