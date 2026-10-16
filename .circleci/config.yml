@@ -1,0 +1,14 @@
+version: 2.1
+jobs:
+  foundation:
+    docker:
+      - image: cimg/node:24.19.0
+    steps:
+      - checkout
+      - run:
+          name: Validate canonical PR registry and foundation
+          command: npm run check
+workflows:
+  foundation:
+    jobs:
+      - foundation

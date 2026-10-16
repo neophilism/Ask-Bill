@@ -1,0 +1,11 @@
+flowchart TD
+  Reader["Accessible bill reader and conversation"] --> API["API and validated answers"]
+  Reader --> Director["Local character director"]
+  Director --> Stage["Three.js stage and DOM anchors"]
+  API --> Providers["LLM and speech adapters"]
+  API --> DB["Versioned content and operational database"]
+  Worker["Isolated ingestion and production worker"] --> DB
+  Worker --> Objects["Private sources and public immutable packs"]
+  Objects --> Reader
+  Objects --> Stage
+  Publisher["Authorized publisher"] --> API
