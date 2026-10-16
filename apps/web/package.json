@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@ask-bill/core": "workspace:*"
+    "@ask-bill/core": "workspace:*",
+    "@ask-bill/contracts": "workspace:*"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
