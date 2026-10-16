@@ -5,7 +5,7 @@
 **Scope:** Independent Ask Bill product, operated separately from unrelated websites and companies. No external-product integrations.  
 **Plan:** All 112 original work units with 490 explicit local dependency links, phases F1-F8 and release gates G1-G8.  
 **Source of truth:** `registry/prs.json`. The approved narrative is `docs/DEVELOPMENT_PLAN.md` and design contract is `docs/ARCHITECTURE.md`.  
-**Current implementation:** PRs #1–#7 merged after verified GitHub Actions checks, including source contracts, local/offline reader, protected configuration, owned-asset validation and live ephemeral PostgreSQL migration/tenant tests. PR #8 develops a test-only publisher session and authorization boundary. The true production React interface, original animated character, live provider integrations, publisher login, deployed service and domain remain incomplete.
+**Current implementation:** PRs #1–#8 merged after verified GitHub Actions checks, including source contracts, local/offline reader, protected configuration, owned-asset validation and live ephemeral PostgreSQL migration/tenant tests. PR #8 merged a test-only publisher session/authorization boundary; PR #9 implements partial private-upload capability contracts, without any live object store. The true production React interface, original animated character, live provider integrations, publisher login, deployed service and domain remain incomplete.
 
 ## Immediate next action (refreshed 2026-10-16T23:00:20Z)
 

@@ -1,0 +1,15 @@
+{
+  "name": "@ask-bill/storage",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "node": "./index.mjs"
+    }
+  },
+  "scripts": {
+    "build": "node --check index.mjs",
+    "typecheck": "node --check index.mjs"
+  }
+}

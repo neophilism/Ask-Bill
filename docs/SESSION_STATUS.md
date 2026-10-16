@@ -1,26 +1,25 @@
-# Ask Bill — observed development checkpoint
+# Ask Bill — source-verified development checkpoint
 
-Observed 2026-10-16T23:00:20Z UTC in repository `neophilism/Ask-Bill`. Ask Bill is a separate company/product without cross-product integrations.
+Observed 2026-10-16T23:04:14Z UTC from GitHub. Ask Bill remains a distinct independent company/product.
 
-## Actual GitHub PRs
+## Actual PR state
 
-| Unit | PR | State | Scope acceptance |
+| Work unit | PR | GitHub | Delivery |
 |---|---|---|---|
-| AB-001 | [#1](https://github.com/neophilism/Ask-Bill/pull/1) | Merged | Scoped implementation accepted |
-| AB-002 | [#2](https://github.com/neophilism/Ask-Bill/pull/2) | Merged | Scoped implementation accepted |
-| AB-003 | [#3](https://github.com/neophilism/Ask-Bill/pull/3) | Merged | Scoped implementation accepted |
-| AB-004 | [#4](https://github.com/neophilism/Ask-Bill/pull/4) | Merged | Merged partial unit; operational acceptance pending |
-| AB-005 | [#5](https://github.com/neophilism/Ask-Bill/pull/5) | Merged | Merged partial unit; operational acceptance pending |
-| AB-006 | [#6](https://github.com/neophilism/Ask-Bill/pull/6) | Merged | Merged partial unit; operational acceptance pending |
-| AB-007 | [#7](https://github.com/neophilism/Ask-Bill/pull/7) | Merged | Merged partial unit; operational acceptance pending |
-| AB-008 | [#8](https://github.com/neophilism/Ask-Bill/pull/8) | Open draft | Work in progress |
+| AB-001 | [#1](https://github.com/neophilism/Ask-Bill/pull/1) | Merged | Scoped foundation completed |
+| AB-002 | [#2](https://github.com/neophilism/Ask-Bill/pull/2) | Merged | Scoped foundation completed |
+| AB-003 | [#3](https://github.com/neophilism/Ask-Bill/pull/3) | Merged | Scoped foundation completed |
+| AB-004 | [#4](https://github.com/neophilism/Ask-Bill/pull/4) | Merged | Partial implementation, operational acceptance outstanding |
+| AB-005 | [#5](https://github.com/neophilism/Ask-Bill/pull/5) | Merged | Partial implementation, operational acceptance outstanding |
+| AB-006 | [#6](https://github.com/neophilism/Ask-Bill/pull/6) | Merged | Partial implementation, operational acceptance outstanding |
+| AB-007 | [#7](https://github.com/neophilism/Ask-Bill/pull/7) | Merged | Partial implementation, operational acceptance outstanding |
+| AB-008 | [#8](https://github.com/neophilism/Ask-Bill/pull/8) | Merged | Partial implementation, operational acceptance outstanding |
+| AB-009 | [#9](https://github.com/neophilism/Ask-Bill/pull/9) | Open draft | Work in progress |
 
-Exact approved plan: 112 units, 490 dependencies. PRs #1–#7 are merged and their branch-head GitHub Actions checks passed. Browser preview has live localhost Chromium checks at desktop and 320px, including keyboard/reduced-motion/JS-disabled reading. AB-007 migrations and two-publisher RLS checks passed against disposable PostgreSQL 17. AB-006 ships only an original fixture and integrity tooling; no final Bill GLB/Blender asset exists. PR #8 has nine local passing tests for the fixture-only auth boundary; exact-head GitHub CI is not yet accepted at this observation.
+The canonical roadmap contains 112 original units and 490 original dependencies. Exact-head GitHub Actions quality checks passed before PRs #1–#8 merged. The GHA browser job exercises real localhost reader HTTP, and the disposable PostgreSQL 17 job tests migration idempotence and two-publisher isolation. Scope from #4 and #5–#8 is only partially implemented; green CI does not mean the full milestone gate or production launch is accepted.
 
-## Undelivered and required gates
+PR #9 adds cryptographically signed, tenant-bound quarantine ticket contracts and test-only nonce tracking. Its nine (correction: **eight**) local Node security subtests passed. This is **not** an actual storage provider, signed S3 transfer endpoint, durable replay store or deployed service. Current-head GitHub checks still need independent verification.
 
-No production website, full React/Next.js app, real publisher auth/MFA/recovery, complete authoritative published bill pack, live grounded conversational AI, licensed voice/lip-sync, finished 3D character, cloud deployment or production acceptance. Private live provider connections remain unconfigured; test-only auth is explicitly impossible to enable as production login. Continue implementation without conflating a green unit test or PR merge with an operational milestone.
+Undelivered: complete React/Next.js public interface, genuine publisher login/MFA and storage integration, full legislative source ingestion/publishing, AI conversations, original GLB/Blender model, voice and lip sync, production hosting and domain. Do not use unrelated company data or claim the incomplete source fixture is law.
 
-## Next dependency-ready work
-
-Review PR #8's CI, fix failures, merge only after passes and review. Implement real staging authorization adapters, isolate private object storage, source ingestion and security inventory, and finish original-character production in the approved plan.
+Next: pass PR #9 head-bound CI; merge only reviewed/passing changes; complete object-storage integration and privacy inventory, then advance dependency-ready units with the genuine original Bill character and authoritative source support.
