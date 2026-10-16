@@ -14,7 +14,7 @@ docker run --detach --rm --name "$container" \
   --env POSTGRES_DB=askbill_fixture "$image" >/dev/null
 ready=0
 for attempt in $(seq 1 45); do
-  if docker exec "$container" pg_isready --username=askbill_test_owner --dbname=askbill_fixture >/dev/null 2>&1; then
+  if docker exec "$container" psql --username=askbill_test_owner --dbname=askbill_fixture --tuples-only --no-align --command "SELECT 1" 2>/dev/null | grep -qx 1; then
     ready=1
     break
   fi
