@@ -3,6 +3,12 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "exports": {".": "./index.mjs"},
-  "scripts": {"build": "node --check index.mjs", "typecheck": "node --check index.mjs"}
+  "exports": {
+    ".": "./index.mjs",
+    "./pg-store": "./pg-store.mjs"
+  },
+  "scripts": {
+    "build": "node --check index.mjs && node --check pg-store.mjs",
+    "typecheck": "node --check index.mjs && node --check pg-store.mjs"
+  }
 }

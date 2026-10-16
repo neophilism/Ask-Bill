@@ -28,4 +28,9 @@ echo '[Ask Bill AB-007] Reapplying migration (idempotence pass)'
 psql_container < migrations/001_initial.sql > /dev/null
 echo '[Ask Bill AB-007] Testing independent publishers and FORCE RLS with non-owner role'
 psql_container < tests/postgres/isolation.sql
-printf '[Ask Bill AB-007] PostgreSQL migration and two-tenant isolation checks passed.\n'
+echo '[Ask Bill AB-010] Apply fenced queue/outbox expansion twice'
+psql_container < migrations/002_jobs.sql > /dev/null
+psql_container < migrations/002_jobs.sql > /dev/null
+echo '[Ask Bill AB-010] Verify tenant-scoped leases, crashes, retries and idempotent outbox'
+psql_container < tests/postgres/jobs.sql
+printf '[Ask Bill AB-007/010] PostgreSQL migrations, tenant isolation and fenced queue/outbox tests passed.\n'
