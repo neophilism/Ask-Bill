@@ -10,3 +10,7 @@ Captured from the exact AB-004 reader markup, CSS and client JavaScript by a loc
 - Visual evidence PNGs exist in the associated model work session and are not in the GitHub branch; filenames `reader-1280px.png` and `reader-320px.png`.
 
 This checkpoint is supplemental evidence only. AB-004 remains partial until the actual Next.js/React interface, full accessible behavior and head-bound CI are accepted.
+
+## Updated hosted-browser evidence
+
+Ask Bill PR #4 passed its actual GitHub-hosted Chromium 144 tests at exact head `5d80e656ef22f0c21dc9929d103d65dc0163489c` in run https://github.com/neophilism/Ask-Bill/actions/runs/38977735238 (job 117231420703). Real loopback navigation succeeded for desktop 1280px and mobile 320px (`live-http`; `strictHttp=true`), with source citation, keyboard skip link, reduced-motion and JavaScript-disabled source rendering verified. The earlier constrained-local-container fallback is historical, not evidence of a current browser failure. Full axe/assistive technology evaluation and complete Next.js/React interface remain separate unfinished gates.
