@@ -36,6 +36,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/core
 
+  packages/auth: {}
+
   packages/config: {}
 
   packages/db: {}
