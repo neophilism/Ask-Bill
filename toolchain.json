@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "project": "ask-bill",
+  "runtime": {
+    "node": "24.19.0",
+    "pnpm": "10.18.1"
+  },
+  "compiler": {
+    "typescript": "5.8.3",
+    "config": "tsconfig.base.json"
+  },
+  "ci": {
+    "provider": "CircleCI",
+    "config": ".circleci/config.yml",
+    "coldInstall": "corepack pnpm install --frozen-lockfile",
+    "checks": [
+      "foundation",
+      "workspace"
+    ]
+  },
+  "providers": {
+    "requiredForFoundation": [],
+    "liveIntegrationsEnabled": false
+  },
+  "note": "This is an application toolchain scaffold. It is not a deployed web app."
+}

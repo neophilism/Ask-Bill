@@ -1,16 +1,25 @@
 {
   "name": "ask-bill",
   "private": true,
-  "version": "0.0.0-foundation",
+  "version": "0.1.0-scaffold",
   "type": "module",
-  "description": "Ask Bill foundation and 112-unit approved PR registry (not an application build)",
+  "description": "Ask Bill independent pnpm/TypeScript monorepo bootstrap; no live product or provider is enabled",
+  "packageManager": "pnpm@10.18.1",
+  "engines": {
+    "node": ">=24.19.0 <25",
+    "pnpm": "10.18.1"
+  },
   "scripts": {
     "check": "node scripts/check.mjs",
     "registry:validate": "node scripts/validate-pr-registry.mjs",
     "ready": "node scripts/ready-work.mjs",
-    "test": "node --test tests/*.test.mjs"
+    "lint": "node scripts/lint.mjs",
+    "build": "pnpm -r --workspace-concurrency=1 run build",
+    "typecheck": "pnpm run build && pnpm -r --workspace-concurrency=1 run typecheck",
+    "test": "pnpm run build && node --test tests/*.test.mjs",
+    "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm registry:validate && pnpm check"
   },
-  "engines": {
-    "node": ">=22.0.0 <25"
+  "devDependencies": {
+    "typescript": "5.8.3"
   }
 }
