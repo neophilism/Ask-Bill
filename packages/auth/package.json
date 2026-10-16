@@ -1,0 +1,15 @@
+{
+  "name": "@ask-bill/auth",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./server": {
+      "node": "./server.mjs"
+    }
+  },
+  "scripts": {
+    "build": "node --check server.mjs",
+    "typecheck": "node --check server.mjs"
+  }
+}

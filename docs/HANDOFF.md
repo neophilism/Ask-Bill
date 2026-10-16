@@ -5,16 +5,15 @@
 **Scope:** Independent Ask Bill product, operated separately from unrelated websites and companies. No external-product integrations.  
 **Plan:** All 112 original work units with 490 explicit local dependency links, phases F1-F8 and release gates G1-G8.  
 **Source of truth:** `registry/prs.json`. The approved narrative is `docs/DEVELOPMENT_PLAN.md` and design contract is `docs/ARCHITECTURE.md`.  
-**Implemented by this foundation:** repository-bound specifications, active registry, source/design contracts, fixture, agent/process policy, and foundation-only validation; **no application runtime, finished Bill asset, deployed service, providers, accounts or domain**.
+**Current implementation:** PRs #1–#7 merged after verified GitHub Actions checks, including source contracts, local/offline reader, protected configuration, owned-asset validation and live ephemeral PostgreSQL migration/tenant tests. PR #8 develops a test-only publisher session and authorization boundary. The true production React interface, original animated character, live provider integrations, publisher login, deployed service and domain remain incomplete.
 
-## Immediate next action
+## Immediate next action (refreshed 2026-10-16T23:00:20Z)
 
-1. Check GitHub's actual HEAD, PR list and CI. Read `AGENTS.md`; do not trust dated snapshots as live state.
-2. Execute `npm run check` using `.node-version`. Resolve real vulnerabilities or failing tests rather than relabeling them passed.
-3. Read current acceptance and evidence for AB-001. When merged and accepted, start `AB-002: Toolchain workspace and CircleCI` and write its app/workspace code and test harness. Parallel graph-ready paths may be pursued when inputs exist.
-4. Implement from `docs/DEVELOPMENT_PLAN.md` without omitting any unit. `npm run ready` calculates graph candidates **only**; true readiness also requires confirmed accepted prerequisite evidence, no live conflicts and actual platform capacity.
-5. Make small focused PRs with stable leading IDs, actual source-bound test results, feature flags and rollback. Update `registry/prs.json` PR numbers and observations only after GitHub verifies them. Checkpoint commits often and preserve concurrent edits.
-6. After each work session update the real branch, merged PR number, last tested SHA/checks, real deployment status, exact blockers, secrets needed by name only, and next ready unit in `docs/SESSION_STATUS.md`.
+1. Read current main branch, active PRs, `registry/prs.json` and the exact-head GHA checks; do not use stale checkpoint statements as live evidence.
+2. Execute Node 24 / pnpm frozen install and `pnpm verify`; public reader browser checks and isolated PostgreSQL tests now run as separate GitHub jobs. CircleCI YAML remains an unconnected preference, not an active acceptance source.
+3. Complete and review AB-008 only as a **partial non-production auth module** until a real provider/MFA, recovery, persistence, staging login and browser/API authorization tests pass. Never enable a mock login in production.
+4. Continue source publishing, object storage, security/privacy inventory, full Next.js/React reader and independent Blender character production in the specified dependency order.
+5. The local reader preview and offline zip are demonstrations with incomplete text. No provider credentials, domain or live authoritative bill source is currently verified.
 
 ## Required inputs and known boundaries
 
