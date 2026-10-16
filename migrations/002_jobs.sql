@@ -109,7 +109,7 @@ BEGIN
   END IF;
  END IF;
  RETURN true;
-END $;
+END $$;
 
 CREATE OR REPLACE FUNCTION ask_bill.fail_job(
  p_publisher_id uuid,p_job_id uuid,p_worker_id uuid,p_fence bigint,p_retry boolean,p_error_code text)
