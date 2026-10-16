@@ -4,7 +4,7 @@
   "roadmapVersion": 1,
   "planVerified": true,
   "plannedPrCount": 112,
-  "observedAt": "2026-10-16T23:51:35Z",
+  "observedAt": "2026-10-16T23:58:48Z",
   "approval": {
     "basis": "Owner explicitly directed the complete Ask Bill architecture and PR plan (16 October 2026) and installation of foundational commit.",
     "source": "docs/DEVELOPMENT_PLAN.md"
@@ -407,7 +407,9 @@
       "id": "AB-011",
       "title": "Threat model and privacy inventory",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        11
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -430,7 +432,7 @@
         "Trace a question, microphone request, upload and publish through the inventory; verify secrets and personal content are excluded from standard logs."
       ],
       "rollback": "Disable an uncovered data flow until its concrete controls are implemented.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F1",
       "gate": "G1",
@@ -4541,10 +4543,22 @@
       "id": 10,
       "number": 10,
       "title": "AB-010: Fenced PostgreSQL job queue, transactional outbox and worker adapters",
-      "state": "open",
+      "state": "closed",
       "url": "https://github.com/neophilism/Ask-Bill/pull/10",
       "createdAt": "2026-10-16T23:49:43Z",
-      "updatedAt": "2026-10-16T23:49:43Z",
+      "updatedAt": "2026-10-16T23:57:05Z",
+      "mergedAt": "2026-10-16T23:57:05Z",
+      "closedAt": "2026-10-16T23:57:05Z",
+      "draft": false
+    },
+    {
+      "id": 11,
+      "number": 11,
+      "title": "AB-011: Explicit data-flow inventory, privacy retention and fail-closed safeguards",
+      "state": "open",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/11",
+      "createdAt": "2026-10-16T23:58:20Z",
+      "updatedAt": "2026-10-16T23:58:20Z",
       "mergedAt": null,
       "closedAt": null,
       "draft": true

@@ -1,12 +1,17 @@
-# Ask Bill — latest scoped engineering checkpoint
-Observed at 2026-10-16T23:51:35Z UTC from live GitHub PRs and repository source. Ask Bill is an independent company/product and never depends on another project's database or service.
+# Ask Bill — live scoped development checkpoint
 
-## Merged and open
-- PRs #1–#9 are merged and their exact-head GitHub Actions checks had passed when merged; #4–#9 are scoped foundations with production acceptance outstanding.
-- PR #10 (AB-010) is open on `ab-010-durable-jobs-outbox`, initially draft: fenced tenant-scoped PostgreSQL jobs, transactional outbox, bounded retries and dead-letter diagnostics, worker orchestration and store adapter.
-- The 112-unit plan and 490 original dependency edges remain intact. The registry maps ten genuine PRs, marking AB-010 in progress, not complete.
-- AB-010 local Node 22 tests: **16 passed**. An ephemeral PostgreSQL/GitHub workflow on the original implementation head passed for queue+outbox migration; exact latest-head checks must still pass before merge.
-- AB-011 threat model/privacy inventory is the next independently ready unit and does not require Bill's future `.blend`/`.glb` asset.
+Observed: 2026-10-16T23:58:48Z UTC. GitHub repository `neophilism/Ask-Bill`. This project is independent; no other company's infrastructure is integrated.
 
-## Live availability is not implied
-The available public reader is a localhost fixture preview only. There is no production hosting, fully authenticated publisher application, complete authoritative bill corpus, live model/voice adapter, or finished Bill rig/model. Job/outbox delivery is at-least-once, never cross-network exactly-once. Do not expose queue functions to untrusted roles or record raw personal data.
+## Source and PR evidence
+
+- Merged PRs #1–#10. PR #10 contains AB-010's PostgreSQL fenced-lease, retries, dead-letter and transactional outbox migration + worker adapters, with head-bound browser/quality/disposable PostgreSQL CI success before merge. It does **not** mean a production worker/service is deployed or that an external sink has at-most-once delivery.
+- Open draft PR #11, AB-011: a sensitive data-flow inventory, retention/deletion policy, threat model, fail-closed telemetry schema and disabled child-live-input policy. Node-local tests ran on initial implementation; exact latest-head CI is required.
+- Approved active plan: 112 units, original 490 dependency edges, one machine registry. Work units AB-004–011 with partial implementation remain **in progress** pending their full acceptance, despite some contributing PRs already merged. Operational acceptance is separately `not_run`.
+
+## Product readiness
+
+Currently: source/citation validation, an isolated localhost reader demonstration of an incomplete draft, test-only publisher auth, tenant-safe database schema, signed-object contract, job/outbox engine. Not currently delivered: production publisher login/MFA, authoritative complete bill corpus with imports, live conversation and voice providers, verified parental consent, full 3D Bill rig/animation, fully hosted public website, production object store and end-to-end operational validation.
+
+## Next execution
+
+Finish independent AB-011 current-head checks and merge after security review. Then AB-012 preview infrastructure/health endpoints can proceed against Ask Bill-only disposable resources. The user will provide Bill's actual model shortly; do not represent the temporary document illustration as final art or hold independent work for that asset.

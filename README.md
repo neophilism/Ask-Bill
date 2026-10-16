@@ -2,7 +2,7 @@
 
 Ask Bill is an independent public product for exploring legislation through a **source-grounded conversation with Bill**, an original animated character who can walk across a displayed bill, point to passages, gesture, and explain them in accessible spoken or written language. Its content, services, architecture, ownership and release lifecycle are wholly independent of unrelated products.
 
-**Engineering status (16 October 2026):** AB-001–AB-009 are merged after GitHub CI. AB-010, the fenced PostgreSQL job/outbox foundation, is in active development in [PR #10](https://github.com/neophilism/Ask-Bill/pull/10); source-bound CI and production operational acceptance remain distinct. The public reader is a localhost-only, intentionally incomplete fixture demonstration. **No production website, validated publisher identity/MFA provider, complete bill corpus, live AI, voice or fully rigged original Bill character is deployed.**
+**Engineering status (16 October 2026):** AB-001–AB-010 are merged after scoped GitHub CI, including AB-010's fenced PostgreSQL job queue and transactional outbox; these foundational merges are **not** full production acceptance. AB-011's data-flow privacy inventory and fail-closed telemetry is in active review in [PR #11](https://github.com/neophilism/Ask-Bill/pull/11). The public reader remains a localhost-only draft fixture. **No public production site, provider-backed publisher login, full legislative import, live AI/voice, verified child consent or finished animated Bill character is deployed.**
 
 ## New agent: start here
 
