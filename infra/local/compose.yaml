@@ -1,0 +1,19 @@
+# Local-only optional persistence backing services. Never use this for production.
+services:
+  db:
+    image: postgres:17.11-alpine3.24
+    profiles: ["db"]
+    environment:
+      POSTGRES_USER: askbill
+      POSTGRES_DB: askbill
+      POSTGRES_PASSWORD: ${ASK_BILL_DEV_DB_PASSWORD:?Set local database password outside version control}
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - askbill_dev_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U askbill -d askbill"]
+      interval: 10s
+      retries: 5
+volumes:
+  askbill_dev_pg:
