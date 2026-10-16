@@ -1,25 +1,12 @@
-# Ask Bill — source-verified development checkpoint
+# Ask Bill — latest scoped engineering checkpoint
+Observed at 2026-10-16T23:51:35Z UTC from live GitHub PRs and repository source. Ask Bill is an independent company/product and never depends on another project's database or service.
 
-Observed 2026-10-16T23:04:14Z UTC from GitHub. Ask Bill remains a distinct independent company/product.
+## Merged and open
+- PRs #1–#9 are merged and their exact-head GitHub Actions checks had passed when merged; #4–#9 are scoped foundations with production acceptance outstanding.
+- PR #10 (AB-010) is open on `ab-010-durable-jobs-outbox`, initially draft: fenced tenant-scoped PostgreSQL jobs, transactional outbox, bounded retries and dead-letter diagnostics, worker orchestration and store adapter.
+- The 112-unit plan and 490 original dependency edges remain intact. The registry maps ten genuine PRs, marking AB-010 in progress, not complete.
+- AB-010 local Node 22 tests: **16 passed**. An ephemeral PostgreSQL/GitHub workflow on the original implementation head passed for queue+outbox migration; exact latest-head checks must still pass before merge.
+- AB-011 threat model/privacy inventory is the next independently ready unit and does not require Bill's future `.blend`/`.glb` asset.
 
-## Actual PR state
-
-| Work unit | PR | GitHub | Delivery |
-|---|---|---|---|
-| AB-001 | [#1](https://github.com/neophilism/Ask-Bill/pull/1) | Merged | Scoped foundation completed |
-| AB-002 | [#2](https://github.com/neophilism/Ask-Bill/pull/2) | Merged | Scoped foundation completed |
-| AB-003 | [#3](https://github.com/neophilism/Ask-Bill/pull/3) | Merged | Scoped foundation completed |
-| AB-004 | [#4](https://github.com/neophilism/Ask-Bill/pull/4) | Merged | Partial implementation, operational acceptance outstanding |
-| AB-005 | [#5](https://github.com/neophilism/Ask-Bill/pull/5) | Merged | Partial implementation, operational acceptance outstanding |
-| AB-006 | [#6](https://github.com/neophilism/Ask-Bill/pull/6) | Merged | Partial implementation, operational acceptance outstanding |
-| AB-007 | [#7](https://github.com/neophilism/Ask-Bill/pull/7) | Merged | Partial implementation, operational acceptance outstanding |
-| AB-008 | [#8](https://github.com/neophilism/Ask-Bill/pull/8) | Merged | Partial implementation, operational acceptance outstanding |
-| AB-009 | [#9](https://github.com/neophilism/Ask-Bill/pull/9) | Open draft | Work in progress |
-
-The canonical roadmap contains 112 original units and 490 original dependencies. Exact-head GitHub Actions quality checks passed before PRs #1–#8 merged. The GHA browser job exercises real localhost reader HTTP, and the disposable PostgreSQL 17 job tests migration idempotence and two-publisher isolation. Scope from #4 and #5–#8 is only partially implemented; green CI does not mean the full milestone gate or production launch is accepted.
-
-PR #9 adds cryptographically signed, tenant-bound quarantine ticket contracts and test-only nonce tracking. Its nine (correction: **eight**) local Node security subtests passed. This is **not** an actual storage provider, signed S3 transfer endpoint, durable replay store or deployed service. Current-head GitHub checks still need independent verification.
-
-Undelivered: complete React/Next.js public interface, genuine publisher login/MFA and storage integration, full legislative source ingestion/publishing, AI conversations, original GLB/Blender model, voice and lip sync, production hosting and domain. Do not use unrelated company data or claim the incomplete source fixture is law.
-
-Next: pass PR #9 head-bound CI; merge only reviewed/passing changes; complete object-storage integration and privacy inventory, then advance dependency-ready units with the genuine original Bill character and authoritative source support.
+## Live availability is not implied
+The available public reader is a localhost fixture preview only. There is no production hosting, fully authenticated publisher application, complete authoritative bill corpus, live model/voice adapter, or finished Bill rig/model. Job/outbox delivery is at-least-once, never cross-network exactly-once. Do not expose queue functions to untrusted roles or record raw personal data.

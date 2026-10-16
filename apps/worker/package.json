@@ -4,10 +4,12 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@ask-bill/core": "workspace:*"
+    "@ask-bill/core": "workspace:*",
+    "@ask-bill/jobs": "workspace:*"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "jobs:help": "node jobs.mjs --help"
   }
 }

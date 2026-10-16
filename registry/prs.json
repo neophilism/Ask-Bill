@@ -4,7 +4,7 @@
   "roadmapVersion": 1,
   "planVerified": true,
   "plannedPrCount": 112,
-  "observedAt": "2026-10-16T23:04:14Z",
+  "observedAt": "2026-10-16T23:51:35Z",
   "approval": {
     "basis": "Owner explicitly directed the complete Ask Bill architecture and PR plan (16 October 2026) and installation of foundational commit.",
     "source": "docs/DEVELOPMENT_PLAN.md"
@@ -368,7 +368,9 @@
       "id": "AB-010",
       "title": "Durable jobs outbox and fencing",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        10
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -389,7 +391,7 @@
         "Kill a worker mid-job, deliver duplicate outbox events and race two lease owners against the same record."
       ],
       "rollback": "Pause the queue and replay durable uncommitted jobs with the previous compatible worker.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F1",
       "gate": "G1",
@@ -4527,10 +4529,22 @@
       "id": 9,
       "number": 9,
       "title": "AB-009: Tenant-bound signed quarantine capabilities and storage controls (partial)",
-      "state": "open",
+      "state": "closed",
       "url": "https://github.com/neophilism/Ask-Bill/pull/9",
       "createdAt": "2026-10-16T23:03:47Z",
-      "updatedAt": "2026-10-16T23:03:47Z",
+      "updatedAt": "2026-10-16T23:06:48Z",
+      "mergedAt": "2026-10-16T23:06:48Z",
+      "closedAt": "2026-10-16T23:06:48Z",
+      "draft": false
+    },
+    {
+      "id": 10,
+      "number": 10,
+      "title": "AB-010: Fenced PostgreSQL job queue, transactional outbox and worker adapters",
+      "state": "open",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/10",
+      "createdAt": "2026-10-16T23:49:43Z",
+      "updatedAt": "2026-10-16T23:49:43Z",
       "mergedAt": null,
       "closedAt": null,
       "draft": true
