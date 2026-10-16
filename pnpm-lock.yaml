@@ -36,6 +36,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/core
 
+  packages/config: {}
+
   packages/contracts: {}
 
   packages/core: {}
