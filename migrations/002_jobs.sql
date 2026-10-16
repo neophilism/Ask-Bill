@@ -98,8 +98,18 @@ BEGIN
  INSERT INTO ask_bill.outbox_events(publisher_id,event_type,idempotency_key,payload)
  VALUES(p_publisher_id,p_event_type,p_event_key,p_payload)
  ON CONFLICT(publisher_id,idempotency_key) DO NOTHING;
+ -- A repeated key may only refer to the exact same event. Never silently complete
+ -- another job while discarding a different event with the same idempotency key.
+ IF NOT FOUND THEN
+  PERFORM 1 FROM ask_bill.outbox_events
+   WHERE publisher_id=p_publisher_id AND idempotency_key=p_event_key
+     AND event_type=p_event_type AND payload=p_payload;
+  IF NOT FOUND THEN
+   RAISE EXCEPTION 'Conflicting event for idempotency key' USING ERRCODE='23505';
+  END IF;
+ END IF;
  RETURN true;
-END $$;
+END $;
 
 CREATE OR REPLACE FUNCTION ask_bill.fail_job(
  p_publisher_id uuid,p_job_id uuid,p_worker_id uuid,p_fence bigint,p_retry boolean,p_error_code text)

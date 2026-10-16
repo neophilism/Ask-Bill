@@ -64,6 +64,17 @@ BEGIN
  EXCEPTION WHEN invalid_parameter_value THEN NULL; END;
  IF (SELECT status FROM ask_bill.jobs WHERE id=j.job_id)<>'leased' THEN
   RAISE EXCEPTION 'Outbox validation rolled back job'; END IF;
+ -- A collision with a different event must reject the whole job transition.
+ INSERT INTO ask_bill.outbox_events(publisher_id,event_type,idempotency_key,payload)
+ VALUES('11111111-1111-4111-8111-111111111111','published','job-one','{"poison":true}');
+ BEGIN
+  PERFORM ask_bill.complete_job_and_enqueue('11111111-1111-4111-8111-111111111111',j.job_id,
+    'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',2,'published','job-one','{"complete":true}');
+  RAISE EXCEPTION 'Conflicting idempotency key was silently accepted';
+ EXCEPTION WHEN unique_violation THEN NULL; END;
+ IF (SELECT status FROM ask_bill.jobs WHERE id=j.job_id)<>'leased' THEN
+   RAISE EXCEPTION 'Idempotency collision did not rollback completion'; END IF;
+ DELETE FROM ask_bill.outbox_events WHERE idempotency_key='job-one';
  IF NOT ask_bill.complete_job_and_enqueue('11111111-1111-4111-8111-111111111111',j.job_id,
   'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',2,'published','job-one','{"complete":true}') THEN
   RAISE EXCEPTION 'Claim owner could not atomically complete and enqueue'; END IF;
