@@ -8,4 +8,6 @@ The source manifest `docs/source/SHA256SUMS.json` verifies the original narrativ
 
 The original Word documents and ZIP remain available to the owner in their Library; the repository source is text-native for ordinary agent workflows.
 
-Contract provenance: the v1 `registry/pr-contract.mjs` was obtained from the shared Boardroom source on 16 October 2026 and compared against the Law Machine copy. Do not fork this schema without coordinating both consumers.
+Contract provenance: the v1 `registry/pr-contract.mjs` was adapted on 16 October 2026 from an existing machine-readable work registry format. Ask Bill owns this local implementation, with no cross-product service, approval or release dependency.
+
+Owner correction recorded 16 October 2026: Ask Bill is a separate company and independent website. The architecture and narrative plan now explicitly disallow integration with unrelated products; only this correction was made to those source documents. Their integrity hashes were refreshed, while all 112 approved work-unit IDs, scopes, dependencies and baseline scope digest remain unchanged.

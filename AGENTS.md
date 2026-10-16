@@ -4,7 +4,7 @@ Read `docs/HANDOFF.md`, `docs/ARCHITECTURE.md`, `docs/DEVELOPMENT_PLAN.md`, `reg
 
 ## Architecture and ownership
 
-- This repository is **Ask Bill only**. Do not treat Law Machine's registry, LM IDs, repo state or 60-unit plan as Ask Bill work. Law Machine is an optional future, versioned headless provider; never make it a release prerequisite for source-grounded Ask Bill reading.
+- This repository is **Ask Bill only**: a distinct product operated separately from unrelated websites and companies, including projects under the same GitHub account. Never integrate, import, call or depend on external product code, SDKs, services, APIs, databases, schemas, assets, work-unit plans or release processes without a newly approved, explicit Ask Bill integration agreement. Build Ask Bill's own legislative ingestion, evidence, citations and explanations.
 - Bill is an original, non-infringing, friendly animated character, inspired by a personified bill on Capitol Hill, not a paper clip or a copied existing character. Build editable source and actual production-ready 3D asset, not a mock described as complete.
 - The canonical public truth is the exact versioned source text with stable anchors and provenance. Distinguish proposed text, enacted law, different versions, attributed advocacy, interpretation and uncertainty.
 - The LLM must not choose authoritative legal citations, character navigation coordinates, DOM elements, security policy or source version. A validated deterministic controller maps grounded spans to animations, focus targets and inspectable evidence.

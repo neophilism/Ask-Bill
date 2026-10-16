@@ -1,6 +1,6 @@
 # Ask Bill
 
-Ask Bill is an independent public product for exploring legislation through a **source-grounded conversation with Bill**, an original animated character who can walk across a displayed bill, point to passages, gesture, and explain them in accessible spoken or written language. It remains a separate repository and release from [Law Machine](https://github.com/neophilism/Law-Machine).
+Ask Bill is an independent public product for exploring legislation through a **source-grounded conversation with Bill**, an original animated character who can walk across a displayed bill, point to passages, gesture, and explain them in accessible spoken or written language. Its content, services, architecture, ownership and release lifecycle are wholly independent of unrelated products.
 
 **Current state (foundation checkpoint, 16 October 2026):** Complete technical specification, original-character delivery contract, 112 dependency-ordered work units, canonical PR registry, handoff, fixture, and foundation validation are committed. **The web application, 3D character, live AI, voice, data ingestion, deployment and domain are not yet built or configured.** No preview or production release should be represented as complete.
 

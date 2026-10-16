@@ -2,7 +2,7 @@
 
 **Repository:** `neophilism/Ask-Bill` — <https://github.com/neophilism/Ask-Bill>  
 **Handoff generated:** 2026-10-16T21:07:51Z  
-**Scope:** Independent Ask Bill product only. Law Machine stays in its own repository.  
+**Scope:** Independent Ask Bill product, operated separately from unrelated websites and companies. No external-product integrations.  
 **Plan:** All 112 original work units with 490 explicit local dependency links, phases F1-F8 and release gates G1-G8.  
 **Source of truth:** `registry/prs.json`. The approved narrative is `docs/DEVELOPMENT_PLAN.md` and design contract is `docs/ARCHITECTURE.md`.  
 **Implemented by this foundation:** repository-bound specifications, active registry, source/design contracts, fixture, agent/process policy, and foundation-only validation; **no application runtime, finished Bill asset, deployed service, providers, accounts or domain**.
@@ -22,7 +22,7 @@
 - No selected public URL/domain, credentials, hosted resources, or paid capacity are currently verified in this repository. Provider-agnostic fixture development continues without them; live features require scoped environment configuration and credential validation.
 - The supplied electronic-filing excerpt is **not** a complete or authoritative bill. Do not publish the complete reference bill until exact authoritative text/version/source verification exists.
 - Live U.S. legislative adapters should use source version and provenance. Congress.gov or GovInfo API keys may be needed for rate limits but do not block offline fixtures.
-- Non-credentialed flows, animation, accessibility and publishing schema can proceed independent of future Law Machine. No compulsory payment or campaign feature belongs here.
+- Non-credentialed flows, animation, accessibility and publishing schema use Ask Bill's own independent content and provider adapters. No compulsory payment or campaign feature belongs here.
 
 ## CI and acceptance mechanics
 

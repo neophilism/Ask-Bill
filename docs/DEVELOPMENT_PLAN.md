@@ -2,7 +2,7 @@
 
 Version 1.0 | 16 October 2026 | 112 dependency ordered implementation units
 
-Build the complete Ask Bill experience described in docs/ARCHITECTURE.md. This plan includes the character itself, its production sources, graphics runtime, grounded conversation, voice, accessible reading, publishing, security, operations and launch. The Law Machine is outside scope. Every unit is required for the full specified release; small previews can ship earlier only with accurate labels.
+Build the complete Ask Bill experience described in docs/ARCHITECTURE.md. This plan includes the character itself, its production sources, graphics runtime, grounded conversation, voice, accessible reading, publishing, security, operations and launch. Ask Bill is a separate product and company; all product capabilities in this plan are implemented in Ask Bill. No dependency on, integration with or reuse of an unrelated product's API, SDK, codebase or data service is authorized. Every unit is required for the full specified release; small previews can ship earlier only with accurate labels.
 
 The IDs below are stable work-unit IDs, not GitHub PR numbers. No PR has been created by this planning package. One unit normally becomes one focused PR; split large units into several explicitly mapped PRs without dropping scope or renumbering the plan. Do not fabricate repository names, completion states, provider credentials, source versions or runtime evidence.
 

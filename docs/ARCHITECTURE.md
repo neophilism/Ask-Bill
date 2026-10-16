@@ -2,7 +2,7 @@
 
 Version 1.0 | 16 October 2026 | Implementation specification
 
-Ask Bill is a reusable public website for understanding legislation by talking to an original animated character. Bill lives beside and across a readable bill, moves to the provisions he explains, and answers ordinary questions with inspectable sources. The complete release includes a finished original character and its editable production files, grounded text and spoken conversation, guided tours, mobile and accessible experiences, publishing tools, operations, and launch evidence. The Law Machine is outside this project.
+Ask Bill is a reusable public website for understanding legislation by talking to an original animated character. Bill lives beside and across a readable bill, moves to the provisions he explains, and answers ordinary questions with inspectable sources. The complete release includes a finished original character and its editable production files, grounded text and spoken conversation, guided tours, mobile and accessible experiences, publishing tools, operations, and launch evidence. Ask Bill independently owns its legislative ingestion, versioning, citations, conversational services, character runtime and deployment. No other product or company's infrastructure is a provider, integration, prerequisite or shared release.
 
 This package defines future implementation. No application, model, voice account, domain, deployment, or GitHub pull request is represented as already created. The PR plan contains 112 stable work units. Work IDs such as AB-045 are planning IDs, never assumed GitHub PR numbers. Numeric budgets below are engineering targets to validate, not measured results or vendor promises.
 
