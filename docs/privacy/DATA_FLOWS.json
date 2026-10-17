@@ -1,0 +1,421 @@
+{
+  "schemaVersion": 1,
+  "product": "Ask Bill",
+  "lastReviewed": "2026-10-16",
+  "defaultRawContentLogging": false,
+  "defaultLiveProviderTransfers": false,
+  "defaultUnder13FreeInput": false,
+  "flows": [
+    {
+      "id": "public_read",
+      "ownerModule": "apps/web/preview/server.mjs",
+      "ownerUnit": "AB-004",
+      "implementation": "partial",
+      "dataClasses": [
+        "public_legislation",
+        "request_metadata"
+      ],
+      "retention": {
+        "category": "public-cache",
+        "ttlSeconds": null,
+        "enforcement": "pending"
+      },
+      "thirdPartyTransfer": "disabled",
+      "verificationCase": "public-reader-http",
+      "securityNotes": "Reader remains public; no raw-question storage or cross-session tracking.",
+      "requiredBeforeEnable": [
+        "authenticated tenant scope",
+        "verified data minimization",
+        "negative test evidence"
+      ]
+    },
+    {
+      "id": "publisher_auth_session",
+      "ownerModule": "packages/auth/server.mjs",
+      "ownerUnit": "AB-008",
+      "implementation": "fixture_only",
+      "dataClasses": [
+        "publisher_identity",
+        "session_capability",
+        "mfa_proof"
+      ],
+      "retention": {
+        "category": "ephemeral-session",
+        "ttlSeconds": 1800,
+        "enforcement": "fixture_only"
+      },
+      "thirdPartyTransfer": "disabled",
+      "verificationCase": "publisher-authorization",
+      "securityNotes": "Production identity provider and MFA not connected.",
+      "requiredBeforeEnable": [
+        "fixture scope only"
+      ]
+    },
+    {
+      "id": "signed_upload_ticket",
+      "ownerModule": "packages/storage/index.mjs",
+      "ownerUnit": "AB-009",
+      "implementation": "fixture_only",
+      "dataClasses": [
+        "publisher_identity",
+        "object_metadata",
+        "nonce"
+      ],
+      "retention": {
+        "category": "upload-token",
+        "ttlSeconds": 300,
+        "enforcement": "fixture_only"
+      },
+      "thirdPartyTransfer": "disabled",
+      "verificationCase": "signed-upload-replay",
+      "securityNotes": "Durable nonce redemption and real object service not configured.",
+      "requiredBeforeEnable": [
+        "fixture scope only"
+      ]
+    },
+    {
+      "id": "publisher_upload_quarantine",
+      "ownerModule": "apps/worker/sandbox/",
+      "ownerUnit": "AB-014",
+      "implementation": "disabled",
+      "dataClasses": [
+        "private_source_bytes",
+        "object_metadata"
+      ],
+      "retention": {
+        "category": "quarantine",
+        "ttlSeconds": 604800,
+        "enforcement": "pending"
+      },
+      "thirdPartyTransfer": "disabled",
+      "verificationCase": "malicious-upload",
+      "securityNotes": "No public raw file uploads; verify content signature and decompression limits.",
+      "requiredBeforeEnable": [
+        "authenticated tenant scope",
+        "verified data minimization",
+        "negative test evidence"
+      ]
+    },
+    {
+      "id": "private_source_store",
+      "ownerModule": "packages/storage/",
+      "ownerUnit": "AB-009",
+      "implementation": "disabled",
+      "dataClasses": [
+        "private_source_bytes",
+        "document_metadata"
+      ],
+      "retention": {
+        "category": "publisher-controlled",
+        "ttlSeconds": null,
+        "enforcement": "pending"
+      },
+      "thirdPartyTransfer": "disabled",
+      "verificationCase": "cross-publisher-storage",
+      "securityNotes": "Private source is never a public pack or public cache entry.",
+      "requiredBeforeEnable": [
+        "authenticated tenant scope",
+        "verified data minimization",
+        "negative test evidence"
+      ]
+    },
+    {
+      "id": "official_source_import",
+      "ownerModule": "packages/content/adapters/",
+      "ownerUnit": "AB-023",
+      "implementation": "disabled",
+      "dataClasses": [
+        "public_legislation",
+        "external_source_metadata"
+      ],
+      "retention": {
+        "category": "provenance-archive",
+        "ttlSeconds": null,
+        "enforcement": "pending"
+      },
+      "thirdPartyTransfer": "disabled",
+      "verificationCase": "source-ssrf",
+      "securityNotes": "Origin allowlists and exact version metadata required.",
+      "requiredBeforeEnable": [
+        "authenticated tenant scope",
+        "verified data minimization",
+        "negative test evidence"
+      ]
+    },
+    {
+      "id": "published_source_pack",
+      "ownerModule": "apps/web/preview/",
+      "ownerUnit": "AB-004",
+      "implementation": "fixture_only",
+      "dataClasses": [
+        "public_legislation",
+        "source_version_hash"
+      ],
+      "retention": {
+        "category": "public-archive",
+        "ttlSeconds": null,
+        "enforcement": "pending"
+      },
+      "thirdPartyTransfer": "disabled",
+      "verificationCase": "incomplete-source-publishing",
+      "securityNotes": "Limited fixture is nonauthoritative, cannot be published as full law.",
+      "requiredBeforeEnable": [
+        "fixture scope only"
+      ]
+    },
+    {
+      "id": "visitor_question",
+      "ownerModule": "packages/grounding/",
+      "ownerUnit": "AB-029",
+      "implementation": "disabled",
+      "dataClasses": [
+        "question_text",
+        "source_version_hash",
+        "session_capability"
+      ],
+      "retention": {
+        "category": "ephemeral-chat",
+        "ttlSeconds": 1800,
+        "enforcement": "pending"
+      },
+      "thirdPartyTransfer": "disabled",
+      "verificationCase": "prompt-injection",
+      "securityNotes": "No free-text live provider enabled; validate source claim spans.",
+      "requiredBeforeEnable": [
+        "authenticated tenant scope",
+        "verified data minimization",
+        "negative test evidence"
+      ]
+    },
+    {
+      "id": "conversation_replay",
+      "ownerModule": "apps/api/",
+      "ownerUnit": "AB-035",
+      "implementation": "disabled",
+      "dataClasses": [
+        "question_text",
+        "answer_text",
+        "session_capability"
+      ],
+      "retention": {
+        "category": "ephemeral-chat",
+        "ttlSeconds": 1800,
+        "enforcement": "pending"
+      },
+      "thirdPartyTransfer": "disabled",
+      "verificationCase": "replay-cross-session",
+      "securityNotes": "Only scoped ephemeral server replay with deletion.",
+      "requiredBeforeEnable": [
+        "authenticated tenant scope",
+        "verified data minimization",
+        "negative test evidence"
+      ]
+    },
+    {
+      "id": "microphone_audio",
+      "ownerModule": "packages/voice/stt/",
+      "ownerUnit": "AB-080",
+      "implementation": "disabled",
+      "dataClasses": [
+        "voice_input",
+        "transcript"
+      ],
+      "retention": {
+        "category": "audio-ephemeral",
+        "ttlSeconds": 3600,
+        "enforcement": "pending"
+      },
+      "thirdPartyTransfer": "disabled",
+      "verificationCase": "microphone-permission",
+      "securityNotes": "Push-to-talk opt-in, delete input after transcription.",
+      "requiredBeforeEnable": [
+        "authenticated tenant scope",
+        "verified data minimization",
+        "negative test evidence"
+      ]
+    },
+    {
+      "id": "synthesized_speech",
+      "ownerModule": "packages/voice/tts/",
+      "ownerUnit": "AB-081",
+      "implementation": "disabled",
+      "dataClasses": [
+        "answer_text",
+        "audio_output"
+      ],
+      "retention": {
+        "category": "speech-ephemeral",
+        "ttlSeconds": 1800,
+        "enforcement": "pending"
+      },
+      "thirdPartyTransfer": "disabled",
+      "verificationCase": "tts-provider-retention",
+      "securityNotes": "Only speak validated text, provider contractual retention checks required.",
+      "requiredBeforeEnable": [
+        "authenticated tenant scope",
+        "verified data minimization",
+        "negative test evidence"
+      ]
+    },
+    {
+      "id": "child_curated",
+      "ownerModule": "apps/web/preview/",
+      "ownerUnit": "AB-004",
+      "implementation": "fixture_only",
+      "dataClasses": [
+        "public_legislation"
+      ],
+      "retention": {
+        "category": "no-user-record",
+        "ttlSeconds": 0,
+        "enforcement": "fixture_only"
+      },
+      "thirdPartyTransfer": "disabled",
+      "verificationCase": "child-curated-route",
+      "securityNotes": "No live child free text, speech, analytics or persistent user profiles.",
+      "requiredBeforeEnable": [
+        "fixture scope only"
+      ]
+    },
+    {
+      "id": "child_live_input",
+      "ownerModule": "packages/consent/",
+      "ownerUnit": "AB-090",
+      "implementation": "disabled",
+      "dataClasses": [
+        "child_identifier",
+        "parental_consent_proof",
+        "question_text"
+      ],
+      "retention": {
+        "category": "child-live-protected",
+        "ttlSeconds": null,
+        "enforcement": "pending"
+      },
+      "thirdPartyTransfer": "disabled",
+      "verificationCase": "unverified-child-consent",
+      "securityNotes": "Disabled until verifiable parental consent and approved provider protections.",
+      "requiredBeforeEnable": [
+        "authenticated tenant scope",
+        "verified data minimization",
+        "negative test evidence"
+      ]
+    },
+    {
+      "id": "feedback_submission",
+      "ownerModule": "packages/feedback/",
+      "ownerUnit": "AB-095",
+      "implementation": "disabled",
+      "dataClasses": [
+        "opt_in_feedback",
+        "source_version_hash"
+      ],
+      "retention": {
+        "category": "opt-in-feedback",
+        "ttlSeconds": 7776000,
+        "enforcement": "pending"
+      },
+      "thirdPartyTransfer": "disabled",
+      "verificationCase": "feedback-sensitive-data",
+      "securityNotes": "User-visible review/redaction before opt-in send.",
+      "requiredBeforeEnable": [
+        "authenticated tenant scope",
+        "verified data minimization",
+        "negative test evidence"
+      ]
+    },
+    {
+      "id": "publisher_audit",
+      "ownerModule": "packages/db/",
+      "ownerUnit": "AB-007",
+      "implementation": "partial",
+      "dataClasses": [
+        "publisher_identity",
+        "action_metadata"
+      ],
+      "retention": {
+        "category": "audit-year",
+        "ttlSeconds": 31536000,
+        "enforcement": "pending"
+      },
+      "thirdPartyTransfer": "disabled",
+      "verificationCase": "audit-privacy",
+      "securityNotes": "Never store raw question, private uploads, microphone bytes or keys.",
+      "requiredBeforeEnable": [
+        "authenticated tenant scope",
+        "verified data minimization",
+        "negative test evidence"
+      ]
+    },
+    {
+      "id": "minimal_security_log",
+      "ownerModule": "packages/privacy/",
+      "ownerUnit": "AB-011",
+      "implementation": "partial",
+      "dataClasses": [
+        "request_id",
+        "error_code",
+        "coarse_latency"
+      ],
+      "retention": {
+        "category": "security-log",
+        "ttlSeconds": 604800,
+        "enforcement": "pending"
+      },
+      "thirdPartyTransfer": "disabled",
+      "verificationCase": "logging-data-leak",
+      "securityNotes": "Allowlist structured metadata; logging defaults off until connected.",
+      "requiredBeforeEnable": [
+        "authenticated tenant scope",
+        "verified data minimization",
+        "negative test evidence"
+      ]
+    },
+    {
+      "id": "background_job",
+      "ownerModule": "packages/jobs/",
+      "ownerUnit": "AB-010",
+      "implementation": "partial",
+      "dataClasses": [
+        "job_metadata",
+        "source_version_hash"
+      ],
+      "retention": {
+        "category": "job-operational",
+        "ttlSeconds": null,
+        "enforcement": "pending"
+      },
+      "thirdPartyTransfer": "disabled",
+      "verificationCase": "stale-lease-double-publish",
+      "securityNotes": "At-least-once jobs with fenced commits; payload retention needs deployed TTL policy.",
+      "requiredBeforeEnable": [
+        "authenticated tenant scope",
+        "verified data minimization",
+        "negative test evidence"
+      ]
+    },
+    {
+      "id": "outbox_delivery",
+      "ownerModule": "packages/jobs/",
+      "ownerUnit": "AB-010",
+      "implementation": "partial",
+      "dataClasses": [
+        "outbox_metadata",
+        "event_payload"
+      ],
+      "retention": {
+        "category": "outbox-operational",
+        "ttlSeconds": null,
+        "enforcement": "pending"
+      },
+      "thirdPartyTransfer": "disabled",
+      "verificationCase": "outbox-replay",
+      "securityNotes": "Sink must deduplicate idempotency key; no external publisher delivery active.",
+      "requiredBeforeEnable": [
+        "authenticated tenant scope",
+        "verified data minimization",
+        "negative test evidence"
+      ]
+    }
+  ]
+}
