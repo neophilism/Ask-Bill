@@ -13,3 +13,10 @@ The machine-readable inventory is `docs/privacy/DATA_FLOWS.json`. It maps sensit
 Deletion requests require authenticated or capability-proven subject identification, tenant-scoped access, immediate removal/disable of active records, deletion of owned object derivatives, provider-side deletion verification, backup expiry and tombstones replayed after restoration. Refuse cross-tenant deletion requests. Re-test the deletion trail following a staging backup/restore before enabling sensitive providers. Never claim that application deletion erases undisclosed copies held by an external provider.
 
 To run policy checks after the workspace is installed: `node --test tests/privacy.test.mjs`, then full `pnpm verify`. This file and the inventory are an engineering design checkpoint, not a legal compliance certification.
+
+
+## Implemented session-expiry primitive (AB-095, partial)
+
+The initial session cleanup mechanism is explicit and server-controlled: a dedicated PostgreSQL SECURITY INVOKER function and a non-autonomous backend adapter delete up to 100 **expired** sessions for one authenticated publisher at a time, along with dependent usage reservations, inside one database transaction. The cutoff cannot be in the future and a retry is idempotent. Row-level security remains enabled, and the public database role has no function EXECUTE by default. Counts only are returned; no session capability token or raw question is surfaced. Disposable PostgreSQL tests verify two-publisher isolation and that active sessions remain intact.
+
+No background scheduler, external provider deletion, audio deletion, private object derivatives, feedback expiry, security-log pruning, legal hold process or backup/tombstone reconciliation is enabled. This code **must not** be described as full data subject deletion or privacy compliance. Production application workers need a separately approved least-privilege function grant and independent review. No production database is changed by this PR.
