@@ -88,4 +88,6 @@ psql_container < migrations/006_release.sql > /dev/null
 psql_container < tests/postgres/releases.sql
 echo '[Ask Bill AB-004/024] Verify active release reader SQL against PostgreSQL schema'
 psql_container < tests/postgres/public_reader.sql
+echo '[Ask Bill AB-004/024] Verify active published catalog query against PostgreSQL schema'
+psql_container < tests/postgres/public_catalog.sql
 printf '[Ask Bill AB-007/010/013/023] PostgreSQL migrations, isolation, jobs, source provenance and atomic search indexing passed.\n'
