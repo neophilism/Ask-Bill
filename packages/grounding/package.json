@@ -1,0 +1,13 @@
+{
+  "name": "@ask-bill/grounding",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./router": "./router/index.mjs"
+  },
+  "scripts": {
+    "build": "node --check router/index.mjs",
+    "typecheck": "node --check router/index.mjs"
+  }
+}
