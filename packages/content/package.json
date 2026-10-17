@@ -3,6 +3,12 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "exports": {"./provenance": "./provenance/index.mjs"},
-  "scripts": {"build": "node --check provenance/index.mjs", "typecheck": "node --check provenance/index.mjs"}
+  "exports": {
+    "./provenance": "./provenance/index.mjs",
+    "./intake": "./intake/index.mjs"
+  },
+  "scripts": {
+    "build": "node --check provenance/index.mjs && node --check intake/index.mjs",
+    "typecheck": "node --check provenance/index.mjs && node --check intake/index.mjs"
+  }
 }
