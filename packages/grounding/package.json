@@ -4,10 +4,11 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./router": "./router/index.mjs"
+    "./router": "./router/index.mjs",
+    "./retrieval": "./retrieval/index.mjs"
   },
   "scripts": {
-    "build": "node --check router/index.mjs",
-    "typecheck": "node --check router/index.mjs"
+    "build": "node --check router/index.mjs && node --check retrieval/index.mjs",
+    "typecheck": "node --check router/index.mjs && node --check retrieval/index.mjs"
   }
 }
