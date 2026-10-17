@@ -1,11 +1,13 @@
-# Ask Bill active engineering checkpoint
+# Ask Bill independent development checkpoint
 
-Observed 2026-10-17T00:03:28Z UTC from actual GitHub PRs and sources. Independent Ask Bill company/product; no integration with unrelated companies, products or databases.
+Observed 2026-10-17T00:10:16Z UTC from GitHub, in repository `neophilism/Ask-Bill`.
 
-**Merged:** PRs #1–#11, with head-bound GitHub Actions quality, browser and disposable PostgreSQL tests passing when merged. AB-010 added fenced transactional job/outbox migration with at-least-once external delivery contract. AB-011 added a privacy inventory/retention/threat model and restrictive telemetry / disabled child-live-input gate.
+**Merged PRs:** #1–#12. The last three add scoped, tested foundations: AB-010 PostgreSQL fenced jobs/outbox; AB-011 privacy/threat inventory and child-live-input hard disable; AB-012 fail-closed health/readiness and cooperative worker drain. Exact-head GitHub quality/Chromium/disposable PostgreSQL checks passed before merge. Complete operational acceptance is still pending for multiple partially delivered units.
 
-**Open:** PR #12, AB-012: readiness/liveness endpoints, version and schema probes, cooperative drain controller, inactive health-only Render staging template and docs. Node 22 local health/drain suite 9 passing tests; exact latest-head GitHub checks are pending. No Render workspace, database account, production service or paid resource was provisioned.
+**Open draft:** PR #13 (AB-013), source provenance with original byte hashes, official URL policy, append-only tenant-bound metadata and disposable PostgreSQL negative tests. Five local Node tests passed; current-head GitHub quality/DB/browser acceptance and security review are pending.
 
-**Original plan:** 112 units, 490 dependency links. Scope-only completion and operational acceptance remain distinct. Earlier units AB-004–012 have partial aspects pending for real production delivery.
+**Canonical plan:** 112 original units and 490 local dependencies unchanged. The registry maps 13 actual PRs; AB-013 is in-progress and operational acceptance is not_run.
 
-**Next:** Finish AB-012 exact-head checks, conduct source/security review, merge once green. Continue source/provenance and ingestion milestones independently of the user's forthcoming Bill GLB/Blender asset. Actual original Bill rig/morph/animation and voice integration are still pending.
+**Actual public status:** no deployed user-facing Ask Bill production website, verified full source/legislative publishing, production identity/MFA, AI/voice provider or delivered/rigged 3D Bill. The available reading demonstration is intentionally incomplete and local-only. User will supply Bill's asset shortly. No unrelated company/product integrations.
+
+**Next:** Complete AB-013 current-head CI/review and merge when green. Continue authorized source/quarantine and grounded-reading functionality, then integrate and validate the user-supplied original character separately.
