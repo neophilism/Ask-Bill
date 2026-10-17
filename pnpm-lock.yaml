@@ -47,6 +47,8 @@ importers:
 
   packages/grounding: {}
 
+  packages/providers: {}
+
   packages/db: {}
 
   packages/jobs: {}
