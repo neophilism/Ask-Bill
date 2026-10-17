@@ -56,7 +56,7 @@ try:
         page.locator('#choice-0').select_option('bill-19')
         assert page.locator('#viewer-0').get_attribute('src').endswith('bill-19.glb')
         page.locator('#default-0').click()
-        assert page.evaluate("JSON.parse(localStorage.getItem('bill-selected'))")=='bill-19'
+        assert page.evaluate("() => JSON.parse(localStorage.getItem('bill-selected'))")=='bill-19'
         page.locator('#choice-0').select_option('bill-10')
         # Different options produce a seven-person, explicitly chosen shortlist.
         for i in range(1,8):
@@ -91,7 +91,7 @@ try:
         page.reload(wait_until='domcontentloaded')
         page.locator('#global-status').filter(has_text='Loaded 20 real GLB candidates').wait_for(timeout=15000)
         assert page.locator('#count').inner_text()=='7 / 7'
-        assert page.evaluate("JSON.parse(localStorage.getItem('bill-selected'))")=='bill-19'
+        assert page.evaluate("() => JSON.parse(localStorage.getItem('bill-selected'))")=='bill-19'
         assert not errors,errors
         page.close()
         browser.close()
