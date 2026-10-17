@@ -63,6 +63,20 @@ try:
             page.locator("nav[aria-label='Sections'] a").last.click()
             assert page.evaluate("location.hash") == "#provision-section-2"
             assert VERSION in page.url
+            # A printed version preserves every legal provision and status warning,
+            # while hiding navigation and retaining readable source text.
+            if width == 1280:
+                page.emulate_media(media="print")
+                assert page.locator("nav[aria-label='Sections']").is_hidden()
+                assert page.locator("pre.statutory-text").count() == 2
+                assert page.locator("pre.statutory-text").first.is_visible()
+                assert "SYNTHETIC PROPOSAL" in page.locator("pre.statutory-text").first.inner_text()
+                print_background = page.evaluate(
+                    "getComputedStyle(document.querySelector('pre.statutory-text')).backgroundColor"
+                )
+                assert print_background == "rgba(0, 0, 0, 0)", print_background
+                assert page.get_by_role("heading", name="Synthetic Example Bill").is_visible()
+                page.emulate_media(media="screen")
             page.goto(BASE + "/bills", wait_until="load", timeout=10000)
             assert page.get_by_role("heading", name="Published bills").is_visible()
             assert page.locator("nav[aria-label='Published bills'] a").count() == 1
