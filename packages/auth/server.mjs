@@ -1,7 +1,7 @@
 /**
  * Ask Bill server-only publisher authorization boundary.
  * FixtureSessionStore is TEST-ONLY and refuses to initialize in production.
- * Authentication providers and publisher admin routes are not implemented yet.
+ * Real publisher login is implemented separately in oidc.mjs with pg-store.mjs.
  */
 import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
 
