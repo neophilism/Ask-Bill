@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "kind": "offline_development_inputs",
+  "officialImportTargets": [
+    {
+      "congress": 119,
+      "type": "hr",
+      "number": 1,
+      "officialApi": "https://api.congress.gov/v3/bill/119/hr/1/text",
+      "retrieved": false,
+      "complete": false
+    },
+    {
+      "congress": 117,
+      "type": "hr",
+      "number": 1319,
+      "officialApi": "https://api.congress.gov/v3/bill/117/hr/1319/text",
+      "retrieved": false,
+      "complete": false
+    }
+  ],
+  "syntheticStress": {
+    "structures": [
+      "division-section",
+      "article-clause"
+    ],
+    "sections": 1200,
+    "sourceStatus": "synthetic_not_legislation",
+    "publicationAllowed": false
+  },
+  "notes": "Official API locators are unverified metadata only. Complete government document bytes, statuses and hierarchy have NOT been retrieved. Do not publish sample corpora."
+}
