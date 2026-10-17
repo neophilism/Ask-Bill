@@ -82,4 +82,8 @@ if [ "$count" != 1 ]; then
   exit 1
 fi
 echo '[Ask Bill AB-034] Database usage and concurrency acceptance checks passed'
+echo '[Ask Bill AB-024] Apply reviewed publishing schema twice, test activation and withdrawal under RLS'
+psql_container < migrations/006_release.sql > /dev/null
+psql_container < migrations/006_release.sql > /dev/null
+psql_container < tests/postgres/releases.sql
 printf '[Ask Bill AB-007/010/013/023] PostgreSQL migrations, isolation, jobs, source provenance and atomic search indexing passed.\n'
