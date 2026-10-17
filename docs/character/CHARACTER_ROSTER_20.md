@@ -42,6 +42,42 @@ python -m http.server 8000
 
 Visit `http://localhost:8000/apps/web/preview/characters.html`; or run the existing `pnpm preview` server and visit `http://127.0.0.1:4100/characters` using the new separately scoped local-only route. It previews **actual GLBs**, not drawings, with in-place exported walking, source selection, cursor attentiveness, 3D orbiting and instant manual character switching. The page temporarily loads a pinned third-party model-viewer module from jsDelivr and therefore requires internet; a production release must bundle/audit the renderer, enforce CSP and verify a11y, loader, animation timing, browser/mobile budgets, and security. It contains no microphone, camera, eye tracking, account access or provider calls.
 
+## Side-by-side walking auditions and private shortlist
+
+The existing single-character gallery is supplemented by `/compare.html` in
+the local preview: **three real GLBs walk independently**, and any of the twenty
+can be assigned to any stage. The same eight animation clips are available,
+with local pointer-follow, slow wandering, pause and reduced-motion options.
+A voluntarily chosen **seven-character shortlist** (about 33% of the roster)
+and the active preferred character are saved in local browser storage only.
+Users can export public character IDs and names as JSON themselves; no audience
+identity, demographic attributes or private questions are collected.
+
+A reproducible `scripts/package-character-audition.py` packs every SHA-256
+verified binary into `AskBill-20-Walking-Lab.zip`, together with both galleries,
+their dependencies, a loopback-only Python server, Mac/Windows launchers and
+a full build manifest. The archive is uploaded only after its exact candidate
+asset/HTTP/end-to-end tests pass. Download the archive from the **Ask Bill
+20-character walking evaluation kit** Actions artifact or build it yourself:
+
+```sh
+python3 scripts/package-character-audition.py --output dist/AskBill-20-Walking-Lab.zip
+```
+
+Unzip and run `python3 start_audition.py` from inside the extracted directory;
+it opens your default browser on a random local port. Internet is presently
+required only for the pinned external Google model-viewer renderer. This is
+an **audition preview, not a live Ask Bill deployment**. The GLBs, names and
+personalities are already in the repository; no new AI-generated model is
+silently substituted for any chosen character.
+
+The original ten are **illustration-inspired models built on largely shared
+procedural geometry**, not perfectly reconstructed unique production sculpts.
+The owner rejected a former boxy Option 10 candidate (issue #52), and visual
+approval remains pending for *every* character. Do not use the seven-character
+shortlist as an automatic company production selection or assume a vote means
+a model has passed fidelity, accessibility or device-performance acceptance.
+
 ## Generation workflow and binary provenance
 
 The GitHub Actions job is restricted to same-repository pull requests. It builds from committed source and original reference-face derivatives, runs binary/animation tests, and commits the **actual 20 `.glb` files plus SHA-256 manifest** to the same PR branch. The generated-head CI checks must pass before safe merge. Distinct poses and exact likeness need 3D visual inspection in the gallery; no file may silently become the default production character.
