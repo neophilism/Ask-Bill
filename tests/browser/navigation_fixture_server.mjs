@@ -5,6 +5,7 @@ const paths={
  '/viewport.mjs':'../../packages/character/coordinates/viewport.mjs',
  '/graph.mjs':'../../packages/character/navigation/graph.mjs',
  '/planner.mjs':'../../packages/character/navigation/worker/planner.mjs',
+ '/transport.mjs':'../../packages/character/navigation/worker/transport.mjs',
  '/worker-entry.mjs':'../../packages/character/navigation/worker/worker-entry.mjs'
 };
 const root=new URL('./',import.meta.url);
