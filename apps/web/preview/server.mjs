@@ -8,7 +8,11 @@ import { createHealthMonitor, healthHttpResponse } from '../health/monitor.mjs';
 const fixturePath = new URL('../../../fixtures/electronic-filing-excerpt.json', import.meta.url);
 const routeFiles = new Map([
   ['/preview.css', {file: new URL('./preview.css', import.meta.url), type:'text/css; charset=utf-8'}],
-  ['/preview.js', {file: new URL('./preview.js', import.meta.url), type:'text/javascript; charset=utf-8'}]
+  ['/preview.js', {file: new URL('./preview.js', import.meta.url), type:'text/javascript; charset=utf-8'}],
+  ['/characters', {file: new URL('./characters.html', import.meta.url), type:'text/html; charset=utf-8'}],
+  ['/characters.js', {file: new URL('./characters.js', import.meta.url), type:'text/javascript; charset=utf-8'}],
+  ['/characters.css', {file: new URL('./characters.css', import.meta.url), type:'text/css; charset=utf-8'}],
+  ['/packages/character/attention/option10-controller.cjs', {file: new URL('../../../packages/character/attention/option10-controller.cjs', import.meta.url), type:'text/javascript; charset=utf-8'}]
 ]);
 export async function createPreviewServer({healthMonitor=createHealthMonitor({stage:'local'})}={}) {
   const fixture = assertIncompleteFixture(JSON.parse(await readFile(fixturePath, 'utf8')));
@@ -30,6 +34,24 @@ export async function createPreviewServer({healthMonitor=createHealthMonitor({st
       return;
     }
     if(path === '/healthz') {res.writeHead(200,{'Content-Type':'application/json; charset=utf-8'});res.end(req.method==='HEAD'?undefined:JSON.stringify({product:'ask-bill',status:'preview',live:false,sourceComplete:false}));return;}
+    // Only exact catalog IDs are servable; never resolve client-supplied filesystem paths.
+    const characterAsset = /^\/assets\/bill\/characters\/dist\/(manifest\.json|bill-(?:0[1-9]|1[0-9]|20)\.glb)$/.exec(path);
+    if(characterAsset){
+      const filename=characterAsset[1];
+      const uri=new URL('../../../assets/bill/characters/dist/'+filename,import.meta.url);
+      readFile(uri).then(body=>{
+        if(body.length>16000000){res.writeHead(413);res.end();return;}
+        res.writeHead(200,{'Content-Type':filename.endsWith('.glb')?'model/gltf-binary':'application/json; charset=utf-8','Content-Length':body.length});
+        res.end(req.method==='HEAD'?undefined:body);
+      },()=>{res.writeHead(404,{'Content-Type':'text/plain; charset=utf-8'});res.end();});
+      return;
+    }
+    if(path==='/characters'){
+      // Scoped to the local-only audition, never relax the evidence/source reader CSP.
+      res.setHeader('Content-Security-Policy',"default-src 'none'; base-uri 'none'; form-action 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://cdn.jsdelivr.net; worker-src 'self' blob:; frame-ancestors 'none'");
+      res.setHeader('X-Robots-Tag','noindex, nofollow');
+      res.setHeader('X-Frame-Options','DENY');
+    }
     const file = resources.get(path);
     if(file){res.writeHead(200,{'Content-Type':file.type});res.end(req.method==='HEAD'?undefined:file.body);return;}
     if(path==='/' || path==='/preview') {res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'});res.end(req.method==='HEAD'?undefined:html);return;}

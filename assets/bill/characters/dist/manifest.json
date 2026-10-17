@@ -1,0 +1,609 @@
+{
+  "characters": [
+    {
+      "animations": [
+        "Idle",
+        "WalkFunny",
+        "Talk",
+        "Wave",
+        "Point",
+        "Laugh",
+        "Celebrate",
+        "Look"
+      ],
+      "approved": false,
+      "bytes": 3540708,
+      "default": false,
+      "form": "portrait",
+      "id": "bill-01",
+      "meshes": 70,
+      "morphs": [
+        "PaperBreathe",
+        "TailSway"
+      ],
+      "name": "Ivory Court Gentleman",
+      "nodes": 79,
+      "path": "assets/bill/characters/dist/bill-01.glb",
+      "personality": "Warm, ceremonious, patient; explains by analogies",
+      "reference": "bill_the_living_parchment_character_sheet.png",
+      "sha256": "105438586baf01f86ae4697d7619962a8474782350db7be8ea299949a8b44d0a",
+      "style": "cream",
+      "version": "art-study-v3b"
+    },
+    {
+      "animations": [
+        "Idle",
+        "WalkFunny",
+        "Talk",
+        "Wave",
+        "Point",
+        "Laugh",
+        "Celebrate",
+        "Look"
+      ],
+      "approved": false,
+      "bytes": 3520072,
+      "default": false,
+      "form": "portrait",
+      "id": "bill-02",
+      "meshes": 70,
+      "morphs": [
+        "PaperBreathe",
+        "TailSway"
+      ],
+      "name": "Tuxedo Paper Guide",
+      "nodes": 79,
+      "path": "assets/bill/characters/dist/bill-02.glb",
+      "personality": "Efficient, warm, concise; offers a quick overview first",
+      "reference": "bill_paper_assistant_character_sheet.png",
+      "sha256": "cfd675279bb06e66fa0223d1585dfaaef20265c3b954ee9fe2a508c06a3bf41b",
+      "style": "tuxedo",
+      "version": "art-study-v3b"
+    },
+    {
+      "animations": [
+        "Idle",
+        "WalkFunny",
+        "Talk",
+        "Wave",
+        "Point",
+        "Laugh",
+        "Celebrate",
+        "Look"
+      ],
+      "approved": false,
+      "bytes": 3521740,
+      "default": false,
+      "form": "portrait",
+      "id": "bill-03",
+      "meshes": 70,
+      "morphs": [
+        "PaperBreathe",
+        "TailSway"
+      ],
+      "name": "Midnight Legislative Scholar",
+      "nodes": 79,
+      "path": "assets/bill/characters/dist/bill-03.glb",
+      "personality": "Curious, knowledgeable; leads with context and caveats",
+      "reference": "welcoming_parchment_butler_mascot.png",
+      "sha256": "6d9988e264e735caf799a42c92aac1d6c1fa690bddb56cfdc79bfbe492928d7e",
+      "style": "midnight",
+      "version": "art-study-v3b"
+    },
+    {
+      "animations": [
+        "Idle",
+        "WalkFunny",
+        "Talk",
+        "Wave",
+        "Point",
+        "Laugh",
+        "Celebrate",
+        "Look"
+      ],
+      "approved": false,
+      "bytes": 3534240,
+      "default": false,
+      "form": "portrait",
+      "id": "bill-04",
+      "meshes": 70,
+      "morphs": [
+        "PaperBreathe",
+        "TailSway"
+      ],
+      "name": "Golden Parchment Attendant",
+      "nodes": 79,
+      "path": "assets/bill/characters/dist/bill-04.glb",
+      "personality": "Measured, gentle; methodically unpacks complicated language",
+      "reference": "option_4_parchment_paper_butler_turnaround.png",
+      "sha256": "77f1ae60d639cb0f7b781c4003d8744405d1d989a68afe23e6d6a04e943056a1",
+      "style": "gold",
+      "version": "art-study-v3b"
+    },
+    {
+      "animations": [
+        "Idle",
+        "WalkFunny",
+        "Talk",
+        "Wave",
+        "Point",
+        "Laugh",
+        "Celebrate",
+        "Look"
+      ],
+      "approved": false,
+      "bytes": 3539724,
+      "default": false,
+      "form": "portrait",
+      "id": "bill-05",
+      "meshes": 70,
+      "morphs": [
+        "PaperBreathe",
+        "TailSway"
+      ],
+      "name": "Navy Tailcoat Folio",
+      "nodes": 79,
+      "path": "assets/bill/characters/dist/bill-05.glb",
+      "personality": "Playful, polished; uses practical everyday examples",
+      "reference": "bill_the_paper_butler_option_5.png",
+      "sha256": "3b8c23f35e7656dcc861df95c5df41da37f13237e7d9b4c8c91c7448379e98d0",
+      "style": "navy",
+      "version": "art-study-v3b"
+    },
+    {
+      "animations": [
+        "Idle",
+        "WalkFunny",
+        "Talk",
+        "Wave",
+        "Point",
+        "Laugh",
+        "Celebrate",
+        "Look"
+      ],
+      "approved": false,
+      "bytes": 3507332,
+      "default": false,
+      "form": "portrait",
+      "id": "bill-06",
+      "meshes": 70,
+      "morphs": [
+        "PaperBreathe",
+        "TailSway"
+      ],
+      "name": "Reference Page Butler",
+      "nodes": 79,
+      "path": "assets/bill/characters/dist/bill-06.glb",
+      "personality": "Direct and thorough; points to the precise sentence",
+      "reference": "option_6_charming_bill_mascot.png",
+      "sha256": "e3f262073536cbb1d27b1f7bc670a37d4cad9fdc36cb180637a7b63f3ad1d866",
+      "style": "reading",
+      "version": "art-study-v3b"
+    },
+    {
+      "animations": [
+        "Idle",
+        "WalkFunny",
+        "Talk",
+        "Wave",
+        "Point",
+        "Laugh",
+        "Celebrate",
+        "Look"
+      ],
+      "approved": false,
+      "bytes": 3534288,
+      "default": false,
+      "form": "portrait",
+      "id": "bill-07",
+      "meshes": 70,
+      "morphs": [
+        "PaperBreathe",
+        "TailSway"
+      ],
+      "name": "Ribbon Collar Companion",
+      "nodes": 79,
+      "path": "assets/bill/characters/dist/bill-07.glb",
+      "personality": "Reassuring, thoughtful; checks whether an explanation helped",
+      "reference": "option_7_parchment_butler_guide.png",
+      "sha256": "78c2343377b0f8ca07802be6c243415e91d7c313878ea0d6d41d6627959ce673",
+      "style": "ivory",
+      "version": "art-study-v3b"
+    },
+    {
+      "animations": [
+        "Idle",
+        "WalkFunny",
+        "Talk",
+        "Wave",
+        "Point",
+        "Laugh",
+        "Celebrate",
+        "Look"
+      ],
+      "approved": false,
+      "bytes": 3535336,
+      "default": false,
+      "form": "portrait",
+      "id": "bill-08",
+      "meshes": 70,
+      "morphs": [
+        "PaperBreathe",
+        "TailSway"
+      ],
+      "name": "Adventurous Legislative Page",
+      "nodes": 79,
+      "path": "assets/bill/characters/dist/bill-08.glb",
+      "personality": "Animated, upbeat; gets straight to the important detail",
+      "reference": "option_8_bill_character_concept_sheet.png",
+      "sha256": "4fca959e5eb2ec10fafd548639d54058ca5e39c6fa04c4894900c858e1502d87",
+      "style": "midnight",
+      "version": "art-study-v3b"
+    },
+    {
+      "animations": [
+        "Idle",
+        "WalkFunny",
+        "Talk",
+        "Wave",
+        "Point",
+        "Laugh",
+        "Celebrate",
+        "Look"
+      ],
+      "approved": false,
+      "bytes": 3540660,
+      "default": false,
+      "form": "portrait",
+      "id": "bill-09",
+      "meshes": 70,
+      "morphs": [
+        "PaperBreathe",
+        "TailSway"
+      ],
+      "name": "Civic Scholar Folio",
+      "nodes": 79,
+      "path": "assets/bill/characters/dist/bill-09.glb",
+      "personality": "Even-handed, precise; distinguishes fact from interpretation",
+      "reference": "option_9_charming_legal_parchment.png",
+      "sha256": "2fe84e1be71528c83ea02883b42f7662768ff4a772c0bef8cb9f6ae914a84d08",
+      "style": "navy",
+      "version": "art-study-v3b"
+    },
+    {
+      "animations": [
+        "Idle",
+        "WalkFunny",
+        "Talk",
+        "Wave",
+        "Point",
+        "Laugh",
+        "Celebrate",
+        "Look"
+      ],
+      "approved": false,
+      "bytes": 3513012,
+      "default": true,
+      "form": "portrait",
+      "id": "bill-10",
+      "meshes": 70,
+      "morphs": [
+        "PaperBreathe",
+        "TailSway"
+      ],
+      "name": "The Classic Bill",
+      "nodes": 79,
+      "path": "assets/bill/characters/dist/bill-10.glb",
+      "personality": "Friendly, elegantly attentive; the owner-selected default",
+      "reference": "parchment_butler_character_concept.png",
+      "sha256": "8761656c7262b4876b3d93ffcfa33a16ab5eedf430a9ca55a4321948545d5f0e",
+      "style": "midnight",
+      "version": "art-study-v3b"
+    },
+    {
+      "animations": [
+        "Idle",
+        "WalkFunny",
+        "Talk",
+        "Wave",
+        "Point",
+        "Laugh",
+        "Celebrate",
+        "Look"
+      ],
+      "approved": false,
+      "bytes": 2457808,
+      "default": false,
+      "form": "origami",
+      "id": "bill-11",
+      "meshes": 64,
+      "morphs": [
+        "PaperBreathe",
+        "TailSway"
+      ],
+      "name": "The Origami Pathfinder",
+      "nodes": 73,
+      "path": "assets/bill/characters/dist/bill-11.glb",
+      "personality": "Playfully adventurous; follows an idea through its consequences",
+      "reference": null,
+      "sha256": "a1a19199fd93c52cb18b1b9bd5def43662bc41c25d6777fb5cee9f70531b44be",
+      "style": "teal",
+      "version": "art-study-v3b"
+    },
+    {
+      "animations": [
+        "Idle",
+        "WalkFunny",
+        "Talk",
+        "Wave",
+        "Point",
+        "Laugh",
+        "Celebrate",
+        "Look"
+      ],
+      "approved": false,
+      "bytes": 2630584,
+      "default": false,
+      "form": "scroll",
+      "id": "bill-12",
+      "meshes": 68,
+      "morphs": [
+        "PaperBreathe",
+        "TailSway"
+      ],
+      "name": "The Scroll Sage",
+      "nodes": 77,
+      "path": "assets/bill/characters/dist/bill-12.glb",
+      "personality": "Calm and reflective; explains historical background simply",
+      "reference": null,
+      "sha256": "3539df1da4c750ea0baa20f4f87bca3ccdaa1cc5b6ec2ca558b9189a40c7c588",
+      "style": "ruby",
+      "version": "art-study-v3b"
+    },
+    {
+      "animations": [
+        "Idle",
+        "WalkFunny",
+        "Talk",
+        "Wave",
+        "Point",
+        "Laugh",
+        "Celebrate",
+        "Look"
+      ],
+      "approved": false,
+      "bytes": 2496412,
+      "default": false,
+      "form": "pocketbook",
+      "id": "bill-13",
+      "meshes": 71,
+      "morphs": [
+        "PaperBreathe",
+        "TailSway"
+      ],
+      "name": "The Pocket Book Librarian",
+      "nodes": 80,
+      "path": "assets/bill/characters/dist/bill-13.glb",
+      "personality": "Quietly enthusiastic, patient and gently humorous",
+      "reference": null,
+      "sha256": "4c293e51bf60f33495cfe227fcdf3efd737ed1313b3e43dfec5aaa2f8f29c018",
+      "style": "aubergine",
+      "version": "art-study-v3b"
+    },
+    {
+      "animations": [
+        "Idle",
+        "WalkFunny",
+        "Talk",
+        "Wave",
+        "Point",
+        "Laugh",
+        "Celebrate",
+        "Look"
+      ],
+      "approved": false,
+      "bytes": 2440516,
+      "default": false,
+      "form": "hardcover",
+      "id": "bill-14",
+      "meshes": 69,
+      "morphs": [
+        "PaperBreathe",
+        "TailSway"
+      ],
+      "name": "The Bound Tome Professor",
+      "nodes": 78,
+      "path": "assets/bill/characters/dist/bill-14.glb",
+      "personality": "Methodical and scholarly; offers definitions and examples",
+      "reference": null,
+      "sha256": "4a221bd48f0364f6b451c5be0f662cb3e0b4495c5c7944d4e0faa1885c35c694",
+      "style": "forest",
+      "version": "art-study-v3b"
+    },
+    {
+      "animations": [
+        "Idle",
+        "WalkFunny",
+        "Talk",
+        "Wave",
+        "Point",
+        "Laugh",
+        "Celebrate",
+        "Look"
+      ],
+      "approved": false,
+      "bytes": 2464648,
+      "default": false,
+      "form": "accordion",
+      "id": "bill-15",
+      "meshes": 67,
+      "morphs": [
+        "PaperBreathe",
+        "TailSway"
+      ],
+      "name": "The Accordion Investigator",
+      "nodes": 76,
+      "path": "assets/bill/characters/dist/bill-15.glb",
+      "personality": "Inquisitive and systematic; asks what changed and why",
+      "reference": null,
+      "sha256": "92fc6aecb2aa51d7074effe752058aa6fe1d9f1750940938926ca08504e7faf3",
+      "style": "saffron",
+      "version": "art-study-v3b"
+    },
+    {
+      "animations": [
+        "Idle",
+        "WalkFunny",
+        "Talk",
+        "Wave",
+        "Point",
+        "Laugh",
+        "Celebrate",
+        "Look"
+      ],
+      "approved": false,
+      "bytes": 2427116,
+      "default": false,
+      "form": "origami",
+      "id": "bill-16",
+      "meshes": 62,
+      "morphs": [
+        "PaperBreathe",
+        "TailSway"
+      ],
+      "name": "The Paper Trail Runner",
+      "nodes": 71,
+      "path": "assets/bill/characters/dist/bill-16.glb",
+      "personality": "Lively and plainspoken; keeps answers short and visual",
+      "reference": null,
+      "sha256": "2cee8357e550dc760e276dd3b13dc8342c122bbfd3228f7df21fcb3894b7a766",
+      "style": "coral",
+      "version": "art-study-v3b"
+    },
+    {
+      "animations": [
+        "Idle",
+        "WalkFunny",
+        "Talk",
+        "Wave",
+        "Point",
+        "Laugh",
+        "Celebrate",
+        "Look"
+      ],
+      "approved": false,
+      "bytes": 2455884,
+      "default": false,
+      "form": "indexcard",
+      "id": "bill-17",
+      "meshes": 64,
+      "morphs": [
+        "PaperBreathe",
+        "TailSway"
+      ],
+      "name": "The Minimal Index Card",
+      "nodes": 73,
+      "path": "assets/bill/characters/dist/bill-17.glb",
+      "personality": "Minimalist and efficient; clear answers without ceremony",
+      "reference": null,
+      "sha256": "48a1000e19727d88ec3814a3451d669424bddb0c1b4f01e3d6e0e1d1928845fc",
+      "style": "slate",
+      "version": "art-study-v3b"
+    },
+    {
+      "animations": [
+        "Idle",
+        "WalkFunny",
+        "Talk",
+        "Wave",
+        "Point",
+        "Laugh",
+        "Celebrate",
+        "Look"
+      ],
+      "approved": false,
+      "bytes": 2442060,
+      "default": false,
+      "form": "docket",
+      "id": "bill-18",
+      "meshes": 70,
+      "morphs": [
+        "PaperBreathe",
+        "TailSway"
+      ],
+      "name": "The Docket Detective",
+      "nodes": 79,
+      "path": "assets/bill/characters/dist/bill-18.glb",
+      "personality": "Skeptical but fair; highlights hidden assumptions",
+      "reference": null,
+      "sha256": "5a4e1ec4282c4e179355c6c99a8fae179adfad0568676ff60b8f71152b6a9bf1",
+      "style": "burgundy",
+      "version": "art-study-v3b"
+    },
+    {
+      "animations": [
+        "Idle",
+        "WalkFunny",
+        "Talk",
+        "Wave",
+        "Point",
+        "Laugh",
+        "Celebrate",
+        "Look"
+      ],
+      "approved": false,
+      "bytes": 2461996,
+      "default": false,
+      "form": "tablet",
+      "id": "bill-19",
+      "meshes": 66,
+      "morphs": [
+        "PaperBreathe",
+        "TailSway"
+      ],
+      "name": "The Digital Bill",
+      "nodes": 75,
+      "path": "assets/bill/characters/dist/bill-19.glb",
+      "personality": "Bright, accessible and technical; shows structured breakdowns",
+      "reference": null,
+      "sha256": "2f522e56e547ffb772324a47c2b6e58dfdb03ee7b3572cfb7fdbb3b91d73eb18",
+      "style": "electric",
+      "version": "art-study-v3b"
+    },
+    {
+      "animations": [
+        "Idle",
+        "WalkFunny",
+        "Talk",
+        "Wave",
+        "Point",
+        "Laugh",
+        "Celebrate",
+        "Look"
+      ],
+      "approved": false,
+      "bytes": 2437760,
+      "default": false,
+      "form": "newspaper",
+      "id": "bill-20",
+      "meshes": 67,
+      "morphs": [
+        "PaperBreathe",
+        "TailSway"
+      ],
+      "name": "The Civic News Page",
+      "nodes": 76,
+      "path": "assets/bill/characters/dist/bill-20.glb",
+      "personality": "Conversational and practical; summarizes the main impact",
+      "reference": null,
+      "sha256": "607b7b3f4b5b9c97bcca1de5a78dea8c6bb333d6606c2fcc8545b5b78ddb98aa",
+      "style": "denim",
+      "version": "art-study-v3b"
+    }
+  ],
+  "count": 20,
+  "default": "bill-10",
+  "generation": "visual experiments; no auto-approval",
+  "owner": "Ask Bill",
+  "schemaVersion": 1
+}

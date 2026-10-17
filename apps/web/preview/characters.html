@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ask Bill | Twenty-character walking audition</title>
+<link rel="stylesheet" href="./characters.css">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.0.0/dist/model-viewer.min.js"></script>
+</head>
+<body><header><div><h1>Meet your Bill</h1><small>Twenty distinct GLB candidates · original ten + ten alternate forms</small></div><div>Current selection: <strong id="chosen">The Classic Bill</strong></div></header>
+<main>
+<section><h2>Choose a character</h2><div class="controls" role="group" aria-label="Filter characters"><button id="all" aria-pressed="true">All 20</button><button id="original">Original 10</button><button id="alternative">New 10</button><button id="starred">Favorites</button></div><div class="characters" id="list" role="group" aria-label="Choose your Bill"></div><p class="muted">The selected character is remembered on this device. Nobody is assigned a character based on their background.</p></section>
+<section><h2>Walking audition</h2><div id="arena" aria-label="3D character performance area"><div id="floor"></div><div id="actor"><model-viewer id="viewer" camera-controls disable-pan autoplay animation-name="WalkFunny" shadow-intensity="0.9" exposure="1.4" camera-orbit="20deg 74deg 5m" camera-target="0m 1.75m 0m" interaction-prompt="none" alt="Three-dimensional animated paper assistant"></model-viewer></div><div id="bubble">Move the pointer around the stage to see Bill look and follow. Select the passage below to summon him.</div></div>
+<p id="render-error" hidden role="alert">This prototype requires the pinned 3D renderer to load. You can still download each real GLB from the right-hand panel.</p><p id="status" class="status" role="status">Loading roster…</p>
+<div class="controls"><button id="follow" aria-pressed="true">Follow pointer</button><button id="wander">Wander</button><button id="pause" aria-pressed="false">Pause movement</button><button id="reduce" aria-pressed="false">Reduced motion</button></div>
+<p class="muted">Drag the 3D model to orbit around it, and scroll inside the model to zoom. The walk is an exported in-place GLB animation; locomotion is controlled separately by the stage.</p>
+</section>
+<aside><h2 id="name">The Classic Bill</h2><p id="details"></p><p id="persona"></p><label for="clip">Animation</label><select id="clip"><option>WalkFunny</option><option>Idle</option><option>Talk</option><option>Wave</option><option>Point</option><option>Laugh</option><option>Celebrate</option><option>Look</option></select><div class="controls"><button id="favorite" aria-pressed="false">☆ Favorite</button><a id="download" download="Bill.glb">Download this GLB</a></div>
+<h2 class="spaced">Try highlighting text</h2><p id="source">This fictional legislative example establishes a twelve-month pilot program. The agency may renew it only after publishing an evaluation.</p><p id="selection">Select text to invite Bill to discuss that passage. The audition has no connected AI answer provider.</p>
+<label for="question">Ask Bill</label><input id="question" style="max-width:100%;width:100%" aria-label="Question for Bill" placeholder="Ask what this passage means"><button id="submit">Test question interaction</button><p id="response" class="status" role="status"></p>
+</aside>
+</main><footer>Visual testing only. Each candidate has actual 3D mesh, rig/animations, generated name/personality profile, and a documented art status. No personal-background inference, microphone, camera, model calls or account tracking occur in this sandbox. Option 10 is the default, not an assertion of final visual approval.</footer>
+<script src="../../../packages/character/attention/option10-controller.cjs"></script>
+<script src="./characters.js" defer></script>
+</body></html>
