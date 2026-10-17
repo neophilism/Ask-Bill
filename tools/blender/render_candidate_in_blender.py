@@ -16,6 +16,7 @@ import sys
 
 import bpy
 from mathutils import Vector
+from bpy_extras.object_utils import world_to_camera_view
 
 
 def target_camera(cam, target):
@@ -80,6 +81,13 @@ def proof_render(output):
         theta=radians(angle)
         camera.location=(7*sin(theta),-7*cos(theta),1.9)
         target_camera(camera,target)
+        # Audit projection geometry, not merely that a PNG exists: the model's
+        # feet and top curl must occupy the viewport in upright order.
+        feet=world_to_camera_view(scene,camera,Vector((0,0,0.07)))
+        top=world_to_camera_view(scene,camera,Vector((0,0,3.65)))
+        if not (0.02<feet.x<.98 and .03<feet.y<.97 and feet.z>0 and
+                0.02<top.x<.98 and .03<top.y<.97 and top.z>0 and top.y>feet.y):
+            raise RuntimeError('Bad 3D camera framing for '+name+': '+repr((feet[:],top[:])))
         scene.render.resolution_x = 96 if name=='thumbnail-96' else 320
         scene.render.resolution_y = 128 if name=='thumbnail-96' else 440
         path=output/(name+'.png')
