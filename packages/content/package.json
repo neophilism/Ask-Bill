@@ -11,10 +11,11 @@
     "./pdf": "./pdf/index.mjs",
     "./anchors": "./anchors/index.mjs",
     "./references": "./references/index.mjs",
-    "./connectors/congress": "./connectors/congress/index.mjs"
+    "./connectors/congress": "./connectors/congress/index.mjs",
+    "./versions": "./versions/index.mjs"
   },
   "scripts": {
-    "build": "node --check provenance/index.mjs && node --check intake/index.mjs && node --check parsers/index.mjs && node --check xml/index.mjs && node --check pdf/index.mjs && node --check anchors/index.mjs && node --check references/index.mjs && node --check connectors/congress/index.mjs",
-    "typecheck": "node --check provenance/index.mjs && node --check intake/index.mjs && node --check parsers/index.mjs && node --check xml/index.mjs && node --check pdf/index.mjs && node --check anchors/index.mjs && node --check references/index.mjs && node --check connectors/congress/index.mjs"
+    "build": "node --check provenance/index.mjs && node --check intake/index.mjs && node --check parsers/index.mjs && node --check xml/index.mjs && node --check pdf/index.mjs && node --check anchors/index.mjs && node --check references/index.mjs && node --check connectors/congress/index.mjs && node --check versions/index.mjs",
+    "typecheck": "node --check provenance/index.mjs && node --check intake/index.mjs && node --check parsers/index.mjs && node --check xml/index.mjs && node --check pdf/index.mjs && node --check anchors/index.mjs && node --check references/index.mjs && node --check connectors/congress/index.mjs && node --check versions/index.mjs"
   }
 }
