@@ -4,7 +4,7 @@
   "roadmapVersion": 1,
   "planVerified": true,
   "plannedPrCount": 112,
-  "observedAt": "2026-10-17T00:03:28Z",
+  "observedAt": "2026-10-17T00:10:16Z",
   "approval": {
     "basis": "Owner explicitly directed the complete Ask Bill architecture and PR plan (16 October 2026) and installation of foundational commit.",
     "source": "docs/DEVELOPMENT_PLAN.md"
@@ -491,7 +491,9 @@
       "id": "AB-013",
       "title": "Provenance and immutable source records",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        13
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -512,7 +514,7 @@
         "Import identical and changed bytes twice and verify deduplication, provenance links and immutable version boundaries."
       ],
       "rollback": "Withdraw the new import pointer and preserve prior source records.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F2",
       "gate": "G2",
@@ -4569,10 +4571,22 @@
       "id": 12,
       "number": 12,
       "title": "AB-012: Fail-closed preview readiness, health endpoints and graceful worker drain (partial)",
-      "state": "open",
+      "state": "closed",
       "url": "https://github.com/neophilism/Ask-Bill/pull/12",
       "createdAt": "2026-10-17T00:03:02Z",
-      "updatedAt": "2026-10-17T00:03:02Z",
+      "updatedAt": "2026-10-17T00:07:03Z",
+      "mergedAt": "2026-10-17T00:07:03Z",
+      "closedAt": "2026-10-17T00:07:03Z",
+      "draft": false
+    },
+    {
+      "id": 13,
+      "number": 13,
+      "title": "AB-013: Hash-bound immutable original-source provenance and tenant isolation (partial)",
+      "state": "open",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/13",
+      "createdAt": "2026-10-17T00:09:48Z",
+      "updatedAt": "2026-10-17T00:09:48Z",
       "mergedAt": null,
       "closedAt": null,
       "draft": true
