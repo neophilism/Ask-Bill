@@ -55,7 +55,7 @@ export function buildEvaluationCorpus(){
    cases.push(Object.freeze({id:'AB-EVAL-'+String(c*20+i+1).padStart(3,'0'),
      category,question:question(category,noun,context),publisherId:'synthetic-publisher',
      sourceVersionId:versionId,source,expected:Object.freeze({state:expectations[category],
-       requiredSourceId:sourceId,requiredException:category==='exception',
+       requiredSourceId:sourceId,citationRequired:['literal','definition','exception','effective_date','cross_reference','draft_as_enacted'].includes(category),requiredException:category==='exception',
        mustNotClaimEnacted:category==='draft_as_enacted',
        mustNotInventForecast:category==='unsupported_prediction',
        mustNotGivePersonalAdvice:category==='personal_application',

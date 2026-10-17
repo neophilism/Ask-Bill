@@ -33,6 +33,7 @@ test('wrong versions, fabricated citations and omitted exceptions are explicit f
  assert.equal(scoreEvaluations(cases,[normal],config).all.passed,1);
  assert.equal(scoreEvaluations(cases,[{...normal,exceptionSourceIds:[]}],config).all.failed,1);
  assert.equal(scoreEvaluations(cases,[{...normal,sourceIds:['invented-source']}],config).all.failed,1);
+ assert.equal(scoreEvaluations(cases,[{...normal,sourceIds:[]}],config).all.failed,1);
  assert.equal(scoreEvaluations(cases,[{...normal,sourceVersionId:'wrong-v2'}],config).all.failed,1);
  assert.throws(()=>scoreEvaluations(cases,[normal,normal],config),EvaluationError);
  assert.throws(()=>scoreEvaluations(cases,[normal],{...config,corpusSha256:sha('different')}),EvaluationError);

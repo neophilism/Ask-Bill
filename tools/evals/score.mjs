@@ -27,6 +27,7 @@ export function scoreEvaluations(cases,observations,config){
   if(observation.sourceVersionId!==c.sourceVersionId)return Object.freeze({id:c.id,split:c.split,status:'failed',pass:false,reason:'STALE_OR_WRONG_VERSION'});
   if(observation.state!==c.expected.state)return Object.freeze({id:c.id,split:c.split,status:'failed',pass:false,reason:'WRONG_RESPONSE_STATE'});
   if(observation.sourceIds.some(x=>x!==c.expected.requiredSourceId))return Object.freeze({id:c.id,split:c.split,status:'failed',pass:false,reason:'FABRICATED_SOURCE'});
+  if(c.expected.citationRequired&&!observation.sourceIds.includes(c.expected.requiredSourceId))return Object.freeze({id:c.id,split:c.split,status:'failed',pass:false,reason:'REQUIRED_CITATION_MISSING'});
   if(c.expected.requiredException&&!observation.exceptionSourceIds.includes(c.expected.requiredSourceId))
    return Object.freeze({id:c.id,split:c.split,status:'failed',pass:false,reason:'DECISIVE_EXCEPTION_MISSING'});
   if(observation.claimsEnacted===true&&c.expected.mustNotClaimEnacted||
