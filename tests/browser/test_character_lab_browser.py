@@ -48,7 +48,7 @@ try:
             });
         """)
         page.goto(base+'/compare.html',wait_until='domcontentloaded')
-        page.wait_for_function("document.querySelector('#global-status')?.textContent.includes('Loaded 20')")
+        page.locator('#global-status').filter(has_text='Loaded 20 real GLB candidates').wait_for(timeout=15000)
         assert page.locator('model-viewer').count()==3
         assert page.locator('#choice-0 option').count()==20
         assert page.locator('#viewer-0').get_attribute('src').endswith('bill-10.glb')
@@ -89,7 +89,7 @@ try:
         }""")
         assert 'Bill noticed' in page.locator('#selected-text').inner_text()
         page.reload(wait_until='domcontentloaded')
-        page.wait_for_function("document.querySelector('#global-status')?.textContent.includes('Loaded 20')")
+        page.locator('#global-status').filter(has_text='Loaded 20 real GLB candidates').wait_for(timeout=15000)
         assert page.locator('#count').inner_text()=='7 / 7'
         assert page.evaluate("JSON.parse(localStorage.getItem('bill-selected'))")=='bill-19'
         assert not errors,errors
