@@ -4,7 +4,7 @@
   "roadmapVersion": 1,
   "planVerified": true,
   "plannedPrCount": 112,
-  "observedAt": "2026-10-17T03:34:25Z",
+  "observedAt": "2026-10-17T13:07:59Z",
   "approval": {
     "basis": "Owner explicitly directed the complete Ask Bill architecture and PR plan (16 October 2026) and installation of foundational commit.",
     "source": "docs/DEVELOPMENT_PLAN.md"
@@ -17,7 +17,9 @@
       "prs": [
         1
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        58
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [],
       "externalDependencies": [],
@@ -138,7 +140,10 @@
         55,
         57
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        61,
+        62
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-002",
@@ -930,7 +935,10 @@
         53,
         56
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        59,
+        60
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-008",
@@ -1838,7 +1846,9 @@
       "prs": [
         45
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        71
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-045"
@@ -2554,8 +2564,12 @@
       "id": "AB-065",
       "title": "DOM anchors and layout revision registry",
       "origin": "original",
-      "prs": [],
-      "contributingPrs": [],
+      "prs": [
+        64
+      ],
+      "contributingPrs": [
+        63
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-004",
@@ -2575,7 +2589,7 @@
         "Resize, change fonts, expand sections and select text while verifying revision invalidation and measured bounds."
       ],
       "rollback": "Use the fixed character dock and ordinary citation scrolling.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F5",
       "gate": "G5",
@@ -2591,7 +2605,9 @@
       "id": "AB-066",
       "title": "Coordinate conversion scroll and viewport handling",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        77
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -2611,7 +2627,7 @@
         "Compare known DOM markers at multiple zoom, scroll and DPR values including an open mobile keyboard."
       ],
       "rollback": "Disable page walking and dock the character until alignment is correct.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F5",
       "gate": "G5",
@@ -2627,7 +2643,9 @@
       "id": "AB-067",
       "title": "Traversal graph and protected obstacle zones",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        78
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -2647,7 +2665,7 @@
         "Test dense text, popovers, sticky headers, nested scroll regions and intentionally blocked routes."
       ],
       "rollback": "Restrict movement to the reserved dock surface.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F5",
       "gate": "G5",
@@ -2663,7 +2681,9 @@
       "id": "AB-068",
       "title": "Worker path planner and stale result rejection",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        80
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -2683,7 +2703,7 @@
         "Race resize and cancellation with planning, use worst-case obstacle graphs and test no-path termination."
       ],
       "rollback": "Use a direct safe dock gesture without worker planning.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F5",
       "gate": "G5",
@@ -3096,7 +3116,9 @@
       "id": "AB-079",
       "title": "Voice direction selection and licensed identity",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        65
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -3118,7 +3140,7 @@
         "Compare the same receipt, exception and uncertainty lines for intelligibility, warmth and pronunciation; inspect provenance."
       ],
       "rollback": "Use silent Bill with text and captions while a replacement voice is selected.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F6",
       "gate": "G6",
@@ -3134,7 +3156,9 @@
       "id": "AB-080",
       "title": "Speech synthesis adapter and safe audio delivery",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        66
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -3158,7 +3182,7 @@
         "Test malformed audio, provider failure, wrong-session audio URLs, duplicate synthesis requests and budget exhaustion."
       ],
       "rollback": "Disable live synthesis and retain text answers plus curated licensed audio.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F6",
       "gate": "G6",
@@ -3174,7 +3198,9 @@
       "id": "AB-081",
       "title": "Pronunciation text mapping and timing normalization",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        67
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -3197,7 +3223,7 @@
         "Test citations, numbers, initials, foreign names and Unicode; compare spoken output and normalized timing bounds."
       ],
       "rollback": "Use exact text with simple pronunciation and disable uncertain word highlighting.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F6",
       "gate": "G6",
@@ -3501,7 +3527,9 @@
       "id": "AB-089",
       "title": "Curated tours and interruption return flow",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        70
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -3527,7 +3555,7 @@
         "Follow every tour source link, interrupt at each step and resume in text-only and reduced-motion modes."
       ],
       "rollback": "Disable the affected tour release while keeping the bill reader and questions available.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F7",
       "gate": "G7",
@@ -3543,7 +3571,9 @@
       "id": "AB-090",
       "title": "Child learning parent consent and restricted live access",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        75
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -3570,7 +3600,7 @@
         "Inspect network calls, storage and logs; reject forged or revoked consent, test parent access and deletion, and run a real consent-adapter integration before enabling child live input."
       ],
       "rollback": "Revoke affected child sessions and serve curated local learning while correcting the consent flow.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F7",
       "gate": "G7",
@@ -3586,8 +3616,12 @@
       "id": "AB-091",
       "title": "Search selection bookmarks and reader polish",
       "origin": "original",
-      "prs": [],
-      "contributingPrs": [],
+      "prs": [
+        74
+      ],
+      "contributingPrs": [
+        68
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-018",
@@ -3611,7 +3645,7 @@
         "Test keyboard find, copied links, long documents, print layout, browser history and selected text during Bill movement."
       ],
       "rollback": "Revert to the plain full-text reader with stable section links.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F7",
       "gate": "G7",
@@ -3627,7 +3661,9 @@
       "id": "AB-092",
       "title": "Share links and accessible exports",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        69
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -3650,7 +3686,7 @@
         "Attempt to share private IDs, withdrawn versions and corrected answers; inspect export text and URLs."
       ],
       "rollback": "Disable sharing or the affected export format while retaining local readable answers.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F7",
       "gate": "G7",
@@ -3666,7 +3702,9 @@
       "id": "AB-093",
       "title": "Localization and translated explanation pipeline",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        72
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -3692,7 +3730,7 @@
         "Run English and Spanish source journeys plus right-to-left layout fixtures and source-update invalidation."
       ],
       "rollback": "Fall back to the original language and clearly show unavailable translations.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F7",
       "gate": "G7",
@@ -3750,7 +3788,9 @@
       "id": "AB-095",
       "title": "Privacy controls deletion and retention jobs",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        76
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -3777,7 +3817,7 @@
         "Advance a test clock through each retention class and restore a backup with deleted records."
       ],
       "rollback": "Stop affected collection and run corrective deletion before re-enabling it.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F7",
       "gate": "G7",
@@ -3835,7 +3875,9 @@
       "id": "AB-097",
       "title": "Embed mode and content security boundaries",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        73
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -3860,7 +3902,7 @@
         "Send forged origins and message types, embed under restrictive CSP and verify readable fallback."
       ],
       "rollback": "Disable embed capabilities and retain ordinary public links.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F7",
       "gate": "G7",
@@ -5183,6 +5225,294 @@
       "updatedAt": "2026-10-17T03:33:37Z",
       "mergedAt": "2026-10-17T03:33:37Z",
       "closedAt": "2026-10-17T03:33:37Z",
+      "draft": false
+    },
+    {
+      "id": 58,
+      "number": 58,
+      "title": "AB-001: Reconcile 56 merged PRs with canonical development registry and handoff",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/58",
+      "createdAt": "2026-10-17T03:34:45Z",
+      "updatedAt": "2026-10-17T03:38:08Z",
+      "mergedAt": "2026-10-17T03:38:08Z",
+      "closedAt": "2026-10-17T03:38:08Z",
+      "draft": false
+    },
+    {
+      "id": 59,
+      "number": 59,
+      "title": "AB-024: Real PostgreSQL public release, tenant RLS and withdrawal regression",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/59",
+      "createdAt": "2026-10-17T03:37:51Z",
+      "updatedAt": "2026-10-17T03:41:28Z",
+      "mergedAt": "2026-10-17T03:41:27Z",
+      "closedAt": "2026-10-17T03:41:27Z",
+      "draft": false
+    },
+    {
+      "id": 60,
+      "number": 60,
+      "title": "AB-024: Preflight size limits for public PostgreSQL source documents",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/60",
+      "createdAt": "2026-10-17T03:41:07Z",
+      "updatedAt": "2026-10-17T03:43:25Z",
+      "mergedAt": "2026-10-17T03:43:25Z",
+      "closedAt": "2026-10-17T03:43:25Z",
+      "draft": false
+    },
+    {
+      "id": 61,
+      "number": 61,
+      "title": "AB-004: Bound concurrent public reader lookups and slow HTTP clients",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/61",
+      "createdAt": "2026-10-17T03:43:02Z",
+      "updatedAt": "2026-10-17T12:00:55Z",
+      "mergedAt": "2026-10-17T12:00:55Z",
+      "closedAt": "2026-10-17T12:00:55Z",
+      "draft": false
+    },
+    {
+      "id": 62,
+      "number": 62,
+      "title": "AB-004: Graceful public reader drain and capacity visibility",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/62",
+      "createdAt": "2026-10-17T12:01:52Z",
+      "updatedAt": "2026-10-17T12:04:31Z",
+      "mergedAt": "2026-10-17T12:04:30Z",
+      "closedAt": "2026-10-17T12:04:30Z",
+      "draft": false
+    },
+    {
+      "id": 63,
+      "number": 63,
+      "title": "AB-065: Version-pinned DOM anchors, layout invalidation and Chromium regression",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/63",
+      "createdAt": "2026-10-17T12:10:00Z",
+      "updatedAt": "2026-10-17T12:11:32Z",
+      "mergedAt": "2026-10-17T12:11:32Z",
+      "closedAt": "2026-10-17T12:11:32Z",
+      "draft": false
+    },
+    {
+      "id": 64,
+      "number": 64,
+      "title": "AB-065: Bind published reader provision nodes to verified version metadata",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/64",
+      "createdAt": "2026-10-17T12:13:06Z",
+      "updatedAt": "2026-10-17T12:14:52Z",
+      "mergedAt": "2026-10-17T12:14:52Z",
+      "closedAt": "2026-10-17T12:14:52Z",
+      "draft": false
+    },
+    {
+      "id": 65,
+      "number": 65,
+      "title": "AB-079: Original Bill voice personas and fail-closed licensing direction (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/65",
+      "createdAt": "2026-10-17T12:16:24Z",
+      "updatedAt": "2026-10-17T12:18:25Z",
+      "mergedAt": "2026-10-17T12:18:25Z",
+      "closedAt": "2026-10-17T12:18:25Z",
+      "draft": false
+    },
+    {
+      "id": 66,
+      "number": 66,
+      "title": "AB-080: Source-pinned speech preflight and fail-closed audio delivery (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/66",
+      "createdAt": "2026-10-17T12:21:19Z",
+      "updatedAt": "2026-10-17T12:26:03Z",
+      "mergedAt": "2026-10-17T12:26:02Z",
+      "closedAt": "2026-10-17T12:26:02Z",
+      "draft": false
+    },
+    {
+      "id": 67,
+      "number": 67,
+      "title": "AB-081: Version-pinned pronunciation mapping and word/viseme timing (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/67",
+      "createdAt": "2026-10-17T12:23:49Z",
+      "updatedAt": "2026-10-17T12:26:43Z",
+      "mergedAt": "2026-10-17T12:26:43Z",
+      "closedAt": "2026-10-17T12:26:43Z",
+      "draft": false
+    },
+    {
+      "id": 68,
+      "number": 68,
+      "title": "AB-091: Native no-JavaScript exact-source search and pinned citations (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/68",
+      "createdAt": "2026-10-17T12:30:10Z",
+      "updatedAt": "2026-10-17T12:32:09Z",
+      "mergedAt": "2026-10-17T12:32:09Z",
+      "closedAt": "2026-10-17T12:32:09Z",
+      "draft": false
+    },
+    {
+      "id": 69,
+      "number": 69,
+      "title": "AB-092: Exact-version public source share and text export (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/69",
+      "createdAt": "2026-10-17T12:31:45Z",
+      "updatedAt": "2026-10-17T12:34:29Z",
+      "mergedAt": "2026-10-17T12:34:28Z",
+      "closedAt": "2026-10-17T12:34:28Z",
+      "draft": false
+    },
+    {
+      "id": 70,
+      "number": 70,
+      "title": "AB-089: Version-pinned source-only guided reading tour (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/70",
+      "createdAt": "2026-10-17T12:34:06Z",
+      "updatedAt": "2026-10-17T12:35:16Z",
+      "mergedAt": "2026-10-17T12:35:16Z",
+      "closedAt": "2026-10-17T12:35:16Z",
+      "draft": false
+    },
+    {
+      "id": 71,
+      "number": 71,
+      "title": "AB-046–062: Generate 20 distinct animated Bill GLBs and walking audition gallery",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/71",
+      "createdAt": "2026-10-17T12:35:19Z",
+      "updatedAt": "2026-10-17T12:50:35Z",
+      "mergedAt": "2026-10-17T12:50:35Z",
+      "closedAt": "2026-10-17T12:50:35Z",
+      "draft": false
+    },
+    {
+      "id": 72,
+      "number": 72,
+      "title": "AB-093: Spanish source-reader navigation without fabricated translations (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/72",
+      "createdAt": "2026-10-17T12:36:43Z",
+      "updatedAt": "2026-10-17T12:41:18Z",
+      "mergedAt": "2026-10-17T12:41:18Z",
+      "closedAt": "2026-10-17T12:41:18Z",
+      "draft": false
+    },
+    {
+      "id": 73,
+      "number": 73,
+      "title": "AB-097: Default-deny read-only published-source embedding with CSP controls (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/73",
+      "createdAt": "2026-10-17T12:42:51Z",
+      "updatedAt": "2026-10-17T12:45:03Z",
+      "mergedAt": "2026-10-17T12:45:02Z",
+      "closedAt": "2026-10-17T12:45:03Z",
+      "draft": false
+    },
+    {
+      "id": 74,
+      "number": 74,
+      "title": "AB-091: Accessible source printing and Chromium print-mode verification (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/74",
+      "createdAt": "2026-10-17T12:44:32Z",
+      "updatedAt": "2026-10-17T12:49:59Z",
+      "mergedAt": "2026-10-17T12:49:59Z",
+      "closedAt": "2026-10-17T12:49:59Z",
+      "draft": false
+    },
+    {
+      "id": 75,
+      "number": 75,
+      "title": "AB-090: Curated child-safe civic glossary without live data collection (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/75",
+      "createdAt": "2026-10-17T12:46:27Z",
+      "updatedAt": "2026-10-17T12:50:08Z",
+      "mergedAt": "2026-10-17T12:50:08Z",
+      "closedAt": "2026-10-17T12:50:08Z",
+      "draft": false
+    },
+    {
+      "id": 76,
+      "number": 76,
+      "title": "AB-095: Bounded tenant-scoped expired session cleanup (partial)",
+      "state": "open",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/76",
+      "createdAt": "2026-10-17T12:51:41Z",
+      "updatedAt": "2026-10-17T12:51:41Z",
+      "mergedAt": null,
+      "closedAt": null,
+      "draft": true
+    },
+    {
+      "id": 77,
+      "number": 77,
+      "title": "AB-066: Version-fenced viewport and canvas coordinate conversion",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/77",
+      "createdAt": "2026-10-17T12:58:27Z",
+      "updatedAt": "2026-10-17T13:02:31Z",
+      "mergedAt": "2026-10-17T13:02:31Z",
+      "closedAt": "2026-10-17T13:02:31Z",
+      "draft": false
+    },
+    {
+      "id": 78,
+      "number": 78,
+      "title": "AB-067: Protected ledge traversal graph and safe docking",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/78",
+      "createdAt": "2026-10-17T13:00:35Z",
+      "updatedAt": "2026-10-17T13:04:54Z",
+      "mergedAt": "2026-10-17T13:04:54Z",
+      "closedAt": "2026-10-17T13:04:54Z",
+      "draft": false
+    },
+    {
+      "id": 79,
+      "number": 79,
+      "title": "Bill roster: compare 3 animated GLBs and shortlist seven candidates",
+      "state": "open",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/79",
+      "createdAt": "2026-10-17T13:01:18Z",
+      "updatedAt": "2026-10-17T13:06:35Z",
+      "mergedAt": null,
+      "closedAt": null,
+      "draft": false
+    },
+    {
+      "id": 80,
+      "number": 80,
+      "title": "AB-068: Bounded Worker path planner and stale-result fencing",
+      "state": "open",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/80",
+      "createdAt": "2026-10-17T13:04:10Z",
+      "updatedAt": "2026-10-17T13:04:56Z",
+      "mergedAt": null,
+      "closedAt": null,
+      "draft": true
+    },
+    {
+      "id": 81,
+      "number": 81,
+      "title": "Bill characters: build verified, locally runnable ZIP of all 20 GLBs",
+      "state": "open",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/81",
+      "createdAt": "2026-10-17T13:07:18Z",
+      "updatedAt": "2026-10-17T13:07:45Z",
+      "mergedAt": null,
+      "closedAt": null,
       "draft": false
     }
   ]

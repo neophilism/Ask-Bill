@@ -31,4 +31,4 @@ Do not commit secrets, private legislative uploads, personal questions, personal
 
 ## Next work
 
-AB-001 is planning/registry foundation. AB-002 owns pnpm/TypeScript workspace, application scaffolding, actual CircleCI gates, lockfile and cold-install builds. The foundation's Node-only `npm run check` is **not** equivalent to future app CI. Check current AB-001 acceptance on GitHub before starting dependent units.
+Read `docs/SESSION_STATUS.md` for the most recent verified checkpoint, then re-query live GitHub heads, PRs and CI. Several original work units have scoped, partially implemented features even when their PRs merged; never infer operational gate acceptance from merge counts. Complete dependency-appropriate work, preserve concurrent owned Bill-character asset branches, and implement public reading and animation integrations only from verified immutable source editions. Actual model/voice/production hosting readiness remains separate.
