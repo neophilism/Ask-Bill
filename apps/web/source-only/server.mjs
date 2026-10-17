@@ -24,13 +24,33 @@ function respond(res,status,body,type,head=false,extra={}){
  res.writeHead(status,{...HEADERS,'Content-Type':type,'Content-Length':bytes.length,...extra});
  res.end(head?undefined:bytes);
 }
-export async function createPublishedSourceServer({publisherId,lookupPublishedPack,lookupPublishedCatalog}={}){
+export async function createPublishedSourceServer({publisherId,lookupPublishedPack,lookupPublishedCatalog,maxInflight=64}={}){
  if(typeof publisherId!=='string'||!UUID.test(publisherId)||typeof lookupPublishedPack!=='function')
    throw new Error('TRUSTED_PUBLICATION_ADAPTER_REQUIRED');
  if(lookupPublishedCatalog!==undefined && typeof lookupPublishedCatalog!=='function')throw new Error('TRUSTED_CATALOG_ADAPTER_REQUIRED');
+ if(!Number.isSafeInteger(maxInflight)||maxInflight<1||maxInflight>256)throw new Error('INVALID_PUBLIC_READER_CAPACITY');
  const read=createPublicReader({lookupPublishedPack});
  const css=await readFile(new URL('./public-reader.css',import.meta.url),'utf8');
- return createServer((req,res)=>{
+ // Bound concurrent backend work, including slow and disconnected lookups.
+ // Do not free a slot until the lookup settles, even when a client disconnects.
+ let activeLookups=0;
+ const dispatch=(res,head,task)=>{
+  if(activeLookups>=maxInflight){
+   respond(res,503,'Reader temporarily busy','text/plain; charset=utf-8',head,{'Retry-After':'2'});
+   return;
+  }
+  activeLookups++;
+  Promise.resolve().then(task).then(result=>{
+   if(!res.destroyed&&!res.writableEnded){
+    try{respond(res,200,result.body,result.type,head)}catch{}
+   }
+  },()=>{
+   if(!res.destroyed&&!res.writableEnded){
+    try{respond(res,404,'Not found','text/plain; charset=utf-8',head)}catch{}
+   }
+  }).finally(()=>{activeLookups--;});
+ };
+ const server=createServer((req,res)=>{
   const head=req.method==='HEAD';
   if(req.method!=='GET'&&!head){
    respond(res,405,'Method not allowed','text/plain; charset=utf-8',false,{Allow:'GET, HEAD'});
@@ -46,11 +66,11 @@ export async function createPublishedSourceServer({publisherId,lookupPublishedPa
   if(catalog&&lookupPublishedCatalog){
     const page=catalog[1]?Number(catalog[1]):1;
     if(page>50){respond(res,404,'Not found','text/plain; charset=utf-8',head);return;}
-    Promise.resolve().then(()=>lookupPublishedCatalog(Object.freeze({publisherId,page})))
-      .then(records=>{
-        const html=renderPublicCatalog({publisherId,page,items:records.items,hasNext:records.hasNext});
-        respond(res,200,html,'text/html; charset=utf-8',head);
-      }).catch(()=>respond(res,404,'Not found','text/plain; charset=utf-8',head));
+    dispatch(res,head,async()=>{
+      const records=await lookupPublishedCatalog(Object.freeze({publisherId,page}));
+      return {body:renderPublicCatalog({publisherId,page,items:records.items,hasNext:records.hasNext}),
+        type:'text/html; charset=utf-8'};
+    });
     return;
   }
   const match=ROUTE.exec(path);
@@ -58,8 +78,15 @@ export async function createPublishedSourceServer({publisherId,lookupPublishedPa
    respond(res,404,'Not found','text/plain; charset=utf-8',head);return;
   }
   const format=match[3]?'text':'html';
-  read.read({publisherId,billId:match[1],versionId:match[2],format})
-    .then(body=>respond(res,200,body,format==='html'?'text/html; charset=utf-8':'text/plain; charset=utf-8',head),
-      ()=>respond(res,404,'Not found','text/plain; charset=utf-8',head));
+  dispatch(res,head,async()=>{
+    const body=await read.read({publisherId,billId:match[1],versionId:match[2],format});
+    return {body,type:format==='html'?'text/html; charset=utf-8':'text/plain; charset=utf-8'};
+  });
  });
+ // Limit slow headers/body submissions and long-lived sockets before database work.
+ server.headersTimeout=10000;
+ server.requestTimeout=20000;
+ server.keepAliveTimeout=5000;
+ server.maxRequestsPerSocket=100;
+ return server;
 }
