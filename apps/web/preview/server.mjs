@@ -4,12 +4,13 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
 import { assertIncompleteFixture, renderPreview } from './reader.mjs';
+import { createHealthMonitor, healthHttpResponse } from '../health/monitor.mjs';
 const fixturePath = new URL('../../../fixtures/electronic-filing-excerpt.json', import.meta.url);
 const routeFiles = new Map([
   ['/preview.css', {file: new URL('./preview.css', import.meta.url), type:'text/css; charset=utf-8'}],
   ['/preview.js', {file: new URL('./preview.js', import.meta.url), type:'text/javascript; charset=utf-8'}]
 ]);
-export async function createPreviewServer() {
+export async function createPreviewServer({healthMonitor=createHealthMonitor({stage:'local'})}={}) {
   const fixture = assertIncompleteFixture(JSON.parse(await readFile(fixturePath, 'utf8')));
   const html = renderPreview(fixture);
   const resources = new Map();
@@ -22,6 +23,12 @@ export async function createPreviewServer() {
     if (req.method !== 'GET' && req.method !== 'HEAD') {res.writeHead(405,{'Allow':'GET, HEAD'});res.end();return;}
     let path;
     try {path = new URL(req.url ?? '/', 'http://localhost').pathname;} catch {res.writeHead(400);res.end();return;}
+    if(path === '/health/live' || path === '/health/ready') {
+      Promise.resolve(healthHttpResponse(healthMonitor,{method:req.method,pathname:path}))
+        .then(({status,headers,body})=>{res.writeHead(status,headers);res.end(body);},
+          ()=>{res.writeHead(503,{'Cache-Control':'no-store'});res.end();});
+      return;
+    }
     if(path === '/healthz') {res.writeHead(200,{'Content-Type':'application/json; charset=utf-8'});res.end(req.method==='HEAD'?undefined:JSON.stringify({product:'ask-bill',status:'preview',live:false,sourceComplete:false}));return;}
     const file = resources.get(path);
     if(file){res.writeHead(200,{'Content-Type':file.type});res.end(req.method==='HEAD'?undefined:file.body);return;}
