@@ -6,10 +6,11 @@
   "exports": {
     "./provenance": "./provenance/index.mjs",
     "./intake": "./intake/index.mjs",
-    "./parsers": "./parsers/index.mjs"
+    "./parsers": "./parsers/index.mjs",
+    "./xml": "./xml/index.mjs"
   },
   "scripts": {
-    "build": "node --check provenance/index.mjs && node --check intake/index.mjs && node --check parsers/index.mjs",
-    "typecheck": "node --check provenance/index.mjs && node --check intake/index.mjs && node --check parsers/index.mjs"
+    "build": "node --check provenance/index.mjs && node --check intake/index.mjs && node --check parsers/index.mjs && node --check xml/index.mjs",
+    "typecheck": "node --check provenance/index.mjs && node --check intake/index.mjs && node --check parsers/index.mjs && node --check xml/index.mjs"
   }
 }
