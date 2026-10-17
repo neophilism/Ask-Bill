@@ -7,6 +7,7 @@ import {createServer} from 'node:http';
 import {createPublicReader} from '../../../packages/ui/reader/index.mjs';
 import {renderPublicCatalog} from '../../../packages/ui/catalog/index.mjs';
 import {findExactPublishedText,renderSourceSearchResults} from '../../../packages/ui/reader/find.mjs';
+import {createSourceOnlyShare,renderSourceShareHtml,renderSourceShareText} from '../../../packages/export/index.mjs';
 import {readFile} from 'node:fs/promises';
 
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -61,6 +62,25 @@ export async function createPublishedSourceServer({publisherId,lookupPublishedPa
   }
   const path=req.url??'';
   if(path==='/public-reader.css'){respond(res,200,css,'text/css; charset=utf-8',head);return;}
+  // Source-only share/export: no chat, model or personal data is ever serialized.
+  if(path.includes('/share?')||path.includes('/share.txt?')){
+    const ix=path.indexOf('?'),endpoint=path.slice(0,ix),raw=path.slice(ix+1);
+    const match=/^\/bills\/([0-9a-f-]{36})\/versions\/([0-9a-f-]{36})\/share(\.txt)?$/i.exec(endpoint);
+    if(!match||!UUID.test(match[1])||!UUID.test(match[2])||
+       !/^section=[A-Za-z][A-Za-z0-9_-]{0,100}$/.test(raw)||endpoint.includes('%')){
+      respond(res,404,'Not found','text/plain; charset=utf-8',head);return;
+    }
+    dispatch(res,head,async()=>{
+      const billId=match[1].toLowerCase(),versionId=match[2].toLowerCase();
+      const source=await lookupPublishedPack(Object.freeze({publisherId,billId,versionId}));
+      if(!source||source.publisherId?.toLowerCase()!==publisherId.toLowerCase()||
+         source.billId?.toLowerCase()!==billId||source.versionId?.toLowerCase()!==versionId)
+        throw Error('UNAVAILABLE');
+      const report=createSourceOnlyShare({pack:source,provisionId:raw.slice(8)});
+      return match[3]?{body:renderSourceShareText(report),type:'text/plain; charset=utf-8'}:
+        {body:renderSourceShareHtml(report),type:'text/html; charset=utf-8'};
+    });return;
+  }
   // Only this read-only source-search route permits a bounded, single query parameter.
   if(path.includes('/search?')){
     const ix=path.indexOf('?'),endpoint=path.slice(0,ix),raw=path.slice(ix+1);
