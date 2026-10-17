@@ -4,7 +4,7 @@
   "roadmapVersion": 1,
   "planVerified": true,
   "plannedPrCount": 112,
-  "observedAt": "2026-10-16T23:58:48Z",
+  "observedAt": "2026-10-17T00:03:28Z",
   "approval": {
     "basis": "Owner explicitly directed the complete Ask Bill architecture and PR plan (16 October 2026) and installation of foundational commit.",
     "source": "docs/DEVELOPMENT_PLAN.md"
@@ -448,7 +448,9 @@
       "id": "AB-012",
       "title": "Preview infrastructure and health signals",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        12
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -473,7 +475,7 @@
         "Deploy staging when credentials exist, interrupt shutdown, and verify readiness fails for missing mandatory dependencies."
       ],
       "rollback": "Revert to the previous service image and version-compatible database schema.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F1",
       "gate": "G1",
@@ -4555,10 +4557,22 @@
       "id": 11,
       "number": 11,
       "title": "AB-011: Explicit data-flow inventory, privacy retention and fail-closed safeguards",
-      "state": "open",
+      "state": "closed",
       "url": "https://github.com/neophilism/Ask-Bill/pull/11",
       "createdAt": "2026-10-16T23:58:20Z",
-      "updatedAt": "2026-10-16T23:58:20Z",
+      "updatedAt": "2026-10-17T00:00:21Z",
+      "mergedAt": "2026-10-17T00:00:21Z",
+      "closedAt": "2026-10-17T00:00:21Z",
+      "draft": false
+    },
+    {
+      "id": 12,
+      "number": 12,
+      "title": "AB-012: Fail-closed preview readiness, health endpoints and graceful worker drain (partial)",
+      "state": "open",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/12",
+      "createdAt": "2026-10-17T00:03:02Z",
+      "updatedAt": "2026-10-17T00:03:02Z",
       "mergedAt": null,
       "closedAt": null,
       "draft": true
