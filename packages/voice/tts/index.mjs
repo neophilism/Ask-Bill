@@ -33,7 +33,8 @@ export function createSpeechPreflight({voiceCatalog,lookupSource,maxCharacters=2
       if(!ID.test(versionId??'')||!ID.test(sessionId??'')||
          !Number.isSafeInteger(conversationEpoch)||conversationEpoch<0||conversationEpoch>1000000000||
          !SUPPORTED.has(locale))deny('INVALID_SCOPE');
-      const persona=selectPersona(catalog,personaId);
+      let persona;
+      try{persona=selectPersona(catalog,personaId);}catch{deny('PERSONA_NOT_ALLOWED');}
       let validated;
       try{validated=parseValidatedSegment(segment,versionId);}catch{deny('UNVALIDATED_SEGMENT');}
       if(validated.text.length<1||validated.text.length>maxCharacters)deny('SPEECH_TEXT_BUDGET');
