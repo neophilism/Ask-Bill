@@ -61,6 +61,12 @@ importers:
 
   packages/storage: {}
 
+  packages/streaming:
+    dependencies:
+      '@ask-bill/contracts':
+        specifier: workspace:*
+        version: link:../contracts
+
   packages/contracts: {}
 
   packages/core: {}
