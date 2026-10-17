@@ -28,3 +28,7 @@ python3 scripts/package-character-audition.py --output dist/AskBill-20-Walking-L
 ```
 
 The roster PR workflow commits the **actual regenerated binary GLBs and updated SHA-256 manifest** back to the PR branch after positive tests. Tests parse real binary sampler buffers, check loop seams, joint motion diversity, animation metadata, rig presence and reproducibility. The kit-packing workflow verifies clips before uploading downloadable artifacts. This **engineering verification does not replace hand-reviewed animated visual quality, real-world speed/device benchmarks, semantic expression QA or the final production animation gate**.
+
+## Generated-head verification
+
+The character-roster workflow writes the regenerated `bill-01.glb` through `bill-20.glb` and SHA-256 manifest to the feature PR branch. All acceptance jobs must subsequently validate the **resulting generated commit**, not merely the earlier source-only commit. Regenerate the portable kit from the same exact final head. Neither the generated-asset bot commit nor a green preview render grants visual approval.
