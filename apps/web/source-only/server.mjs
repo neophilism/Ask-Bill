@@ -5,6 +5,7 @@
  */
 import {createServer} from 'node:http';
 import {createPublicReader} from '../../../packages/ui/reader/index.mjs';
+import {renderPublicCatalog} from '../../../packages/ui/catalog/index.mjs';
 import {readFile} from 'node:fs/promises';
 
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -23,9 +24,10 @@ function respond(res,status,body,type,head=false,extra={}){
  res.writeHead(status,{...HEADERS,'Content-Type':type,'Content-Length':bytes.length,...extra});
  res.end(head?undefined:bytes);
 }
-export async function createPublishedSourceServer({publisherId,lookupPublishedPack}={}){
+export async function createPublishedSourceServer({publisherId,lookupPublishedPack,lookupPublishedCatalog}={}){
  if(typeof publisherId!=='string'||!UUID.test(publisherId)||typeof lookupPublishedPack!=='function')
    throw new Error('TRUSTED_PUBLICATION_ADAPTER_REQUIRED');
+ if(lookupPublishedCatalog!==undefined && typeof lookupPublishedCatalog!=='function')throw new Error('TRUSTED_CATALOG_ADAPTER_REQUIRED');
  const read=createPublicReader({lookupPublishedPack});
  const css=await readFile(new URL('./public-reader.css',import.meta.url),'utf8');
  return createServer((req,res)=>{
@@ -39,6 +41,17 @@ export async function createPublishedSourceServer({publisherId,lookupPublishedPa
   // Reject query strings, percent-encoded paths and alternate URL forms before parsing.
   if(path.includes('%')||path.includes('?')||path.includes('#')||path.length>300){
    respond(res,404,'Not found','text/plain; charset=utf-8',head);return;
+  }
+  const catalog=/^\/bills(?:\/page\/([1-9][0-9]?))?$/.exec(path);
+  if(catalog&&lookupPublishedCatalog){
+    const page=catalog[1]?Number(catalog[1]):1;
+    if(page>50){respond(res,404,'Not found','text/plain; charset=utf-8',head);return;}
+    Promise.resolve().then(()=>lookupPublishedCatalog(Object.freeze({publisherId,page})))
+      .then(records=>{
+        const html=renderPublicCatalog({publisherId,page,items:records.items,hasNext:records.hasNext});
+        respond(res,200,html,'text/html; charset=utf-8',head);
+      }).catch(()=>respond(res,404,'Not found','text/plain; charset=utf-8',head));
+    return;
   }
   const match=ROUTE.exec(path);
   if(!match||!UUID.test(match[1])||!UUID.test(match[2])){
