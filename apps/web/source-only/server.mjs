@@ -9,6 +9,7 @@ import {renderPublicCatalog} from '../../../packages/ui/catalog/index.mjs';
 import {findExactPublishedText,renderSourceSearchResults} from '../../../packages/ui/reader/find.mjs';
 import {createSourceOnlyShare,renderSourceShareHtml,renderSourceShareText} from '../../../packages/export/index.mjs';
 import {createSourceOnlyTour,renderSourceTourStep} from '../../../packages/tours/index.mjs';
+import {validateEmbedOrigins,renderEmbeddablePublishedSource,embedSecurityHeaders} from '../../../packages/embed/index.mjs';
 import {renderSpanishSourceReader} from '../../../packages/i18n/index.mjs';
 import {readFile} from 'node:fs/promises';
 
@@ -28,11 +29,12 @@ function respond(res,status,body,type,head=false,extra={}){
  res.writeHead(status,{...HEADERS,'Content-Type':type,'Content-Length':bytes.length,...extra});
  res.end(head?undefined:bytes);
 }
-export async function createPublishedSourceServer({publisherId,lookupPublishedPack,lookupPublishedCatalog,maxInflight=64}={}){
+export async function createPublishedSourceServer({publisherId,lookupPublishedPack,lookupPublishedCatalog,maxInflight=64,embedOrigins=[]}={}){
  if(typeof publisherId!=='string'||!UUID.test(publisherId)||typeof lookupPublishedPack!=='function')
    throw new Error('TRUSTED_PUBLICATION_ADAPTER_REQUIRED');
  if(lookupPublishedCatalog!==undefined && typeof lookupPublishedCatalog!=='function')throw new Error('TRUSTED_CATALOG_ADAPTER_REQUIRED');
  if(!Number.isSafeInteger(maxInflight)||maxInflight<1||maxInflight>256)throw new Error('INVALID_PUBLIC_READER_CAPACITY');
+ const embedAllowed=validateEmbedOrigins(embedOrigins);
  const read=createPublicReader({lookupPublishedPack});
  const css=await readFile(new URL('./public-reader.css',import.meta.url),'utf8');
  // Bound concurrent backend work, including slow and disconnected lookups.
@@ -47,7 +49,13 @@ export async function createPublishedSourceServer({publisherId,lookupPublishedPa
   activeLookups++;
   Promise.resolve().then(task).then(result=>{
    if(!res.destroyed&&!res.writableEnded){
-    try{respond(res,200,result.body,result.type,head)}catch{}
+    try{
+      if(result.embedHeaders){
+        const bytes=Buffer.from(result.body,'utf8');
+        res.writeHead(200,{...result.embedHeaders,'Content-Type':result.type,'Content-Length':bytes.length});
+        res.end(head?undefined:bytes);
+      } else respond(res,200,result.body,result.type,head);
+    }catch{}
    }
   },()=>{
    if(!res.destroyed&&!res.writableEnded){
@@ -145,6 +153,21 @@ export async function createPublishedSourceServer({publisherId,lookupPublishedPa
         throw Error('UNAVAILABLE');
       return {body:renderSpanishSourceReader(pack),type:'text/html; charset=utf-8'};
     });return;
+  }
+  // Opt-in published source iframe; frame-ancestors CSP controls the parent origin.
+  if(embedAllowed.length){
+    const embed=/^\/embed\/bills\/([0-9a-f-]{36})\/versions\/([0-9a-f-]{36})$/i.exec(path);
+    if(embed&&UUID.test(embed[1])&&UUID.test(embed[2])){
+      dispatch(res,head,async()=>{
+        const billId=embed[1].toLowerCase(),versionId=embed[2].toLowerCase();
+        const pack=await lookupPublishedPack(Object.freeze({publisherId,billId,versionId}));
+        if(!pack||pack.publisherId?.toLowerCase()!==publisherId.toLowerCase()||
+           pack.billId?.toLowerCase()!==billId||pack.versionId?.toLowerCase()!==versionId)
+          throw Error('EMBED_SOURCE_UNAVAILABLE');
+        return {body:renderEmbeddablePublishedSource({pack,origins:embedAllowed}),
+          type:'text/html; charset=utf-8',embedHeaders:embedSecurityHeaders(embedAllowed)};
+      });return;
+    }
   }
   const match=ROUTE.exec(path);
   if(!match||!UUID.test(match[1])||!UUID.test(match[2])){
