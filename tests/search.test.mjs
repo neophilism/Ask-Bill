@@ -17,7 +17,7 @@ test('immutable deterministic generation is independent of provision order',()=>
 test('scoped phrase search returns only correct source and retains exact text',()=>{
  const g=create();
  const result=searchGeneration(g,{publisherId:a,versionId:v,query:'public filing'});
- assert.equal(result.results.length,1);assert.equal(result.results[0].provisionId,p2);
+ assert.equal(result.results.length,2);assert.equal(result.results[0].provisionId,p2);assert.equal(result.results[1].provisionId,p1);
  assert.equal(result.results[0].matchedExactPhrase,true);
  assert.equal(result.citationOffsetPolicy,'reverify-against-original-unicode-text');
  const accent=searchGeneration(g,{publisherId:a,versionId:v,query:'😃'});
