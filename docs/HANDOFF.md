@@ -5,7 +5,7 @@
 **Scope:** Independent Ask Bill product, operated separately from unrelated websites and companies. No external-product integrations.  
 **Plan:** All 112 original work units with 490 explicit local dependency links, phases F1-F8 and release gates G1-G8.  
 **Source of truth:** `registry/prs.json`. The approved narrative is `docs/DEVELOPMENT_PLAN.md` and design contract is `docs/ARCHITECTURE.md`.  
-**Current implementation:** PRs #1–#8 merged after verified GitHub Actions checks, including source contracts, local/offline reader, protected configuration, owned-asset validation and live ephemeral PostgreSQL migration/tenant tests. PR #8 merged a test-only publisher session/authorization boundary; PR #9 implements partial private-upload capability contracts, without any live object store. The true production React interface, original animated character, live provider integrations, publisher login, deployed service and domain remain incomplete.
+**Current implementation:** GitHub has 56 merged PRs as of 2026-10-17T03:34:25Z, corresponding to scoped work in 48 original units. Implementation evidence, exact-head CI and separate operational acceptance must not be conflated. The site has a read-only public catalog and source-only versioned reader behind explicit publisher/database adapters, but no production hosting, fully verified legal corpus, real publisher sign-in, approved live AI or voice. The 3D Bill character is being developed separately; do not modify its mesh, Blender source or animation pipeline in this workstream.
 
 ## Immediate next action (refreshed 2026-10-16T23:00:20Z)
 

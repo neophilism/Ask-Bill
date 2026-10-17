@@ -4,7 +4,7 @@
   "roadmapVersion": 1,
   "planVerified": true,
   "plannedPrCount": 112,
-  "observedAt": "2026-10-17T00:10:16Z",
+  "observedAt": "2026-10-17T03:34:25Z",
   "approval": {
     "basis": "Owner explicitly directed the complete Ask Bill architecture and PR plan (16 October 2026) and installation of foundational commit.",
     "source": "docs/DEVELOPMENT_PLAN.md"
@@ -131,7 +131,12 @@
       "title": "Accessible product shell and design tokens",
       "origin": "original",
       "prs": [
-        4
+        4,
+        50,
+        51,
+        54,
+        55,
+        57
       ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
@@ -530,7 +535,9 @@
       "id": "AB-014",
       "title": "Upload quarantine and extraction sandbox",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        14
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -553,7 +560,7 @@
         "Run malicious PDF/DOCX/XML fixtures, oversized archives and timeouts; verify no production credential exists in the sandbox."
       ],
       "rollback": "Stop extraction jobs and retain isolated quarantine metadata for investigation.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F2",
       "gate": "G2",
@@ -569,7 +576,9 @@
       "id": "AB-015",
       "title": "Text Markdown and DOCX ingestion",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        15
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -588,7 +597,7 @@
         "Compare fixture extractions with golden source text including smart quotes, symbols, tables and tracked-change handling."
       ],
       "rollback": "Revert parser version and rebuild only affected unpublished derivations.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F2",
       "gate": "G2",
@@ -604,7 +613,9 @@
       "id": "AB-016",
       "title": "PDF extraction and OCR quality workflow",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        17
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -624,7 +635,7 @@
         "Use multicolumn, scanned, rotated, missing-page and low-resolution fixtures; verify exact quotations against page evidence."
       ],
       "rollback": "Quarantine affected versions and restore a prior verified extraction generation.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F2",
       "gate": "G2",
@@ -640,7 +651,9 @@
       "id": "AB-017",
       "title": "Legislative XML parser and hierarchy",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        16
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -660,7 +673,7 @@
         "Parse real official XML samples and hostile entities; compare reconstructed order and span boundaries against sources."
       ],
       "rollback": "Fall back to a labeled source-text preview and disable affected structured publication.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F2",
       "gate": "G2",
@@ -676,7 +689,9 @@
       "id": "AB-018",
       "title": "Provision anchors Unicode and source spans",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        18
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -698,7 +713,7 @@
         "Round-trip span fixtures and property-test random Unicode strings and invalid ranges."
       ],
       "rollback": "Reject incompatible spans and keep original-source links available.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F2",
       "gate": "G2",
@@ -714,7 +729,9 @@
       "id": "AB-019",
       "title": "Definitions cross references and exceptions",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        19
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -733,7 +750,7 @@
         "Resolve hand-labeled complex references and verify no exception is dropped in designated fixtures."
       ],
       "rollback": "Remove the affected graph generation and use explicit provision retrieval.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F2",
       "gate": "G2",
@@ -749,7 +766,9 @@
       "id": "AB-020",
       "title": "Official Congress source connector",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        20
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -770,7 +789,7 @@
         "Run fixture tests plus a live staging import when an API credential is available; compare API records with published source metadata."
       ],
       "rollback": "Pause the connector and display the last verified refresh date.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F2",
       "gate": "G2",
@@ -786,7 +805,9 @@
       "id": "AB-021",
       "title": "Version lifecycle status and freshness",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        21
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -809,7 +830,7 @@
         "Change a fixture's status and text independently and verify pinned answers and visible freshness behavior."
       ],
       "rollback": "Pin public pointers to the last verified release and disable the refresh job.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F2",
       "gate": "G2",
@@ -825,7 +846,9 @@
       "id": "AB-022",
       "title": "Amendments and computed comparison view",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        23
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -846,7 +869,7 @@
         "Apply and reject golden amendment fixtures, including shifted numbering and conflicting edits."
       ],
       "rollback": "Disable computed comparisons and preserve the original texts side by side.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F2",
       "gate": "G2",
@@ -862,7 +885,9 @@
       "id": "AB-023",
       "title": "Lexical search and derived index generations",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        22
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -884,7 +909,7 @@
         "Query definitions, exact phrases and removed clauses across versions, then interrupt an index activation."
       ],
       "rollback": "Restore the previous complete index-generation pointer.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F2",
       "gate": "G2",
@@ -900,7 +925,11 @@
       "id": "AB-024",
       "title": "Publishing review and immutable release packs",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        38,
+        53,
+        56
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -925,7 +954,7 @@
         "Fail publication after object upload but before pointer activation, race concurrent publishers and verify withdrawal cache invalidation."
       ],
       "rollback": "Withdraw the faulty release and atomically reactivate the previous compatible manifest.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F2",
       "gate": "G2",
@@ -941,7 +970,9 @@
       "id": "AB-025",
       "title": "Electronic filing reference pack",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        40
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -964,7 +995,7 @@
         "Verify original-receipt and wrong-agency questions against exact supplied wording; test missing definitions and omitted opening sections."
       ],
       "rollback": "Keep the incomplete fixture private and publish no invented reconstruction.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F2",
       "gate": "G2",
@@ -980,7 +1011,9 @@
       "id": "AB-026",
       "title": "Additional bill fixtures and large document cases",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        42
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -1003,7 +1036,7 @@
         "Re-run extraction, anchors, search and page navigation against all packs; verify source licenses and provenance."
       ],
       "rollback": "Unpublish the affected pack while retaining the functioning reference corpus.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F2",
       "gate": "G2",
@@ -1019,7 +1052,9 @@
       "id": "AB-027",
       "title": "Publisher source correction and audit history",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        41
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -1041,7 +1076,7 @@
         "Correct one character in a cited passage and verify new hashes, invalidated answers and retained old source access."
       ],
       "rollback": "Withdraw the corrected version and restore its prior release pointer.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F2",
       "gate": "G2",
@@ -1057,7 +1092,9 @@
       "id": "AB-028",
       "title": "Content gate and ingestion failure recovery",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        46
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -1081,7 +1118,7 @@
         "Execute the full import-to-publish flow with a worker crash, corrupted source, unavailable API and withdrawn release."
       ],
       "rollback": "Disable intake independently from public reading and restore the last complete content release.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F2",
       "gate": "G2",
@@ -1097,7 +1134,9 @@
       "id": "AB-029",
       "title": "Question routing and source permissions",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        24
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -1119,7 +1158,7 @@
         "Test misleading question labels, prompt injection and forged publisher or version IDs."
       ],
       "rollback": "Return curated source explanations and disable affected routing classes.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F3",
       "gate": "G3",
@@ -1135,7 +1174,9 @@
       "id": "AB-030",
       "title": "Provider adapters capability checks and cancellation",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        25
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -1157,7 +1198,7 @@
         "Exercise a fake stream and one configured live provider with timeout, malformed JSON, cancellation and retry cases."
       ],
       "rollback": "Disable the failing provider and retain curated responses plus readable sources.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F3",
       "gate": "G3",
@@ -1173,7 +1214,9 @@
       "id": "AB-031",
       "title": "Evidence retrieval and dependency expansion",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        26
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -1194,7 +1237,7 @@
         "Measure recall on labeled questions and deliberately adversarial near-duplicate provisions; compare vector and lexical-only baselines."
       ],
       "rollback": "Revert to the strongest evaluated retrieval configuration and index generation.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F3",
       "gate": "G3",
@@ -1210,7 +1253,9 @@
       "id": "AB-032",
       "title": "Claim envelope and exact citation validation",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        27
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -1232,7 +1277,7 @@
         "Mutate span offsets, quote text, source version and citation URLs and require rejection."
       ],
       "rollback": "Suppress invalid answer segments and show a source-only recovery response.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F3",
       "gate": "G3",
@@ -1248,7 +1293,9 @@
       "id": "AB-033",
       "title": "Support checks exception preservation and repair",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        28
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -1268,7 +1315,7 @@
         "Run contradictory evidence, incomplete source and misleading premise cases with held-out assessments."
       ],
       "rollback": "Disable the changed prompt or validator and restore its prior evaluated release.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F3",
       "gate": "G3",
@@ -1284,7 +1331,9 @@
       "id": "AB-034",
       "title": "Anonymous sessions quotas and usage ledger",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        29
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -1307,7 +1356,7 @@
         "Race budget reservations, abort upstream requests, replay idempotency keys and test provider billing reconciliation."
       ],
       "rollback": "Stop new live generations while preserving reading and completed answers.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F3",
       "gate": "G3",
@@ -1323,7 +1372,9 @@
       "id": "AB-035",
       "title": "Validated answer streaming and replay",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        30
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -1347,7 +1398,7 @@
         "Disconnect and reconnect mid-answer, replay old event IDs, reorder events and switch document versions while generation runs."
       ],
       "rollback": "Use whole-answer validation and nonstreaming delivery until streaming passes.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F3",
       "gate": "G3",
@@ -1363,7 +1414,9 @@
       "id": "AB-036",
       "title": "Citation cards source drawer and answer states",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        31
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -1386,7 +1439,7 @@
         "Navigate all citation types by keyboard and screen reader and test unresolved or withdrawn spans."
       ],
       "rollback": "Show a plain answer transcript and original-source links.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F3",
       "gate": "G3",
@@ -1402,7 +1455,9 @@
       "id": "AB-037",
       "title": "Current law background and as of comparisons",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        33
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -1425,7 +1480,7 @@
         "Test a draft that misdescribes existing law and source updates that invalidate an old comparison."
       ],
       "rollback": "Disable live comparisons and retain bill-only explanations.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F3",
       "gate": "G3",
@@ -1441,7 +1496,9 @@
       "id": "AB-038",
       "title": "Prompt injection and hostile question defenses",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        34
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -1465,7 +1522,7 @@
         "Attack uploaded text, retrieved snippets, conversation history, markdown links and forged tool outputs."
       ],
       "rollback": "Disable affected tools or content packs and use source-only explanations.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F3",
       "gate": "G3",
@@ -1481,7 +1538,9 @@
       "id": "AB-039",
       "title": "Objections disputed readings and unknown answers",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        36
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -1504,7 +1563,7 @@
         "Evaluate leading pro and anti questions against identical evidence and inspect material differences in treatment."
       ],
       "rollback": "Replace affected generated answers with curated balanced source cards.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F3",
       "gate": "G3",
@@ -1520,7 +1579,9 @@
       "id": "AB-040",
       "title": "Evaluation corpus scoring and held out suite",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        43
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -1546,7 +1607,7 @@
         "Run citation, recall, support and status scoring with spot-checked annotations and known deliberately bad answers."
       ],
       "rollback": "Block the regressed model configuration and retain the last passing evaluation baseline.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F3",
       "gate": "G3",
@@ -1562,7 +1623,9 @@
       "id": "AB-041",
       "title": "Reading levels explanations and privacy defaults",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        44
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -1585,7 +1648,7 @@
         "Compare all reading levels on the same exception-heavy questions and inspect retained request fields."
       ],
       "rollback": "Restore standard explanations and remove any persisted preference not covered by policy.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F3",
       "gate": "G3",
@@ -1601,7 +1664,9 @@
       "id": "AB-042",
       "title": "Public answer caching provider fallback and budgets",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        47
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -1625,7 +1690,7 @@
         "Mix personal and public questions, change corpus hashes, force provider errors and exhaust budgets during traffic."
       ],
       "rollback": "Purge affected cache keys and fall back to curated answers.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F3",
       "gate": "G3",
@@ -1641,7 +1706,9 @@
       "id": "AB-043",
       "title": "Answer feedback corrections and incident controls",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        48
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -1665,7 +1732,7 @@
         "Submit redacted feedback, suppress an answer hash, apply a correction and verify old shared references show the correction."
       ],
       "rollback": "Disable the affected answer or pack and keep public source access available.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F3",
       "gate": "G3",
@@ -1681,7 +1748,9 @@
       "id": "AB-044",
       "title": "Grounded conversation acceptance gate",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        49
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -1710,7 +1779,7 @@
         "Run the held-out suite, outages, quota exhaustion and personal-case tests against the exact release candidate."
       ],
       "rollback": "Pin the previous passing configuration or disable live AI while reading and curated tours continue.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F3",
       "gate": "G3",
@@ -1726,7 +1795,9 @@
       "id": "AB-045",
       "title": "Original character brief and provenance",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        32
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -1748,7 +1819,7 @@
         "Compare silhouette and expression references against the originality checklist and document distinct design decisions."
       ],
       "rollback": "Retain the brief and replace an overly similar design direction before production.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F4",
       "gate": "G4",
@@ -1764,7 +1835,9 @@
       "id": "AB-046",
       "title": "Concept candidates and selected design",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        45
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -1784,7 +1857,7 @@
         "Render monochrome and 96-pixel comparisons and inspect legibility, appeal, uniqueness and facial range."
       ],
       "rollback": "Preserve the candidate set and switch the selected design manifest without losing provenance.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F4",
       "gate": "G4",
@@ -1800,7 +1873,10 @@
       "id": "AB-047",
       "title": "Parametric Blender blockout",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        35,
+        39
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -1822,7 +1898,7 @@
         "Rebuild from a clean scene, compare turntable views with references and inspect contact-plane and origin alignment."
       ],
       "rollback": "Revert the blockout parameter set and keep downstream assets tied to its source hash.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F4",
       "gate": "G4",
@@ -2739,7 +2815,9 @@
       "id": "AB-072",
       "title": "Safe follow mode and off screen journeys",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        37
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -2762,7 +2840,7 @@
         "Navigate far-separated sections while scrolling manually and using keyboard source links."
       ],
       "rollback": "Disable automatic follow and use ordinary section links.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F5",
       "gate": "G5",
@@ -4583,13 +4661,529 @@
       "id": 13,
       "number": 13,
       "title": "AB-013: Hash-bound immutable original-source provenance and tenant isolation (partial)",
-      "state": "open",
+      "state": "closed",
       "url": "https://github.com/neophilism/Ask-Bill/pull/13",
       "createdAt": "2026-10-17T00:09:48Z",
-      "updatedAt": "2026-10-17T00:09:48Z",
-      "mergedAt": null,
-      "closedAt": null,
-      "draft": true
+      "updatedAt": "2026-10-17T00:12:04Z",
+      "mergedAt": "2026-10-17T00:12:04Z",
+      "closedAt": "2026-10-17T00:12:04Z",
+      "draft": false
+    },
+    {
+      "id": 14,
+      "number": 14,
+      "title": "AB-014: Bounded document-quarantine scanner and restricted sandbox runner",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/14",
+      "createdAt": "2026-10-17T01:09:35Z",
+      "updatedAt": "2026-10-17T01:11:41Z",
+      "mergedAt": "2026-10-17T01:11:41Z",
+      "closedAt": "2026-10-17T01:11:41Z",
+      "draft": false
+    },
+    {
+      "id": 15,
+      "number": 15,
+      "title": "AB-015: Text, Markdown and DOCX source-preserving parser foundations",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/15",
+      "createdAt": "2026-10-17T01:11:11Z",
+      "updatedAt": "2026-10-17T01:14:54Z",
+      "mergedAt": "2026-10-17T01:14:54Z",
+      "closedAt": "2026-10-17T01:14:54Z",
+      "draft": false
+    },
+    {
+      "id": 16,
+      "number": 16,
+      "title": "AB-017: Version-pinned legislative XML hierarchy and source-safety gates",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/16",
+      "createdAt": "2026-10-17T01:14:30Z",
+      "updatedAt": "2026-10-17T01:17:34Z",
+      "mergedAt": "2026-10-17T01:17:34Z",
+      "closedAt": "2026-10-17T01:17:34Z",
+      "draft": false
+    },
+    {
+      "id": 17,
+      "number": 17,
+      "title": "AB-016: Isolated PDF review, real native extraction and OCR safeguards",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/17",
+      "createdAt": "2026-10-17T01:17:14Z",
+      "updatedAt": "2026-10-17T01:21:29Z",
+      "mergedAt": "2026-10-17T01:21:29Z",
+      "closedAt": "2026-10-17T01:21:29Z",
+      "draft": false
+    },
+    {
+      "id": 18,
+      "number": 18,
+      "title": "AB-018: Exact Unicode citation anchors and version-bound text spans",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/18",
+      "createdAt": "2026-10-17T01:19:35Z",
+      "updatedAt": "2026-10-17T01:21:55Z",
+      "mergedAt": "2026-10-17T01:21:55Z",
+      "closedAt": "2026-10-17T01:21:55Z",
+      "draft": false
+    },
+    {
+      "id": 19,
+      "number": 19,
+      "title": "AB-019: Version-scoped definitions, cross-references and exception graph",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/19",
+      "createdAt": "2026-10-17T01:21:12Z",
+      "updatedAt": "2026-10-17T01:22:23Z",
+      "mergedAt": "2026-10-17T01:22:23Z",
+      "closedAt": "2026-10-17T01:22:23Z",
+      "draft": false
+    },
+    {
+      "id": 20,
+      "number": 20,
+      "title": "AB-020: Official Congress.gov bill/version metadata and safe retrieval adapter",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/20",
+      "createdAt": "2026-10-17T01:24:13Z",
+      "updatedAt": "2026-10-17T01:26:31Z",
+      "mergedAt": "2026-10-17T01:26:31Z",
+      "closedAt": "2026-10-17T01:26:31Z",
+      "draft": false
+    },
+    {
+      "id": 21,
+      "number": 21,
+      "title": "AB-021: Immutable version lifecycle, stale-source warnings and safe version switching",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/21",
+      "createdAt": "2026-10-17T01:26:58Z",
+      "updatedAt": "2026-10-17T01:31:46Z",
+      "mergedAt": "2026-10-17T01:31:45Z",
+      "closedAt": "2026-10-17T01:31:45Z",
+      "draft": false
+    },
+    {
+      "id": 22,
+      "number": 22,
+      "title": "AB-023: Immutable tenant/version lexical index generations and atomic activation",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/22",
+      "createdAt": "2026-10-17T01:30:38Z",
+      "updatedAt": "2026-10-17T01:36:28Z",
+      "mergedAt": "2026-10-17T01:36:28Z",
+      "closedAt": "2026-10-17T01:36:28Z",
+      "draft": false
+    },
+    {
+      "id": 23,
+      "number": 23,
+      "title": "AB-022: Version-bound amendment previews with ambiguity and conflict rejection",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/23",
+      "createdAt": "2026-10-17T01:32:07Z",
+      "updatedAt": "2026-10-17T01:33:38Z",
+      "mergedAt": "2026-10-17T01:33:37Z",
+      "closedAt": "2026-10-17T01:33:37Z",
+      "draft": false
+    },
+    {
+      "id": 24,
+      "number": 24,
+      "title": "AB-029: Server-authorized source-pinned question router and privacy controls",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/24",
+      "createdAt": "2026-10-17T01:34:23Z",
+      "updatedAt": "2026-10-17T01:36:53Z",
+      "mergedAt": "2026-10-17T01:36:52Z",
+      "closedAt": "2026-10-17T01:36:52Z",
+      "draft": false
+    },
+    {
+      "id": 25,
+      "number": 25,
+      "title": "AB-030: Cancellable provider adapters and fail-closed live generation",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/25",
+      "createdAt": "2026-10-17T01:37:43Z",
+      "updatedAt": "2026-10-17T01:39:25Z",
+      "mergedAt": "2026-10-17T01:39:25Z",
+      "closedAt": "2026-10-17T01:39:25Z",
+      "draft": false
+    },
+    {
+      "id": 26,
+      "number": 26,
+      "title": "AB-031: Source-hash-verified evidence retrieval and exception expansion",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/26",
+      "createdAt": "2026-10-17T01:39:03Z",
+      "updatedAt": "2026-10-17T01:41:02Z",
+      "mergedAt": "2026-10-17T01:41:02Z",
+      "closedAt": "2026-10-17T01:41:02Z",
+      "draft": false
+    },
+    {
+      "id": 27,
+      "number": 27,
+      "title": "AB-032: Source-verified claim envelopes with semantic-review hold",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/27",
+      "createdAt": "2026-10-17T01:41:32Z",
+      "updatedAt": "2026-10-17T01:43:08Z",
+      "mergedAt": "2026-10-17T01:43:08Z",
+      "closedAt": "2026-10-17T01:43:08Z",
+      "draft": false
+    },
+    {
+      "id": 28,
+      "number": 28,
+      "title": "AB-033: Verbatim entailment and decisive-exception preservation gate",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/28",
+      "createdAt": "2026-10-17T01:43:33Z",
+      "updatedAt": "2026-10-17T01:45:43Z",
+      "mergedAt": "2026-10-17T01:45:43Z",
+      "closedAt": "2026-10-17T01:45:43Z",
+      "draft": false
+    },
+    {
+      "id": 29,
+      "number": 29,
+      "title": "AB-034: Tenant-locked generation usage and anonymous capability safeguards (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/29",
+      "createdAt": "2026-10-17T02:12:55Z",
+      "updatedAt": "2026-10-17T02:29:44Z",
+      "mergedAt": "2026-10-17T02:29:44Z",
+      "closedAt": "2026-10-17T02:29:44Z",
+      "draft": false
+    },
+    {
+      "id": 30,
+      "number": 30,
+      "title": "AB-035: Validated event-only SSE and bounded replay (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/30",
+      "createdAt": "2026-10-17T02:13:47Z",
+      "updatedAt": "2026-10-17T02:32:13Z",
+      "mergedAt": "2026-10-17T02:32:13Z",
+      "closedAt": "2026-10-17T02:32:13Z",
+      "draft": false
+    },
+    {
+      "id": 31,
+      "number": 31,
+      "title": "AB-036: Exact-source accessible citation cards and answer fallbacks (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/31",
+      "createdAt": "2026-10-17T02:14:42Z",
+      "updatedAt": "2026-10-17T02:34:58Z",
+      "mergedAt": "2026-10-17T02:34:58Z",
+      "closedAt": "2026-10-17T02:34:58Z",
+      "draft": false
+    },
+    {
+      "id": 32,
+      "number": 32,
+      "title": "AB-045: Record owner-approved Option 10 Bill character direction",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/32",
+      "createdAt": "2026-10-17T02:24:56Z",
+      "updatedAt": "2026-10-17T02:26:35Z",
+      "mergedAt": "2026-10-17T02:26:35Z",
+      "closedAt": "2026-10-17T02:26:35Z",
+      "draft": false
+    },
+    {
+      "id": 33,
+      "number": 33,
+      "title": "AB-037: Dated primary-law and draft source comparisons (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/33",
+      "createdAt": "2026-10-17T02:29:06Z",
+      "updatedAt": "2026-10-17T02:31:46Z",
+      "mergedAt": "2026-10-17T02:31:45Z",
+      "closedAt": "2026-10-17T02:31:46Z",
+      "draft": false
+    },
+    {
+      "id": 34,
+      "number": 34,
+      "title": "AB-038: Untrusted legislative-source and model-tool injection boundaries (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/34",
+      "createdAt": "2026-10-17T02:34:23Z",
+      "updatedAt": "2026-10-17T02:36:37Z",
+      "mergedAt": "2026-10-17T02:36:37Z",
+      "closedAt": "2026-10-17T02:36:37Z",
+      "draft": false
+    },
+    {
+      "id": 35,
+      "number": 35,
+      "title": "AB-047: Reproducible rigged Option 10 character GLB candidate (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/35",
+      "createdAt": "2026-10-17T02:34:27Z",
+      "updatedAt": "2026-10-17T02:37:11Z",
+      "mergedAt": "2026-10-17T02:37:11Z",
+      "closedAt": "2026-10-17T02:37:11Z",
+      "draft": false
+    },
+    {
+      "id": 36,
+      "number": 36,
+      "title": "AB-039: Source-verified attributed perspectives and explicit unknowns (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/36",
+      "createdAt": "2026-10-17T02:36:08Z",
+      "updatedAt": "2026-10-17T02:40:49Z",
+      "mergedAt": "2026-10-17T02:40:49Z",
+      "closedAt": "2026-10-17T02:40:49Z",
+      "draft": false
+    },
+    {
+      "id": 37,
+      "number": 37,
+      "title": "AB-072: Bounded attention, highlighted-text approach and idle wander prototype",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/37",
+      "createdAt": "2026-10-17T02:38:57Z",
+      "updatedAt": "2026-10-17T02:40:44Z",
+      "mergedAt": "2026-10-17T02:40:44Z",
+      "closedAt": "2026-10-17T02:40:44Z",
+      "draft": false
+    },
+    {
+      "id": 38,
+      "number": 38,
+      "title": "AB-024: Immutable reviewed release packs and atomic PostgreSQL publication (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/38",
+      "createdAt": "2026-10-17T02:40:26Z",
+      "updatedAt": "2026-10-17T02:43:25Z",
+      "mergedAt": "2026-10-17T02:43:24Z",
+      "closedAt": "2026-10-17T02:43:24Z",
+      "draft": false
+    },
+    {
+      "id": 39,
+      "number": 39,
+      "title": "AB-047: Clean Blender import, editable source and rig audit (candidate)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/39",
+      "createdAt": "2026-10-17T02:41:50Z",
+      "updatedAt": "2026-10-17T02:50:37Z",
+      "mergedAt": "2026-10-17T02:50:37Z",
+      "closedAt": "2026-10-17T02:50:37Z",
+      "draft": false
+    },
+    {
+      "id": 40,
+      "number": 40,
+      "title": "AB-025: Exact incomplete electronic-filing reference pack and source-bound questions (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/40",
+      "createdAt": "2026-10-17T02:43:00Z",
+      "updatedAt": "2026-10-17T02:45:08Z",
+      "mergedAt": "2026-10-17T02:45:07Z",
+      "closedAt": "2026-10-17T02:45:07Z",
+      "draft": false
+    },
+    {
+      "id": 41,
+      "number": 41,
+      "title": "AB-027: Immutable extraction-correction previews and versioned audit records (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/41",
+      "createdAt": "2026-10-17T02:44:43Z",
+      "updatedAt": "2026-10-17T02:46:54Z",
+      "mergedAt": "2026-10-17T02:46:54Z",
+      "closedAt": "2026-10-17T02:46:54Z",
+      "draft": false
+    },
+    {
+      "id": 42,
+      "number": 42,
+      "title": "AB-026: Distinct long-document stress packs and verified official import targets (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/42",
+      "createdAt": "2026-10-17T02:46:27Z",
+      "updatedAt": "2026-10-17T02:49:08Z",
+      "mergedAt": "2026-10-17T02:49:08Z",
+      "closedAt": "2026-10-17T02:49:08Z",
+      "draft": false
+    },
+    {
+      "id": 43,
+      "number": 43,
+      "title": "AB-040: 240 version-pinned synthetic evaluation cases and held-out scoring (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/43",
+      "createdAt": "2026-10-17T02:48:37Z",
+      "updatedAt": "2026-10-17T02:49:53Z",
+      "mergedAt": "2026-10-17T02:49:53Z",
+      "closedAt": "2026-10-17T02:49:53Z",
+      "draft": false
+    },
+    {
+      "id": 44,
+      "number": 44,
+      "title": "AB-041: Three source-preserving reading levels and session-only preferences (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/44",
+      "createdAt": "2026-10-17T02:50:56Z",
+      "updatedAt": "2026-10-17T02:53:23Z",
+      "mergedAt": "2026-10-17T02:53:22Z",
+      "closedAt": "2026-10-17T02:53:23Z",
+      "draft": false
+    },
+    {
+      "id": 45,
+      "number": 45,
+      "title": "AB-046: Deterministic Blender candidate front/side/back and mobile preview renders",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/45",
+      "createdAt": "2026-10-17T02:51:04Z",
+      "updatedAt": "2026-10-17T02:57:35Z",
+      "mergedAt": "2026-10-17T02:57:35Z",
+      "closedAt": "2026-10-17T02:57:35Z",
+      "draft": false
+    },
+    {
+      "id": 46,
+      "number": 46,
+      "title": "AB-028: Quarantined document recovery and private fenced ingestion (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/46",
+      "createdAt": "2026-10-17T02:52:55Z",
+      "updatedAt": "2026-10-17T02:55:23Z",
+      "mergedAt": "2026-10-17T02:55:23Z",
+      "closedAt": "2026-10-17T02:55:23Z",
+      "draft": false
+    },
+    {
+      "id": 47,
+      "number": 47,
+      "title": "AB-042: Public source-only answer cache and safe provider fallbacks (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/47",
+      "createdAt": "2026-10-17T02:54:47Z",
+      "updatedAt": "2026-10-17T03:11:10Z",
+      "mergedAt": "2026-10-17T03:11:10Z",
+      "closedAt": "2026-10-17T03:11:10Z",
+      "draft": false
+    },
+    {
+      "id": 48,
+      "number": 48,
+      "title": "AB-043: Opt-in redacted feedback and immutable answer incident controls (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/48",
+      "createdAt": "2026-10-17T02:56:37Z",
+      "updatedAt": "2026-10-17T03:11:18Z",
+      "mergedAt": "2026-10-17T03:11:18Z",
+      "closedAt": "2026-10-17T03:11:18Z",
+      "draft": false
+    },
+    {
+      "id": 49,
+      "number": 49,
+      "title": "AB-044: Candidate-bound grounding acceptance gate (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/49",
+      "createdAt": "2026-10-17T03:10:15Z",
+      "updatedAt": "2026-10-17T03:15:41Z",
+      "mergedAt": "2026-10-17T03:15:41Z",
+      "closedAt": "2026-10-17T03:15:41Z",
+      "draft": false
+    },
+    {
+      "id": 50,
+      "number": 50,
+      "title": "AB-004: Complete-source read-only reader with safe version links (follow-up)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/50",
+      "createdAt": "2026-10-17T03:18:11Z",
+      "updatedAt": "2026-10-17T03:20:17Z",
+      "mergedAt": "2026-10-17T03:20:17Z",
+      "closedAt": "2026-10-17T03:20:17Z",
+      "draft": false
+    },
+    {
+      "id": 51,
+      "number": 51,
+      "title": "AB-004: Source-only HTTP routes and plain-text export (follow-up)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/51",
+      "createdAt": "2026-10-17T03:19:54Z",
+      "updatedAt": "2026-10-17T03:23:54Z",
+      "mergedAt": "2026-10-17T03:23:54Z",
+      "closedAt": "2026-10-17T03:23:54Z",
+      "draft": false
+    },
+    {
+      "id": 53,
+      "number": 53,
+      "title": "AB-024: Active-release PostgreSQL reader adapter (follow-up)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/53",
+      "createdAt": "2026-10-17T03:23:34Z",
+      "updatedAt": "2026-10-17T03:25:47Z",
+      "mergedAt": "2026-10-17T03:25:47Z",
+      "closedAt": "2026-10-17T03:25:47Z",
+      "draft": false
+    },
+    {
+      "id": 54,
+      "number": 54,
+      "title": "AB-004: Real Chromium public-reader HTTP accessibility smoke (follow-up)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/54",
+      "createdAt": "2026-10-17T03:25:28Z",
+      "updatedAt": "2026-10-17T03:28:13Z",
+      "mergedAt": "2026-10-17T03:28:13Z",
+      "closedAt": "2026-10-17T03:28:13Z",
+      "draft": false
+    },
+    {
+      "id": 55,
+      "number": 55,
+      "title": "AB-004: Public published-bill catalog and pagination (follow-up)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/55",
+      "createdAt": "2026-10-17T03:27:57Z",
+      "updatedAt": "2026-10-17T03:30:16Z",
+      "mergedAt": "2026-10-17T03:30:16Z",
+      "closedAt": "2026-10-17T03:30:16Z",
+      "draft": false
+    },
+    {
+      "id": 56,
+      "number": 56,
+      "title": "AB-024: Tenant-scoped active-release catalog PostgreSQL lookup (follow-up)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/56",
+      "createdAt": "2026-10-17T03:29:57Z",
+      "updatedAt": "2026-10-17T03:31:55Z",
+      "mergedAt": "2026-10-17T03:31:55Z",
+      "closedAt": "2026-10-17T03:31:55Z",
+      "draft": false
+    },
+    {
+      "id": 57,
+      "number": 57,
+      "title": "AB-004: End-to-end catalog-to-reader Chromium navigation (follow-up)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/57",
+      "createdAt": "2026-10-17T03:31:34Z",
+      "updatedAt": "2026-10-17T03:33:37Z",
+      "mergedAt": "2026-10-17T03:33:37Z",
+      "closedAt": "2026-10-17T03:33:37Z",
+      "draft": false
     }
   ]
 }
