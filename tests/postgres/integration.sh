@@ -94,4 +94,8 @@ echo '[Ask Bill AB-024] Prove authorized active release and revoked source isola
 psql_container < tests/postgres/public_reader_policy.sql
 echo '[Ask Bill AB-024] Validate source size preflight SQL in ephemeral PostgreSQL'
 psql_container < tests/postgres/public_size_budget.sql
+echo '[Ask Bill AB-095] Apply tenant-scoped retention function twice and test expired-only deletions'
+psql_container < migrations/007_retention.sql > /dev/null
+psql_container < migrations/007_retention.sql > /dev/null
+psql_container < tests/postgres/retention.sql
 printf '[Ask Bill AB-007/010/013/023] PostgreSQL migrations, isolation, jobs, source provenance and atomic search indexing passed.\n'
