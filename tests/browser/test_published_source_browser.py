@@ -63,6 +63,15 @@ try:
             page.locator("nav[aria-label='Sections'] a").last.click()
             assert page.evaluate("location.hash") == "#provision-section-2"
             assert VERSION in page.url
+            page.goto(BASE + "/bills", wait_until="load", timeout=10000)
+            assert page.get_by_role("heading", name="Published bills").is_visible()
+            assert page.locator("nav[aria-label='Published bills'] a").count() == 1
+            assert "Introduced" in page.locator("nav[aria-label='Published bills']").inner_text()
+            cat_size = page.evaluate("({width: window.innerWidth, scroll: document.documentElement.scrollWidth})")
+            assert cat_size["scroll"] <= cat_size["width"] + 1, (width, cat_size)
+            page.locator("nav[aria-label='Published bills'] a").click()
+            assert VERSION in page.url
+            assert "SYNTHETIC PROPOSAL" in page.locator("pre.statutory-text").first.inner_text()
             assert not errors, errors
             results.append({"width": width, "strictHttp": True, "contentVisible": True, "overflow": False})
             ctx.close()
@@ -72,6 +81,9 @@ try:
         assert no_js_page.get_by_role("heading", name="Synthetic Example Bill").is_visible()
         assert no_js_page.locator("pre.statutory-text").count() == 2
         assert no_js_page.locator("nav[aria-label='Sections'] a").count() == 2
+        no_js_page.goto(BASE + "/bills", wait_until="load", timeout=10000)
+        assert no_js_page.get_by_role("heading", name="Published bills").is_visible()
+        assert no_js_page.locator("nav[aria-label='Published bills'] a").count() == 1
         no_js.close()
         browser.close()
     print(json.dumps({"result": "passed", "reader": "published-source-fixture",
