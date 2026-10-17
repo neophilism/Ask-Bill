@@ -57,7 +57,7 @@ def proof_render(output):
     bg.inputs['Color'].default_value = (0.83, 0.84, 0.87, 1)
     bg.inputs['Strength'].default_value = .7
     for name,location,energy,scale in [
-        ('Key',(5,7,7),650,6),('Fill',(-6,5,4),380,5),('Rim',(2,5,-6),560,5)
+        ('Key',(5,-7,7),650,6),('Fill',(-6,-5,4),380,5),('Rim',(2,6,5),560,5)
     ]:
         ld = bpy.data.lights.new('Option10_'+name,'AREA')
         ld.energy = energy
@@ -65,7 +65,7 @@ def proof_render(output):
         ob=bpy.data.objects.new(ld.name,ld)
         scene.collection.objects.link(ob)
         ob.location=location
-        target_camera(ob,(0,1.8,0))
+        target_camera(ob,(0,0,1.8))
 
     cam_data=bpy.data.cameras.new('Option10_ReviewCamera')
     camera=bpy.data.objects.new('Option10_ReviewCamera',cam_data)
@@ -73,11 +73,12 @@ def proof_render(output):
     scene.camera=camera
     cam_data.type='ORTHO'
     cam_data.ortho_scale=4.6
-    target=(0,1.9,0)
+    # Blender converts glTF Y-up to Blender Z-up (front glTF +Z -> Blender -Y).
+    target=(0,0,1.9)
     files=[]
     for name,angle in [('front',0),('right',90),('back',180),('left',270),('three-quarter',32),('thumbnail-96',0)]:
         theta=radians(angle)
-        camera.location=(7*sin(theta),2.0,7*cos(theta))
+        camera.location=(7*sin(theta),-7*cos(theta),1.9)
         target_camera(camera,target)
         scene.render.resolution_x = 96 if name=='thumbnail-96' else 320
         scene.render.resolution_y = 128 if name=='thumbnail-96' else 440
