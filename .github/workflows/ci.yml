@@ -57,7 +57,9 @@ jobs:
       - name: Verify real localhost reader in Chromium
         env:
           ASK_BILL_BROWSER_REQUIRE_HTTP: '1'
-        run: python tests/browser/test_reader_browser.py
+        run: |
+          python tests/browser/test_reader_browser.py
+          python tests/browser/test_published_source_browser.py
   database:
     name: database / PostgreSQL tenancy and migrations
     runs-on: ubuntu-latest
