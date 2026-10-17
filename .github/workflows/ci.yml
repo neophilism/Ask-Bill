@@ -68,3 +68,23 @@ jobs:
           persist-credentials: false
       - name: Run isolated PostgreSQL 17 migration and tenant isolation tests
         run: bash tests/postgres/integration.sh
+
+  pdf:
+    name: document / PDF review and extraction smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - name: Install restricted PDF backend
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends poppler-utils tesseract-ocr
+      - name: Test real Poppler extraction and private-page rendering
+        env:
+          ASK_BILL_REQUIRE_PDF_TOOLS: '1'
+        run: node --test tests/pdf.test.mjs
