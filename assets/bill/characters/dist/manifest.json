@@ -102,7 +102,7 @@
         "Look"
       ],
       "approved": false,
-      "bytes": 3503752,
+      "bytes": 3534240,
       "default": false,
       "form": "portrait",
       "id": "bill-04",
@@ -116,7 +116,7 @@
       "path": "assets/bill/characters/dist/bill-04.glb",
       "personality": "Measured, gentle; methodically unpacks complicated language",
       "reference": "option_4_parchment_paper_butler_turnaround.png",
-      "sha256": "ad1d735fb567b4ea6fd33246a11a9661472f08c124e28a597e380dd8e63bd00c",
+      "sha256": "77f1ae60d639cb0f7b781c4003d8744405d1d989a68afe23e6d6a04e943056a1",
       "style": "gold",
       "version": "art-study-v3b"
     },
@@ -192,7 +192,7 @@
         "Look"
       ],
       "approved": false,
-      "bytes": 3473248,
+      "bytes": 3534288,
       "default": false,
       "form": "portrait",
       "id": "bill-07",
@@ -206,7 +206,7 @@
       "path": "assets/bill/characters/dist/bill-07.glb",
       "personality": "Reassuring, thoughtful; checks whether an explanation helped",
       "reference": "option_7_parchment_butler_guide.png",
-      "sha256": "699da2219304db4d87fe65ebfbb7ae8c6cecc3cb1338069c9283742fc9f188f2",
+      "sha256": "78c2343377b0f8ca07802be6c243415e91d7c313878ea0d6d41d6627959ce673",
       "style": "ivory",
       "version": "art-study-v3b"
     },
@@ -222,7 +222,7 @@
         "Look"
       ],
       "approved": false,
-      "bytes": 3506384,
+      "bytes": 3535336,
       "default": false,
       "form": "portrait",
       "id": "bill-08",
@@ -236,7 +236,7 @@
       "path": "assets/bill/characters/dist/bill-08.glb",
       "personality": "Animated, upbeat; gets straight to the important detail",
       "reference": "option_8_bill_character_concept_sheet.png",
-      "sha256": "74bbf5022590403acf39b3fb672393b7f910255e4035a89379371871fb9daa3a",
+      "sha256": "4fca959e5eb2ec10fafd548639d54058ca5e39c6fa04c4894900c858e1502d87",
       "style": "midnight",
       "version": "art-study-v3b"
     },
@@ -252,7 +252,7 @@
         "Look"
       ],
       "approved": false,
-      "bytes": 3535292,
+      "bytes": 3540660,
       "default": false,
       "form": "portrait",
       "id": "bill-09",
@@ -266,7 +266,7 @@
       "path": "assets/bill/characters/dist/bill-09.glb",
       "personality": "Even-handed, precise; distinguishes fact from interpretation",
       "reference": "option_9_charming_legal_parchment.png",
-      "sha256": "df1baba27fcabdd4d3a22766f92a60ea641cbe4137d78d8655df15ea1ed47f6f",
+      "sha256": "2fe84e1be71528c83ea02883b42f7662768ff4a772c0bef8cb9f6ae914a84d08",
       "style": "navy",
       "version": "art-study-v3b"
     },
