@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ask Bill | Option 10 motion sandbox</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f1eb;color:#263450;font:16px/1.6 system-ui}
+header{background:#263450;color:#fff;padding:18px 25px;font-weight:700}
+main{max-width:1050px;margin:25px auto;padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+article,aside{background:#fff;padding:24px;border-radius:13px;border:1px solid #ddd3c3}
+h1{font:30px Georgia,serif;margin:8px 0}p{margin:10px 0}
+.excerpt{font:20px/1.9 Georgia,serif;background:#fff8ed;padding:18px;border-left:4px solid #c79b53}
+.stage{height:310px;position:relative;background:linear-gradient(#eef4fa,#fffcf5);overflow:hidden;border:1px solid #dce4eb;border-radius:12px}
+.bill{position:absolute;left:0;top:0;width:95px;height:160px;pointer-events:none;transform:translate3d(30px,50px,0)}
+.body{position:absolute;inset:3px 8px 27px;background:linear-gradient(95deg,#d9b47d,#f9e9c3 35%,#e6c492);border:3px solid #b88c4d;border-radius:4px 7px 13px 13px;z-index:2}
+.body:before{content:'';position:absolute;inset:5px;border:1px solid #bc9159}
+.curl{position:absolute;right:-7px;top:-11px;width:54px;height:20px;border:3px solid #b58a52;border-radius:50%;background:linear-gradient(#f8e2b1,#d1a168)}
+.curl:after{content:'';position:absolute;right:2px;top:3px;width:9px;height:9px;border:2px solid #7e542d;border-left:0;border-bottom:0;border-radius:50%}
+.eye{position:absolute;top:35px;width:22px;height:28px;border:2px solid #ac8656;border-radius:50%;background:#fff}
+.eye.left{left:10px}.eye.right{right:9px}.eye:after{content:'';position:absolute;width:10px;height:16px;left:8px;top:7px;background:#4a2e24;border-radius:50%}
+.brow{position:absolute;top:27px;width:19px;height:5px;border-radius:6px;background:#67432f}.brow.left{left:10px;transform:rotate(-8deg)}.brow.right{right:10px;transform:rotate(11deg)}
+.smile{position:absolute;top:75px;left:26px;width:30px;height:15px;background:#4b2826;border-radius:0 0 55% 55%}
+.lapel{position:absolute;top:95px;height:46px;width:24px;background:#273552;border:2px solid #cc9a52}.lapel.left{left:5px;clip-path:polygon(0 0,100% 18%,100% 100%,0 78%)}.lapel.right{right:5px;clip-path:polygon(100% 0,0 18%,0 100%,100% 78%)}
+.cravat{position:absolute;top:95px;left:31px;width:19px;height:17px;background:#faf0d9;border:2px solid #d2a665;clip-path:polygon(0 0,50% 35%,100% 0,100% 100%,50% 65%,0 100%)}
+.tail{position:absolute;bottom:12px;width:22px;height:74px;border:2px solid #bd9157;background:#e6c99a;z-index:1;border-radius:0 0 60% 40%}.tail.left{left:10px;transform:rotate(36deg)}.tail.right{right:10px;transform:rotate(-36deg)}
+.arm{position:absolute;top:90px;width:12px;height:50px;background:#273552;border-radius:10px}.arm.left{left:0;transform:rotate(30deg)}.arm.right{right:0;transform:rotate(-30deg)}
+.leg{position:absolute;bottom:6px;width:10px;height:36px;background:#f4dcb3}.leg.left{left:30px}.leg.right{right:30px}.leg:after{content:'';position:absolute;bottom:-4px;left:-5px;width:21px;height:10px;background:#263450;border-radius:60%}
+.walk .leg.left{animation:step .5s infinite alternate}.walk .leg.right{animation:step .5s infinite alternate-reverse}.point .arm.left{transform:rotate(80deg)}
+@keyframes step{to{transform:rotate(20deg)}}button,input{font:inherit}button{background:#263f66;color:#fff;border:0;border-radius:7px;padding:9px 11px;cursor:pointer;margin:4px}input{max-width:100%;padding:10px;border:1px solid #a9b6c4;border-radius:7px}button:focus-visible,input:focus-visible{outline:3px solid #1768a8}
+#suggestions[hidden]{display:none}small{color:#667487}#status{color:#566784}#reply{min-height:32px}
+@media(max-width:720px){main{grid-template-columns:1fr}}@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style></head>
+<body><header>Ask Bill · Option 10 attention sandbox · Offline, nonproduction</header>
+<main><article><h1>Select a phrase</h1><p>This is fictional example text, not actual legislation.</p>
+<blockquote id="source" class="excerpt">The town library opens its reading room four days a week. During emergencies, the library may change those hours after providing public notice.</blockquote>
+<p id="selection-status" role="status">Highlight some text and Bill will approach a safe nearby position.</p>
+<div id="suggestions" hidden><button>What does this mean?</button><button>Are there exceptions?</button><button>Who is affected?</button></div>
+<form id="question-form"><input id="question" placeholder="Ask Bill (local demonstration)" aria-label="Ask Bill"><button>Ask</button></form>
+<p id="reply" role="status"></p><small>Text only, no AI provider, microphone, eye tracking or persistent memory in this prototype.</small>
+</article><aside><h1>Meet Bill</h1><div id="stage" class="stage" aria-label="Movement playground">
+<div id="bill" class="bill" aria-hidden="true"><div class="tail left"></div><div class="tail right"></div><div class="arm left"></div><div class="arm right"></div><div class="leg left"></div><div class="leg right"></div>
+<div class="body"><div class="curl"></div><div class="brow left"></div><div class="brow right"></div><div class="eye left"></div><div class="eye right"></div><div class="smile"></div><div class="lapel left"></div><div class="lapel right"></div><div class="cravat"></div></div></div></div>
+<p id="status" role="status">Idle</p>
+<div><button id="pause" type="button" aria-pressed="false">Pause</button><button id="hide" type="button" aria-pressed="false">Hide</button><button id="reduce" type="button" aria-pressed="false">Reduce motion</button></div>
+<small>2D control sandbox only. The rigged GLB is a separate review artifact. Bill never walks over source text here.</small></aside></main>
+<script src="../../../packages/character/attention/option10-controller.cjs"></script>
+<script>
+'use strict';
+const stage=document.querySelector('#stage'),bill=document.querySelector('#bill'),source=document.querySelector('#source'),question=document.querySelector('#question');
+const note=document.querySelector('#selection-status'),reply=document.querySelector('#reply'),choices=document.querySelector('#suggestions'),stateText=document.querySelector('#status');
+const version='practice-source:v1',start=performance.now();let last=start,selected='';
+let ctrl=BillAttention.createAttention({width:Math.max(180,stage.clientWidth-95),height:160,start:{x:20,y:60}});
+ctrl.setVersion(version);ctrl.setReducedMotion(matchMedia('(prefers-reduced-motion: reduce)').matches);
+stage.addEventListener('pointermove',e=>{const r=stage.getBoundingClientRect();ctrl.setPointer({x:e.clientX-r.left,y:e.clientY-r.top},performance.now()-start);});
+function inspectSelection(){
+ const s=window.getSelection();if(!s||s.isCollapsed||!s.rangeCount)return;
+ const range=s.getRangeAt(0);if(!source.contains(range.commonAncestorContainer))return;
+ const before=range.cloneRange();before.selectNodeContents(source);before.setEnd(range.startContainer,range.startOffset);
+ const begin=before.toString().length,quote=range.toString().trim();if(!quote||quote.length>1500)return;
+ if(!ctrl.setSelection({validated:true,version,x:19,y:55,start:begin,end:begin+range.toString().length}))return;
+ selected=quote;note.textContent='Bill noticed: '+quote.slice(0,100);choices.hidden=false;
+}
+window.addEventListener('mouseup',inspectSelection);window.addEventListener('keyup',e=>{if(e.key==='Shift'||e.key.startsWith('Arrow'))inspectSelection()});
+choices.addEventListener('click',e=>{if(e.target.tagName==='BUTTON'){question.value=e.target.textContent;question.focus()}});
+question.addEventListener('focus',()=>ctrl.setFocus(true));question.addEventListener('blur',()=>ctrl.setFocus(false));
+document.querySelector('#question-form').addEventListener('submit',e=>{e.preventDefault();if(!question.value.trim())return;reply.textContent='No AI connected. Your question and '+(selected?'selected passage':'session')+' remain local in this experiment.'});
+for(const [id,method] of [['pause','setPaused'],['hide','setHidden'],['reduce','setReducedMotion']]){
+ const b=document.getElementById(id);b.addEventListener('click',()=>{const on=b.getAttribute('aria-pressed')!=='true';b.setAttribute('aria-pressed',String(on));ctrl[method](on)})}
+function frame(now){const s=ctrl.tick(Math.min(60,Math.max(0,now-last)),now-start);last=now;
+ bill.style.transform='translate3d('+s.x+'px,'+s.y+'px,0)';
+ bill.classList.toggle('walk',['following','wandering','approach_selection'].includes(s.mode));
+ bill.classList.toggle('point',s.mode==='pointing');bill.hidden=s.hidden;stateText.textContent=s.mode+' · '+Math.round(s.speed)+' px/s';requestAnimationFrame(frame)}
+requestAnimationFrame(frame);
+</script></body></html>
