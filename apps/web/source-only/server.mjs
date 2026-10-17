@@ -8,6 +8,7 @@ import {createPublicReader} from '../../../packages/ui/reader/index.mjs';
 import {renderPublicCatalog} from '../../../packages/ui/catalog/index.mjs';
 import {findExactPublishedText,renderSourceSearchResults} from '../../../packages/ui/reader/find.mjs';
 import {createSourceOnlyShare,renderSourceShareHtml,renderSourceShareText} from '../../../packages/export/index.mjs';
+import {createSourceOnlyTour,renderSourceTourStep} from '../../../packages/tours/index.mjs';
 import {readFile} from 'node:fs/promises';
 
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -118,6 +119,19 @@ export async function createPublishedSourceServer({publisherId,lookupPublishedPa
         type:'text/html; charset=utf-8'};
     });
     return;
+  }
+  // Optional source-only guided tour: exact complete active version and no provider calls.
+  const tourMatch=/^\/bills\/([0-9a-f-]{36})\/versions\/([0-9a-f-]{36})\/tour\/([1-9][0-9]?)$/i.exec(path);
+  if(tourMatch&&UUID.test(tourMatch[1])&&UUID.test(tourMatch[2])){
+    dispatch(res,head,async()=>{
+      const billId=tourMatch[1].toLowerCase(),versionId=tourMatch[2].toLowerCase();
+      const pack=await lookupPublishedPack(Object.freeze({publisherId,billId,versionId}));
+      if(!pack||pack.publisherId?.toLowerCase()!==publisherId.toLowerCase()||
+         pack.billId?.toLowerCase()!==billId||pack.versionId?.toLowerCase()!==versionId)
+         throw Error('PUBLISHED_TOUR_NOT_AVAILABLE');
+      return {body:renderSourceTourStep({tour:createSourceOnlyTour({pack}),step:Number(tourMatch[3])}),
+        type:'text/html; charset=utf-8'};
+    });return;
   }
   const match=ROUTE.exec(path);
   if(!match||!UUID.test(match[1])||!UUID.test(match[2])){
