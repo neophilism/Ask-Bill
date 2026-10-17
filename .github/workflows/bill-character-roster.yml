@@ -8,6 +8,7 @@ on:
       - 'apps/web/preview/characters.html'
       - '.github/workflows/bill-character-roster.yml'
       - 'docs/character/CHARACTER_ROSTER_20.md'
+      - 'assets/README.md'
   workflow_dispatch:
 permissions:
   contents: read
