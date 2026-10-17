@@ -1,0 +1,37 @@
+name: Bill candidate GLB (preview only)
+on:
+  pull_request:
+    paths:
+      - "tools/blender/**"
+      - "tests/test_candidate.py"
+      - ".github/workflows/character-candidate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tools/blender/**"
+      - "tests/test_candidate.py"
+      - ".github/workflows/character-candidate.yml"
+permissions:
+  contents: read
+jobs:
+  offline-candidate:
+    name: Candidate mesh, skin, morph and clip checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Deterministic build
+        run: python3 tools/blender/generate_bill.py --output assets/bill/runtime/Bill-Candidate.glb
+      - name: Candidate structural tests
+        run: python3 -m unittest discover -s tests -p test_candidate.py -v
+      - name: Artifact sha256
+        run: sha256sum assets/bill/runtime/Bill-Candidate.glb
+      - name: Upload review GLB (not production)
+        uses: actions/upload-artifact@v4
+        with:
+          name: option10-rigged-glb-candidate
+          path: assets/bill/runtime/Bill-Candidate.glb
+          if-no-files-found: error
+          retention-days: 14
