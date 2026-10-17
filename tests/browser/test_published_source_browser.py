@@ -85,10 +85,28 @@ try:
         assert no_js_page.get_by_role("heading", name="Published bills").is_visible()
         assert no_js_page.locator("nav[aria-label='Published bills'] a").count() == 1
         no_js.close()
+        contrast = browser.new_context(
+            viewport={"width": 320, "height": 760},
+            forced_colors="active", reduced_motion="reduce"
+        )
+        accessible = contrast.new_page()
+        accessible.goto(PAGE, wait_until="load", timeout=10000)
+        assert accessible.get_by_role("heading", name="Synthetic Example Bill").is_visible()
+        assert accessible.locator("pre.statutory-text").count() == 2
+        assert accessible.evaluate("matchMedia('(prefers-reduced-motion: reduce)').matches") is True
+        assert accessible.evaluate("matchMedia('(forced-colors: active)').matches") is True
+        assert accessible.evaluate("document.documentElement.scrollWidth <= window.innerWidth + 1") is True
+        accessible.emulate_media(media="print")
+        assert accessible.evaluate("getComputedStyle(document.querySelector('nav')).display") == "none"
+        assert accessible.locator("pre.statutory-text").first.is_visible()
+        assert "SYNTHETIC PROPOSAL" in accessible.locator("pre.statutory-text").first.inner_text()
+        contrast.close()
         browser.close()
     print(json.dumps({"result": "passed", "reader": "published-source-fixture",
                       "browser": "Chromium", "viewports": results,
-                      "javascriptDisabled": "passed", "productionReleaseVerified": False}), flush=True)
+                      "javascriptDisabled": "passed",
+                      "highContrast": "passed", "reducedMotion": "passed",
+                      "printMedia": "passed", "productionReleaseVerified": False}), flush=True)
 finally:
     proc.terminate()
     try:
