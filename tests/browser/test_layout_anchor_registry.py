@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[2]
 MODULE = (ROOT / "packages/character/layout/registry.mjs").read_bytes()
 URL = "data:text/javascript;base64," + base64.b64encode(MODULE).decode("ascii")
 HTML = """<!doctype html><html><head><style>
-body{margin:0;padding:20px} main{max-width:800px}section{border:1px solid #ccc;padding:20px;margin:32px 0}
+body{margin:0;padding:20px;min-height:1800px} main{max-width:800px}section{border:1px solid #ccc;padding:20px;margin:32px 0}
 </style></head><body><main id="reader"><h1>Test bill</h1>
 <label>Question <input id="question" value="hi" /></label>
 <section id="provision-sec-1"><h2>One</h2><p>Published text.</p></section>
@@ -34,7 +34,7 @@ with sync_playwright() as playwright:
         assert initial["focus"] == "question", "registration must never steal focus"
         assert initial["viewport"] <= width, "registration must not cause horizontal overflow"
         page.evaluate("window.scrollTo(0,30)")
-        page.wait_for_timeout(30)
+        page.wait_for_function("window.scrollY >= 30")
         result = page.evaluate("""previous => {
           const reg=window.__registry;let stale=false,unknown=false;
           try{reg.measure({expectedRevision:previous});}catch(e){stale=e.code==='STALE_LAYOUT_REVISION';}
