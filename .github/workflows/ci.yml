@@ -62,6 +62,7 @@ jobs:
           python tests/browser/test_published_source_browser.py
           python tests/browser/test_layout_anchor_registry.py
           python tests/browser/test_character_lab_browser.py
+          python tests/browser/test_navigation_worker_browser.py
   database:
     name: database / PostgreSQL tenancy and migrations
     runs-on: ubuntu-latest
