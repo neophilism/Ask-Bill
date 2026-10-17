@@ -39,6 +39,15 @@ export async function createPreviewServer({healthMonitor=createHealthMonitor({st
       return;
     }
     if(path === '/healthz') {res.writeHead(200,{'Content-Type':'application/json; charset=utf-8'});res.end(req.method==='HEAD'?undefined:JSON.stringify({product:'ask-bill',status:'preview',live:false,sourceComplete:false}));return;}
+    // Immutable source-owned motion inventory; never use a client-supplied path.
+    if(path==='/assets/bill/characters/animation-library.json'){
+      readFile(new URL('../../../assets/bill/characters/animation-library.json',import.meta.url)).then(body=>{
+        if(body.length>25000){res.writeHead(413);res.end();return;}
+        res.writeHead(200,{'Content-Type':'application/json; charset=utf-8','Content-Length':body.length});
+        res.end(req.method==='HEAD'?undefined:body);
+      },()=>{res.writeHead(404);res.end();});
+      return;
+    }
     // Only exact catalog IDs are servable; never resolve client-supplied filesystem paths.
     const characterAsset = /^\/assets\/bill\/characters\/dist\/(manifest\.json|bill-(?:0[1-9]|1[0-9]|20)\.glb)$/.exec(path);
     if(characterAsset){

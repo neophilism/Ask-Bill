@@ -496,7 +496,8 @@ def limbs(g,root,hips,m):
 
 
 def animations(g,root,sheet,l,r,hips,mouth_node,eye_nodes):
-    # Retains 8 real reusable glTF2 clips; runtime travel stays application-owned.
+    # Legacy eight clips remain compatible; roster augmentation adds 25 more.
+    # Runtime travel stays application-owned.
     tr=lambda n,p,t,v,k='VEC4':(n,p,t,v,k)
     T=[0,.6,1.2,1.8,2.4]
     g.animation('Idle',[tr(root,'translation',T,[[0,0,0],[0,.009,0],[0,.0,0],[0,.009,0],[0,0,0]],'VEC3'),

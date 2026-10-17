@@ -37,7 +37,7 @@ class CharacterKit(unittest.TestCase):
         self.assertFalse(self.meta['approvedForProduction'])
         files=[f'assets/bill/characters/dist/bill-{i:02}.glb' for i in range(1,21)]
         self.assertTrue(all(p in self.entries for p in files))
-        for p in ['apps/web/preview/compare.html','apps/web/preview/compare.js',
+        for p in ['assets/bill/characters/animation-library.json','apps/web/preview/compare.html','apps/web/preview/compare.js',
                   'apps/web/preview/characters.html','apps/web/preview/characters.js',
                   'packages/character/attention/option10-controller.cjs',
                   'packages/character/gallery/shortlist.mjs',
@@ -52,7 +52,7 @@ class CharacterKit(unittest.TestCase):
                 self.assertEqual(hashlib.sha256(content).hexdigest(),entry['sha256'])
                 self.assertEqual(len(content),entry['bytes'])
         for model in self.meta['models']:
-            self.assertEqual(model['animationCount'],8)
+            self.assertEqual(model['animationCount'],33)
             self.assertGreater(model['meshCount'],15)
             path='assets/bill/characters/dist/'+model['id']+'.glb'
             self.assertEqual(self.z.read(path)[:4],b'glTF')

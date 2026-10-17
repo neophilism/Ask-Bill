@@ -30,6 +30,20 @@ test('preview serves 20-character audition as a separate local-only route with r
   });
 });
 
+test('serves source-owned 33-clip library with 8 distinct idle dances',async()=>{
+  await withServer(async base=>{
+    const r=await fetch(base+'/assets/bill/characters/animation-library.json');
+    assert.equal(r.status,200);
+    assert.match(r.headers.get('content-type'),/application\/json/);
+    const lib=await r.json();
+    assert.equal(lib.clips.length,33);
+    assert.equal(lib.clips.filter(x=>x.category==='dance').length,8);
+    assert.deepEqual(lib.clips.slice(0,8).map(x=>x.name),['Idle','WalkFunny','Talk','Wave','Point','Laugh','Celebrate','Look']);
+    assert.equal((await fetch(base+'/assets/bill/characters/animation-library.json',{method:'HEAD'})).status,200);
+    assert.equal((await fetch(base+'/assets/bill/characters/animation-private.json')).status,404);
+  });
+});
+
 test('twenty immutable GLB routes plus manifest are served with a locked-down path allowlist',async()=>{
   await withServer(async base=>{
     const manifest=await fetch(base+'/assets/bill/characters/dist/manifest.json');

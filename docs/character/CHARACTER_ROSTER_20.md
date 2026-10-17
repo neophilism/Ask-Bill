@@ -2,7 +2,7 @@
 
 ## Character release status
 
-Twenty **real binary glTF 2.0 GLBs** are generated via `tools/blender/roster/generate_roster.py`, with a compatible `WalkFunny` action plus seven other clips. The owner has **not** visually approved any of the exported candidates. They are an audition collection, **not** the finished production Bill. In particular, the original Option 10 illustration is still the intended default visual direction even if the current procedural mesh is not a perfect sculpt. CI passing establishes binary and animation structure—not visual likeness.
+Twenty **real binary glTF 2.0 GLBs** are generated via `tools/blender/roster/generate_roster.py`, with a compatible `WalkFunny` action plus 32 other **real GLB clips**, including eight distinct dances and subtle idle gestures (see `docs/character/ANIMATION_LIBRARY.md`). The owner has **not** visually approved any of the exported candidates. They are an audition collection, **not** the finished production Bill. In particular, the original Option 10 illustration is still the intended default visual direction even if the current procedural mesh is not a perfect sculpt. CI passing establishes binary and animation structure—not visual likeness.
 
 ### Original ten
 

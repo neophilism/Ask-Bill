@@ -4,6 +4,7 @@ on:
     paths:
       - 'tools/blender/roster/**'
       - 'assets/bill/characters/reference/**'
+      - 'assets/bill/characters/animation-library.json'
       - 'tests/character-roster/**'
       - 'apps/web/preview/characters.html'
       - 'apps/web/preview/characters.css'

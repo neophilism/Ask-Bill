@@ -6,6 +6,8 @@ on:
       - 'tools/character-audition/**'
       - 'tests/character-kit/**'
       - 'apps/web/preview/compare.*'
+      - 'assets/bill/characters/animation-library.json'
+      - 'assets/bill/characters/dist/**'
       - 'packages/character/gallery/**'
       - '.github/workflows/bill-character-kit.yml'
   push:

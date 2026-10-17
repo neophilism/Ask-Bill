@@ -17,6 +17,7 @@ import zipfile
 ROOT=Path(__file__).resolve().parents[1]
 DIST=ROOT/'assets/bill/characters/dist'
 PUBLIC_FILES=[
+    'assets/bill/characters/animation-library.json',
     'apps/web/preview/characters.html',
     'apps/web/preview/characters.js',
     'apps/web/preview/characters.css',
@@ -30,7 +31,8 @@ PUBLIC_FILES=[
     'tools/character-audition/START-MAC.command',
     'tools/character-audition/START-WINDOWS.bat',
 ]
-CLIPS={'Idle','WalkFunny','Talk','Wave','Point','Laugh','Celebrate','Look'}
+LIBRARY=json.loads((ROOT/'assets/bill/characters/animation-library.json').read_text(encoding='utf8'))
+CLIPS={c['name'] for c in LIBRARY['clips']}
 EXTERNAL_SCRIPTS=['cdn.jsdelivr.net']
 EXPORT_PREFIX='AskBill-20-Walking-Lab'
 
@@ -62,7 +64,7 @@ def glb_info(content, id):
 def verified_sources():
     manifest=json.loads((DIST/'manifest.json').read_text('utf8'))
     rows=manifest.get('characters',[])
-    if len(rows)!=20 or manifest.get('default')!='bill-10':
+    if len(rows)!=20 or manifest.get('default')!='bill-10' or manifest.get('animationLibrary')!='assets/bill/characters/animation-library.json':
         raise ValueError('Expected 20 characters, owner-selected default bill-10')
     actual={p.name for p in DIST.glob('bill-*.glb')}
     expected={'bill-%02d.glb'%i for i in range(1,21)}
@@ -122,6 +124,7 @@ def make_zip(destination):
             add(newname,file.read_bytes(),executable=newname in ('START-MAC.command','start_audition.py'))
         record={'schemaVersion':1,'product':'Ask Bill','modelCount':20,'approvedForProduction':False,
                 'default':'bill-10','rendererNetworkRequirement':EXTERNAL_SCRIPTS,
+                'animationLibrary':'assets/bill/characters/animation-library.json',
                 'models':details,'assets':digests}
         add('bundle-manifest.json',json.dumps(record,sort_keys=True,indent=2)+'\n')
     print(json.dumps({'zip':str(destination),'sha256':hashlib.sha256(destination.read_bytes()).hexdigest(),
