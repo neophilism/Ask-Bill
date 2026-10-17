@@ -6,11 +6,12 @@
   "exports": {
     "./router": "./router/index.mjs",
     "./retrieval": "./retrieval/index.mjs",
-    "./claims": "./claims/index.mjs"
+    "./claims": "./claims/index.mjs",
+    "./entailment": "./entailment/index.mjs"
   },
   "scripts": {
-    "build": "node --check router/index.mjs && node --check retrieval/index.mjs && node --check claims/index.mjs",
-    "typecheck": "node --check router/index.mjs && node --check retrieval/index.mjs && node --check claims/index.mjs"
+    "build": "node --check router/index.mjs && node --check retrieval/index.mjs && node --check claims/index.mjs && node --check entailment/index.mjs",
+    "typecheck": "node --check router/index.mjs && node --check retrieval/index.mjs && node --check claims/index.mjs && node --check entailment/index.mjs"
   },
   "dependencies": {
     "@ask-bill/contracts": "workspace:*"
