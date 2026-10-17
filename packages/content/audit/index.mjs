@@ -4,8 +4,8 @@ export class CorrectionError extends Error {constructor(code){super(code);this.n
 const fail=code=>{throw new CorrectionError(code)};
 const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
 const sha=/^[a-f0-9]{64}$/,digest=s=>createHash('sha256').update(s,'utf8').digest('hex');
-const valid=s=>typeof s==='string'&&s.length>0&&s.length<=500000;
-const own={};
+const MAX_SOURCE_BYTES=1500000;
+const valid=s=>typeof s==='string'&&s.length>0&&s.length<=MAX_SOURCE_BYTES&&s.isWellFormed()&&Buffer.byteLength(s,'utf8')<=MAX_SOURCE_BYTES;
 export function prepareExtractionCorrection({publisherId,source,versionId,newVersionId,provisionId,oldText,
   expectedQuote,start,end,replacement,actor}={}){
  if(!uuid.test(publisherId)||!uuid.test(versionId)||!uuid.test(newVersionId)||versionId===newVersionId||
@@ -16,14 +16,14 @@ export function prepareExtractionCorrection({publisherId,source,versionId,newVer
  if(!actor||!uuid.test(actor.userId)||!['owner','editor'].includes(actor.role)||
    actor.publisherId!==publisherId||actor.freshMembershipVerified!==true||
    actor.mfaVerifiedByTrustedServer!==true)fail('PUBLISHER_REVIEW_REQUIRED');
- if(typeof expectedQuote!=='string'||!expectedQuote||expectedQuote.length>20000||
+ if(typeof expectedQuote!=='string'||!expectedQuote||expectedQuote.length>20000||!expectedQuote.isWellFormed()||
    !Number.isSafeInteger(start)||!Number.isSafeInteger(end)||start<0||end<=start||
-   end>Array.from(oldText??'').length||!valid(oldText)||oldText!==source.text||
+   !valid(oldText)||oldText!==source.text||end>Array.from(oldText).length||
    !valid(replacement)||replacement.length>20000||/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/u.test(replacement))fail('CORRECTION_INPUT');
  const cps=Array.from(oldText);
  if(cps.slice(start,end).join('')!==expectedQuote)fail('QUOTE_MISMATCH');
  const next=cps.slice(0,start).join('')+replacement+cps.slice(end).join('');
- if(next.length>500000||next===oldText)fail('CORRECTION_NOT_MEANINGFUL');
+ if(Buffer.byteLength(next,'utf8')>MAX_SOURCE_BYTES||next===oldText)fail('CORRECTION_NOT_MEANINGFUL');
  const nextDigest=digest(next);
  // Legal source bytes remain unchanged; corrected extraction is a new private candidate.
  const version=Object.freeze({id:newVersionId,previousVersionId:versionId,billId:source.billId,

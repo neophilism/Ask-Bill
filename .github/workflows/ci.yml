@@ -22,8 +22,14 @@ jobs:
           node-version-file: .node-version
       - name: Validate approved plan and regression tests
         run: npm run check
+      - name: Install bounded recording decoder
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ffmpeg
       - name: Install workspace and test application (when present)
         shell: bash
+        env:
+          ASK_BILL_REQUIRE_FFMPEG: '1'
         run: |
           if test -f pnpm-lock.yaml; then
             corepack enable
@@ -58,7 +64,12 @@ jobs:
       - name: Install Playwright and Chromium
         run: |
           python -m pip install playwright==1.57.0
-          python -m playwright install --with-deps chromium
+          python -m playwright install --with-deps chromium || PLAYWRIGHT_DOWNLOAD_HOST=https://playwright.azureedge.net python -m playwright install --with-deps chromium
+      - name: Build application for integrated reader journeys
+        run: |
+          corepack enable
+          corepack pnpm install --frozen-lockfile
+          corepack pnpm build
       - name: Verify real localhost reader in Chromium
         env:
           ASK_BILL_BROWSER_REQUIRE_HTTP: '1'
@@ -68,6 +79,8 @@ jobs:
           python tests/browser/test_layout_anchor_registry.py
           python tests/browser/test_character_lab_browser.py
           python tests/browser/test_navigation_worker_browser.py
+          python tests/browser/test_interactive_reader_browser.py
+          python tests/browser/test_publisher_browser.py
   database:
     name: database / PostgreSQL tenancy and migrations
     runs-on: ubuntu-latest
@@ -76,6 +89,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - name: Build real PostgreSQL application adapters
+        run: |
+          corepack enable
+          corepack pnpm install --frozen-lockfile
+          corepack pnpm build
       - name: Run isolated PostgreSQL 17 migration and tenant isolation tests
         run: bash tests/postgres/integration.sh
 
@@ -98,3 +119,31 @@ jobs:
         env:
           ASK_BILL_REQUIRE_PDF_TOOLS: '1'
         run: node --test tests/pdf.test.mjs
+
+  container:
+    name: container / packaged application runtime
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Build pinned runtime without credentials
+        run: docker build -f infra/Dockerfile -t ask-bill-ci .
+      - name: Exercise the built image with external networking disabled
+        run: >-
+          docker run --rm --network none
+          -v "$PWD/tests/container:/opt/ask-bill/tests/container:ro"
+          -e NODE_ENV=test -e ASK_BILL_STAGE=test
+          ask-bill-ci node tests/container/smoke.mjs
+      - name: Verify parser isolation in an explicit namespace test environment
+        run: |
+          # This disposable runner permits namespaces only for the containment test.
+          # It does not assert that the eventual hosted worker supports them.
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+          docker run --rm --network none --security-opt seccomp=unconfined --security-opt apparmor=unconfined \
+            --security-opt systempaths=unconfined \
+            -v "$PWD/tests/sandbox:/opt/ask-bill/tests/sandbox:ro" \
+            -v "$PWD/tests/source-sandbox.test.mjs:/opt/ask-bill/tests/source-sandbox.test.mjs:ro" \
+            -e ASK_BILL_REQUIRE_SOURCE_SANDBOX=1 \
+            ask-bill-ci node --test tests/source-sandbox.test.mjs

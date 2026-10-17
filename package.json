@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0-scaffold",
   "type": "module",
-  "description": "Ask Bill independent pnpm/TypeScript monorepo bootstrap; no live product or provider is enabled",
+  "description": "Ask Bill versioned legislation reader, grounded conversation and private publisher application",
   "packageManager": "pnpm@10.18.1",
   "engines": {
     "node": ">=24.19.0 <25",
@@ -19,6 +19,12 @@
     "test": "pnpm run build && node --test tests/*.test.mjs",
     "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm registry:validate && pnpm check",
     "preview": "pnpm --filter @ask-bill/web preview",
+    "dev": "node apps/web/application/start.mjs --demo",
+    "start": "node apps/web/application/start.mjs",
+    "worker": "node apps/worker/application.mjs",
+    "db:migrate": "node scripts/migrate.mjs",
+    "db:check": "node scripts/migrate.mjs --check",
+    "db:bootstrap": "node scripts/bootstrap-publisher.mjs",
     "preview:export": "node scripts/export-offline-preview.mjs",
     "assets:validate": "node tools/assets/verify.mjs"
   },

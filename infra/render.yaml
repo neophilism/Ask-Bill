@@ -1,16 +1,40 @@
-# Ask Bill AB-012: staging-only health service blueprint template.
-# NOT deployed. Import into an explicitly selected Ask Bill workspace only.
-# No production domain, production data, storage/AI credentials or paid services provisioned by this commit.
+# Public web service. Import only into the selected Ask Bill workspace.
+# Optional providers stay off until their private configuration is verified.
+# Database owner credentials are NEVER attached to the running web service.
 services:
   - type: web
-    name: ask-bill-staging-health-only
-    runtime: node
-    autoDeploy: false
-    buildCommand: corepack enable && corepack pnpm install --frozen-lockfile && corepack pnpm verify
-    startCommand: node apps/web/health/health-server.mjs
+    name: ask-bill-staging-web
+    runtime: docker
+    plan: free
+    autoDeployTrigger: 'off'
+    dockerfilePath: ./infra/Dockerfile
+    dockerContext: .
     healthCheckPath: /health/ready
+    maxShutdownDelaySeconds: 30
     envVars:
       - key: ASK_BILL_STAGE
         value: staging
-      - key: ASK_BILL_BUILD_SHA
+      - key: ASK_BILL_PUBLIC_ORIGIN
         sync: false
+      - key: ASK_BILL_PUBLISHER_ID
+        sync: false
+      - key: ASK_BILL_DATABASE_URL
+        sync: false
+      - key: ASK_BILL_SESSION_ENCRYPTION_KEY
+        sync: false
+      - key: ASK_BILL_ALLOW_LIVE_AI
+        value: 'false'
+      - key: ASK_BILL_ALLOW_VOICE
+        value: 'false'
+      - key: ASK_BILL_ALLOW_TRANSCRIPTION
+        value: 'false'
+      - key: ASK_BILL_ALLOW_PUBLISHING
+        value: 'false'
+      - key: ASK_BILL_ALLOW_OFFICIAL_IMPORTS
+        value: 'false'
+      - key: ASK_BILL_DAILY_REQUEST_LIMIT
+        value: '1000'
+      - key: ASK_BILL_SESSION_REQUEST_LIMIT
+        value: '60'
+      - key: ASK_BILL_MAX_GENERATIONS
+        value: '10'

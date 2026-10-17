@@ -1,0 +1,39 @@
+# Optional PAID worker; apply only after explicit workspace/capacity authorization
+# and successful sandbox probing on the selected host. No resources are created by this file.
+services:
+  - type: worker
+    name: ask-bill-staging-source-worker
+    runtime: docker
+    plan: 1c-2g
+    autoDeployTrigger: 'off'
+    dockerfilePath: ./infra/Dockerfile
+    dockerContext: .
+    dockerCommand: node apps/worker/application.mjs
+    maxShutdownDelaySeconds: 30
+    envVars:
+      - key: ASK_BILL_STAGE
+        value: staging
+      - key: ASK_BILL_PUBLISHER_ID
+        sync: false
+      - key: ASK_BILL_DATABASE_URL
+        sync: false
+      - key: ASK_BILL_STORAGE_URL
+        sync: false
+      - key: ASK_BILL_STORAGE_REGION
+        value: auto
+      - key: ASK_BILL_STORAGE_BUCKET
+        sync: false
+      - key: ASK_BILL_STORAGE_ACCESS_KEY_ID
+        sync: false
+      - key: ASK_BILL_STORAGE_SECRET_ACCESS_KEY
+        sync: false
+      - key: ASK_BILL_SOURCE_SANDBOX_COMMAND
+        value: /opt/ask-bill/infra/run-source-sandbox.sh
+      - key: ASK_BILL_SOURCE_SANDBOX_VERIFIED
+        sync: false
+      - key: ASK_BILL_ALLOW_OFFICIAL_IMPORTS
+        value: 'false'
+      - key: ASK_BILL_WORKER_POLL_MS
+        value: '1000'
+      - key: ASK_BILL_WORKER_LEASE_SECONDS
+        value: '120'

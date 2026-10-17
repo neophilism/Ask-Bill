@@ -36,13 +36,15 @@ function respondError(req,res,status,head=false,extra={},fallbackText){
  const html=rendered.contentType.startsWith('text/html');
  respond(res,status,html?rendered.body:(fallbackText??rendered.body),rendered.contentType,head,extra);
 }
-export async function createPublishedSourceServer({publisherId,lookupPublishedPack,lookupPublishedCatalog,maxInflight=64,embedOrigins=[]}={}){
+export async function createPublishedSourceServer({publisherId,lookupPublishedPack,lookupPublishedCatalog,maxInflight=64,embedOrigins=[],interactive=false,requestHandler}={}){
  if(typeof publisherId!=='string'||!UUID.test(publisherId)||typeof lookupPublishedPack!=='function')
    throw new Error('TRUSTED_PUBLICATION_ADAPTER_REQUIRED');
  if(lookupPublishedCatalog!==undefined && typeof lookupPublishedCatalog!=='function')throw new Error('TRUSTED_CATALOG_ADAPTER_REQUIRED');
  if(!Number.isSafeInteger(maxInflight)||maxInflight<1||maxInflight>256)throw new Error('INVALID_PUBLIC_READER_CAPACITY');
+ if(typeof interactive!=='boolean'||(requestHandler!==undefined&&typeof requestHandler!=='function'))throw new Error('INVALID_APPLICATION_ADAPTER');
+ const interactiveHeaders=interactive?{'Content-Security-Policy':"default-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; style-src 'self'; script-src 'self'; connect-src 'self'; media-src 'self' blob:; img-src 'self' data:; worker-src 'self'"}:{};
  const embedAllowed=validateEmbedOrigins(embedOrigins);
- const read=createPublicReader({lookupPublishedPack});
+ const read=createPublicReader({lookupPublishedPack,interactive});
  const css=await readFile(new URL('./public-reader.css',import.meta.url),'utf8');
  // Bound concurrent backend work, including slow and disconnected lookups.
  // Do not free a slot until the lookup settles, even when a client disconnects.
@@ -61,7 +63,7 @@ export async function createPublishedSourceServer({publisherId,lookupPublishedPa
         const bytes=Buffer.from(result.body,'utf8');
         res.writeHead(200,{...result.embedHeaders,'Content-Type':result.type,'Content-Length':bytes.length});
         res.end(head?undefined:bytes);
-      } else respond(res,200,result.body,result.type,head);
+      } else respond(res,200,result.body,result.type,head,interactiveHeaders);
     }catch{}
    }
   },()=>{
@@ -70,7 +72,7 @@ export async function createPublishedSourceServer({publisherId,lookupPublishedPa
    }
   }).finally(()=>{activeLookups--;});
  };
- const server=createServer((req,res)=>{
+ const readerHandler=(req,res)=>{
   const head=req.method==='HEAD';
   if(draining){respondError(req,res,503,head,{'Retry-After':'2'},'Reader shutting down');return;}
   if(req.method!=='GET'&&!head){
@@ -190,6 +192,13 @@ export async function createPublishedSourceServer({publisherId,lookupPublishedPa
     const body=await read.read({publisherId,billId:match[1],versionId:match[2],format});
     return {body,type:format==='html'?'text/html; charset=utf-8':'text/plain; charset=utf-8'};
   });
+ };
+ const server=createServer((req,res)=>{
+  if(draining){respondError(req,res,503,req.method==='HEAD',{'Retry-After':'2'},'Reader shutting down');return;}
+  if(!requestHandler){readerHandler(req,res);return;}
+  Promise.resolve().then(()=>requestHandler(req,res)).then(handled=>{
+    if(!handled&&!res.writableEnded&&!res.destroyed)readerHandler(req,res);
+  }).catch(()=>{if(!res.headersSent&&!res.destroyed)respondError(req,res,503,req.method==='HEAD');else res.end();});
  });
  // Limit slow headers/body submissions and long-lived sockets before database work.
  server.headersTimeout=10000;

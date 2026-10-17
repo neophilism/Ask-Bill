@@ -1,6 +1,7 @@
 /** AB-035: server-side, independently verified source-only SSE. */
 import {AnswerStreamGuard,parseAnswerEvent,parseSemanticCue} from '@ask-bill/contracts';
 import {evaluateLiteralSupport} from '../grounding/entailment/index.mjs';
+import {isReviewedGrant,consumeReviewedGrant} from '../grounding/entailment/reviewed.mjs';
 export class StreamError extends Error{constructor(code){super(code);this.name='StreamError';this.code=code;}}
 const fail=c=>{throw new StreamError(c)};
 const id=v=>typeof v==='string'&&/^[a-zA-Z0-9][\w.:-]{0,119}$/.test(v);
@@ -41,7 +42,7 @@ export class ValidatedAnswerStream{
   if(this.#state==='active'&&type==='answer.started')fail('ALREADY_STARTED');
   const body={};
   if(type==='segment.validated'||type==='correction'){
-   if(!grants.has(data.approval)||data.approval.versionId!==this.#version)fail('SERVER_APPROVAL_REQUIRED');
+   if((!grants.has(data.approval)&&!isReviewedGrant(data.approval))||data.approval.versionId!==this.#version)fail('SERVER_APPROVAL_REQUIRED');
    if(!id(data.approval.segment?.id)||this.#segments.has(data.approval.segment.id))fail('DUPLICATE_SEGMENT');
    if(type==='correction'){
     if(!id(data.replacesSegmentId)||!this.#segments.has(data.replacesSegmentId))fail('UNAPPROVED_TARGET');
@@ -71,7 +72,7 @@ export class ValidatedAnswerStream{
   try{event=parseAnswerEvent(raw);this.#guard.accept(event);}catch{fail('EVENT_SCHEMA_REJECTED');}
   deepFreeze(event);issued.add(event);this.#events.push(event);this.#sequence++;
   if(this.#events.length>this.#max)this.#events.shift();
-  if(type==='segment.validated'||type==='correction'){this.#segments.set(body.segment.id,body.segment);grants.delete(data.approval);}
+  if(type==='segment.validated'||type==='correction'){this.#segments.set(body.segment.id,body.segment);grants.delete(data.approval);consumeReviewedGrant(data.approval);}
   if(this.#state==='new')this.#state='active';
   if(['answer.completed','answer.cancelled','answer.failed'].includes(type))this.#state='finished';
   return event;

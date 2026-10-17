@@ -1,12 +1,12 @@
 # Ask Bill offline and local development
 
-This document describes AB-005's provider-independent configuration. Ask Bill is operated independently of any unrelated company or website.
+This document describes Ask Bill's local application. For database/bootstrap, publisher and live adapter configuration, use [the runtime guide](../ops/APPLICATION_RUNTIME.md).
 
 ## Tools
 
 Node 24.19.0 and pnpm 10.18.1 are pinned in `toolchain.json`. From a clean checkout, run `corepack enable`, `corepack pnpm install --frozen-lockfile`, `corepack pnpm build` and `corepack pnpm test`.
 
-The AB-004 reader preview adds `pnpm preview`. Run it on that branch (or after its merge), then open `http://127.0.0.1:4100`. It requires no provider account, database or microphone. The fixture is explicitly incomplete and is not publishable.
+Run `corepack pnpm dev`, then open `http://127.0.0.1:4100`. This explicit loopback-only mode serves a complete synthetic document, temporary sessions and exact-source questions without a provider. It cannot start in production. `pnpm start` requires the database-backed runtime configuration. The older `pnpm preview` remains a distinct incomplete-excerpt design demonstration.
 
 ## Optional backing services
 
@@ -14,10 +14,10 @@ The AB-004 reader preview adds `pnpm preview`. Run it on that branch (or after i
 
 ## Provider toggles
 
-`ASK_BILL_ALLOW_LIVE_AI` and `ASK_BILL_ALLOW_VOICE` default to disabled. They fail closed even when a key exists, because real adapters have not yet been implemented. Production public origins require HTTPS; runtime configuration does not return raw credentials to the browser. The fixture adapter returns only explicitly labeled incomplete-source text, never an authoritative legal conclusion.
+`ASK_BILL_ALLOW_LIVE_AI`, `ASK_BILL_ALLOW_VOICE`, `ASK_BILL_ALLOW_TRANSCRIPTION`, `ASK_BILL_ALLOW_PUBLISHING` and `ASK_BILL_ALLOW_OFFICIAL_IMPORTS` default off. The application now implements the corresponding adapters; activation requires explicit private configuration and the documented operational gates. Production/staging public origins require HTTPS. Only an allowlisted capability response reaches the browser; server configuration and keys never do. The legacy fixture-settings module deliberately refuses live activation and directs callers to the real application runtime.
 
-Never commit real credentials or personal content. Do not copy `.env.example` into a tracked file containing secrets. Browser API/voice, database migrations and operational integration tests are separate future PRs.
+Never commit real credentials or personal content. Do not copy `.env.example` into a tracked file containing secrets. The real PostgreSQL tests require an explicitly supplied disposable loopback database. Source sandbox activation additionally requires a successful host isolation probe.
 
 ## Verification
 
-`tsc -p packages/config/tsconfig.json` and `node --test tests/config.test.mjs` cover missing credentials, HTTPS origin rules, fake provider semantics, denial of unimplemented live adapters, and safe serialization. Full CircleCI and Docker Compose integration remain pending until observed on the live repo.
+Run `corepack pnpm verify`. For native audio coverage, install FFmpeg and set `ASK_BILL_REQUIRE_FFMPEG=1`. GitHub Actions separately exercises real Chromium, PostgreSQL, PDF extraction and the built application image. Its exact PR-head result is the merge gate; local fixtures do not establish credentialed production acceptance.

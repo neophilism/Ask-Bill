@@ -1,4 +1,4 @@
-/** Server-only configuration. Never import this module from the browser bundle. */
+/** Legacy fixture-preview settings. Hosted application wiring lives in ../runtime.mjs. */
 import {ConfigError,createPublicSettings,type Stage,type PublicSettings} from './index.js';
 export type Env = Readonly<Record<string,string|undefined>>;
 export type ServerCapabilities = Readonly<{public:PublicSettings;databaseReady:boolean;storageReady:boolean;liveAiReady:false;voiceReady:false}>;
@@ -25,11 +25,11 @@ export function validateServerSettings(env:Env,stage:Stage):ServerCapabilities {
   if(requestsLive){
     if(!env.ASK_BILL_LLM_API_KEY)throw new ConfigError('LLM_CREDENTIAL_MISSING','Live AI requires a configured private API key');
     if(env.ASK_BILL_PROVIDER_DATA_PROTECTION!=='verified')throw new ConfigError('PROVIDER_DATA_PROTECTION_MISSING','Verify provider data retention/privacy before enabling live AI');
-    throw new ConfigError('LIVE_ADAPTER_NOT_IMPLEMENTED','The live AI adapter is not implemented; leave ASK_BILL_ALLOW_LIVE_AI=false');
+    throw new ConfigError('APPLICATION_RUNTIME_REQUIRED','Use the application runtime to enable real provider adapters; the fixture preview cannot activate them');
   }
   if(requestsVoice){
     if(!env.ASK_BILL_TTS_API_KEY)throw new ConfigError('VOICE_CREDENTIAL_MISSING','Live voice requires a configured private API key');
-    throw new ConfigError('VOICE_ADAPTER_NOT_IMPLEMENTED','The live speech adapter is not implemented; leave ASK_BILL_ALLOW_VOICE=false');
+    throw new ConfigError('APPLICATION_RUNTIME_REQUIRED','Use the application runtime to enable real speech adapters; the fixture preview cannot activate them');
   }
   const config={public:base,databaseReady:validConnection(env.ASK_BILL_DATABASE_URL,'database',stage),storageReady:validConnection(env.ASK_BILL_STORAGE_URL,'storage',stage),liveAiReady:false as const,voiceReady:false as const};
   return Object.freeze(config);

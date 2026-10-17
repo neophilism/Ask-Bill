@@ -1,54 +1,110 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "product": "Ask Bill",
-  "lastReviewed": "2026-10-16",
+  "lastReviewed": "2026-10-17",
   "defaultRawContentLogging": false,
   "defaultLiveProviderTransfers": false,
   "defaultUnder13FreeInput": false,
+  "deploymentAcceptance": "not_verified",
+  "implementationMeaning": "Implemented means executable code and the listed local/fixture acceptance paths exist. It does not assert a deployed service, live credentials, provider retention or completed external acceptance.",
+  "ttlMeaning": "A maximum access lifetime is separate from physical row deletion and backup expiry. Zero application persistence means request/page memory only, not an assertion that external providers retain nothing.",
   "flows": [
     {
       "id": "public_read",
-      "ownerModule": "apps/web/preview/server.mjs",
+      "ownerModule": "apps/web/source-only/server.mjs",
       "ownerUnit": "AB-004",
-      "implementation": "partial",
+      "implementation": "implemented",
+      "enabledByDefault": true,
+      "persistentApplicationData": false,
       "dataClasses": [
         "public_legislation",
         "request_metadata"
       ],
       "retention": {
-        "category": "public-cache",
-        "ttlSeconds": null,
-        "enforcement": "pending"
+        "category": "public-source-response",
+        "ttlSeconds": 0,
+        "ttlMeaning": "application_persistence",
+        "enforcement": "request_lifetime"
       },
-      "thirdPartyTransfer": "disabled",
-      "verificationCase": "public-reader-http",
-      "securityNotes": "Reader remains public; no raw-question storage or cross-session tracking.",
+      "thirdPartyTransfer": "none",
+      "possibleRecipients": [],
+      "liveAcceptance": "not_verified",
+      "verificationCases": [
+        "tests/public-source-http.test.mjs",
+        "tests/public-reader-capacity.test.mjs"
+      ],
+      "securityNotes": "Anonymous source reading uses no visitor account or behavioral profile. Responses are no-store and publication is checked on each request. Hosted transport logs are a separate operator responsibility.",
       "requiredBeforeEnable": [
-        "authenticated tenant scope",
-        "verified data minimization",
-        "negative test evidence"
+        "Deploy a bootstrapped publisher and a complete, reviewed active source version."
+      ]
+    },
+    {
+      "id": "public_source_search",
+      "ownerModule": "apps/web/source-only/server.mjs",
+      "ownerUnit": "AB-091",
+      "implementation": "implemented",
+      "enabledByDefault": true,
+      "persistentApplicationData": false,
+      "dataClasses": [
+        "source_search_text",
+        "public_legislation",
+        "request_metadata"
+      ],
+      "retention": {
+        "category": "request-only-search",
+        "ttlSeconds": 0,
+        "ttlMeaning": "application_persistence",
+        "enforcement": "request_lifetime"
+      },
+      "thirdPartyTransfer": "none",
+      "possibleRecipients": [],
+      "liveAcceptance": "not_verified",
+      "verificationCases": [
+        "tests/public-reader-search.test.mjs",
+        "tests/interactive-reader.test.mjs"
+      ],
+      "securityNotes": "Enhanced source search runs in the browser. The no-JavaScript GET fallback sends a bounded source-search query to this server, never to an AI provider; its URL can be present in browser history or hosting access logs. No search query is written to application tables.",
+      "requiredBeforeEnable": [
+        "Configure hosting logs to omit search query strings and review transport-log retention."
       ]
     },
     {
       "id": "publisher_auth_session",
-      "ownerModule": "packages/auth/server.mjs",
+      "ownerModule": "packages/auth/oidc.mjs",
       "ownerUnit": "AB-008",
-      "implementation": "fixture_only",
+      "implementation": "implemented",
+      "enabledByDefault": false,
+      "persistentApplicationData": true,
       "dataClasses": [
-        "publisher_identity",
-        "session_capability",
-        "mfa_proof"
+        "publisher_identity_hash",
+        "publisher_user_id",
+        "membership_role",
+        "session_capability_hash",
+        "csrf_hash",
+        "mfa_timestamp",
+        "oidc_login_transaction"
       ],
       "retention": {
-        "category": "ephemeral-session",
+        "category": "publisher-session",
         "ttlSeconds": 1800,
-        "enforcement": "fixture_only"
+        "ttlMeaning": "maximum_access_lifetime",
+        "enforcement": "access_expiry_cleanup"
       },
-      "thirdPartyTransfer": "disabled",
-      "verificationCase": "publisher-authorization",
-      "securityNotes": "Production identity provider and MFA not connected.",
+      "thirdPartyTransfer": "disabled_by_default",
+      "possibleRecipients": [
+        "configured OIDC provider",
+        "configured PostgreSQL service"
+      ],
+      "liveAcceptance": "not_verified",
+      "verificationCases": [
+        "tests/oidc-provider.test.mjs",
+        "tests/postgres/publisher_auth.sql",
+        "tests/publisher-http.test.mjs"
+      ],
+      "securityNotes": "OIDC authorization code/PKCE uses browser-bound, one-use state and nonce, verified ID-token claims and pre-enrolled issuer/subject hashes. Provider ID/access tokens are not persisted or exposed to public-client code. Session and CSRF capabilities are hashed in PostgreSQL; authentication expires after 30 minutes. Logout deletes the active session; expired rows are pruned on subsequent login/session writes. Five-minute login transactions are consumed atomically or pruned on the next login. Membership/enrollment records have a separate publisher-controlled lifetime.",
       "requiredBeforeEnable": [
-        "fixture scope only"
+        "Enable ASK_BILL_ALLOW_PUBLISHING with HTTPS, pre-enrolled identity, dedicated database role and OIDC configuration.",
+        "Verify real login, MFA claims, account recovery and revocation with the selected provider."
       ]
     },
     {
@@ -56,28 +112,36 @@
       "ownerModule": "packages/storage/index.mjs",
       "ownerUnit": "AB-009",
       "implementation": "fixture_only",
+      "enabledByDefault": false,
+      "persistentApplicationData": false,
       "dataClasses": [
-        "publisher_identity",
         "object_metadata",
         "nonce"
       ],
       "retention": {
-        "category": "upload-token",
+        "category": "legacy-upload-token",
         "ttlSeconds": 300,
+        "ttlMeaning": "fixture_access_lifetime",
         "enforcement": "fixture_only"
       },
       "thirdPartyTransfer": "disabled",
-      "verificationCase": "signed-upload-replay",
-      "securityNotes": "Durable nonce redemption and real object service not configured.",
+      "possibleRecipients": [],
+      "liveAcceptance": "not_applicable",
+      "verificationCases": [
+        "tests/storage.test.mjs"
+      ],
+      "securityNotes": "This isolated fixture contract is not used by the production publisher route. Real uploads use an authenticated same-origin server form, direct bounded intake and verified private S3 writes. A short-lived ticket never proves object deletion.",
       "requiredBeforeEnable": [
-        "fixture scope only"
+        "Keep the fixture upload-ticket path disconnected from the production application."
       ]
     },
     {
       "id": "publisher_upload_quarantine",
-      "ownerModule": "apps/worker/sandbox/",
+      "ownerModule": "packages/storage/s3.mjs",
       "ownerUnit": "AB-014",
-      "implementation": "disabled",
+      "implementation": "implemented",
+      "enabledByDefault": false,
+      "persistentApplicationData": true,
       "dataClasses": [
         "private_source_bytes",
         "object_metadata"
@@ -85,227 +149,485 @@
       "retention": {
         "category": "quarantine",
         "ttlSeconds": 604800,
-        "enforcement": "pending"
+        "ttlMeaning": "operator_target",
+        "enforcement": "operator_policy_pending"
       },
-      "thirdPartyTransfer": "disabled",
-      "verificationCase": "malicious-upload",
-      "securityNotes": "No public raw file uploads; verify content signature and decompression limits.",
+      "thirdPartyTransfer": "disabled_by_default",
+      "possibleRecipients": [
+        "configured private S3-compatible service"
+      ],
+      "liveAcceptance": "not_verified",
+      "verificationCases": [
+        "tests/intake.test.mjs",
+        "tests/s3-provider.test.mjs",
+        "tests/publisher-http.test.mjs"
+      ],
+      "securityNotes": "Publisher-only uploads are limited to 25MiB and scanned for file signatures and decompression limits. SigV4 writes and independent byte-hash read-back precede promotion. Quarantine objects remain private; the seven-day abandoned-object lifecycle is an operator target and is not installed or verified by this code.",
       "requiredBeforeEnable": [
-        "authenticated tenant scope",
-        "verified data minimization",
-        "negative test evidence"
+        "Enable publishing with private publisher-scoped storage credentials.",
+        "Verify bucket access denial and an appropriate abandoned-quarantine lifecycle/backup policy."
       ]
     },
     {
       "id": "private_source_store",
-      "ownerModule": "packages/storage/",
+      "ownerModule": "packages/storage/s3.mjs",
       "ownerUnit": "AB-009",
-      "implementation": "disabled",
+      "implementation": "implemented",
+      "enabledByDefault": false,
+      "persistentApplicationData": true,
       "dataClasses": [
         "private_source_bytes",
-        "document_metadata"
+        "document_metadata",
+        "original_byte_hash"
       ],
       "retention": {
-        "category": "publisher-controlled",
+        "category": "publisher-controlled-source",
         "ttlSeconds": null,
-        "enforcement": "pending"
+        "ttlMeaning": "publisher_decision_required",
+        "enforcement": "operator_policy_pending"
       },
-      "thirdPartyTransfer": "disabled",
-      "verificationCase": "cross-publisher-storage",
-      "securityNotes": "Private source is never a public pack or public cache entry.",
+      "thirdPartyTransfer": "disabled_by_default",
+      "possibleRecipients": [
+        "configured private S3-compatible service",
+        "configured PostgreSQL service"
+      ],
+      "liveAcceptance": "not_verified",
+      "verificationCases": [
+        "tests/s3-provider.test.mjs",
+        "tests/postgres/publisher_workflow.mjs"
+      ],
+      "securityNotes": "Private originals use publisher/digest object keys, immutable writes, checksums and independent reads. They are separate from public packs. Corrections and withdrawal retain original bytes/provenance; neither operation is source erasure. Long-term retention and eventual deletion require an explicit publisher policy.",
       "requiredBeforeEnable": [
-        "authenticated tenant scope",
-        "verified data minimization",
-        "negative test evidence"
+        "Verify private storage permissions, archival purpose, retention and derivative/backup deletion procedures."
+      ]
+    },
+    {
+      "id": "private_original_download",
+      "ownerModule": "apps/web/admin/server/index.mjs",
+      "ownerUnit": "AB-027",
+      "implementation": "implemented",
+      "enabledByDefault": false,
+      "persistentApplicationData": false,
+      "dataClasses": [
+        "private_source_bytes",
+        "publisher_user_id",
+        "source_version_hash"
+      ],
+      "retention": {
+        "category": "authorized-download",
+        "ttlSeconds": 0,
+        "ttlMeaning": "application_persistence",
+        "enforcement": "request_lifetime"
+      },
+      "thirdPartyTransfer": "disabled_by_default",
+      "possibleRecipients": [
+        "configured private S3-compatible service"
+      ],
+      "liveAcceptance": "not_verified",
+      "verificationCases": [
+        "tests/publisher-http.test.mjs",
+        "tests/postgres/publisher_workflow.mjs"
+      ],
+      "securityNotes": "Current publisher membership is rechecked before the exact version original is fetched and rehashed. The HTTP response is private/no-store, nosniff and attachment-only with a server-generated filename. Corrected versions retain the same original. A file explicitly saved by the publisher is outside application deletion control.",
+      "requiredBeforeEnable": [
+        "Enable the authenticated publisher workflow and verify original-byte download with the selected storage service."
       ]
     },
     {
       "id": "official_source_import",
-      "ownerModule": "packages/content/adapters/",
-      "ownerUnit": "AB-023",
-      "implementation": "disabled",
+      "ownerModule": "packages/db/publisher-workflow.mjs",
+      "ownerUnit": "AB-020",
+      "implementation": "implemented",
+      "enabledByDefault": false,
+      "persistentApplicationData": true,
       "dataClasses": [
+        "official_bill_identifier",
         "public_legislation",
-        "external_source_metadata"
+        "external_source_metadata",
+        "source_version_hash"
       ],
       "retention": {
         "category": "provenance-archive",
         "ttlSeconds": null,
-        "enforcement": "pending"
+        "ttlMeaning": "publisher_decision_required",
+        "enforcement": "operator_policy_pending"
       },
-      "thirdPartyTransfer": "disabled",
-      "verificationCase": "source-ssrf",
-      "securityNotes": "Origin allowlists and exact version metadata required.",
+      "thirdPartyTransfer": "disabled_by_default",
+      "possibleRecipients": [
+        "Congress.gov API and official text service",
+        "configured private S3-compatible service",
+        "configured PostgreSQL service"
+      ],
+      "liveAcceptance": "not_verified",
+      "verificationCases": [
+        "tests/congress.test.mjs",
+        "tests/congress-metadata.test.mjs",
+        "tests/postgres/publisher_workflow.mjs"
+      ],
+      "securityNotes": "The Congress API receives the explicit bill identity and server API key, not visitor questions or publisher identity. Download origins/paths are restricted, redirects are blocked and bytes are bounded. Official editions enter private storage and durable extraction/review; they are never published automatically or inferred to be enacted.",
       "requiredBeforeEnable": [
-        "authenticated tenant scope",
-        "verified data minimization",
-        "negative test evidence"
+        "Enable ASK_BILL_ALLOW_OFFICIAL_IMPORTS with the Congress key in web and worker configuration.",
+        "Verify real official edition metadata, download, extraction and independent publication review."
       ]
     },
     {
       "id": "published_source_pack",
-      "ownerModule": "apps/web/preview/",
-      "ownerUnit": "AB-004",
-      "implementation": "fixture_only",
+      "ownerModule": "packages/db/publisher-workflow.mjs",
+      "ownerUnit": "AB-024",
+      "implementation": "implemented",
+      "enabledByDefault": false,
+      "persistentApplicationData": true,
       "dataClasses": [
         "public_legislation",
-        "source_version_hash"
+        "source_version_hash",
+        "reviewed_release_metadata"
       ],
       "retention": {
-        "category": "public-archive",
+        "category": "public-provenance-archive",
         "ttlSeconds": null,
-        "enforcement": "pending"
+        "ttlMeaning": "publisher_decision_required",
+        "enforcement": "operator_policy_pending"
       },
-      "thirdPartyTransfer": "disabled",
-      "verificationCase": "incomplete-source-publishing",
-      "securityNotes": "Limited fixture is nonauthoritative, cannot be published as full law.",
+      "thirdPartyTransfer": "disabled_by_default",
+      "possibleRecipients": [
+        "configured PostgreSQL service"
+      ],
+      "liveAcceptance": "not_verified",
+      "verificationCases": [
+        "tests/postgres/publisher_workflow.mjs",
+        "tests/public-release-db.test.mjs",
+        "tests/releases.test.mjs"
+      ],
+      "securityNotes": "Only a complete, reviewed version with verified original bytes and matching search generation can become active. Immutable public packs are stored in PostgreSQL; reads resolve the active release. Withdrawal blocks subsequent application reads and speech but cannot recall user-saved public copies.",
       "requiredBeforeEnable": [
-        "fixture scope only"
+        "Complete source/rights/extraction review and verify atomic activation/withdrawal on the target deployment."
+      ]
+    },
+    {
+      "id": "anonymous_question_session",
+      "ownerModule": "packages/sessions/pg-store.mjs",
+      "ownerUnit": "AB-034",
+      "implementation": "implemented",
+      "enabledByDefault": true,
+      "persistentApplicationData": true,
+      "dataClasses": [
+        "session_capability_hash",
+        "csrf_hash",
+        "age_band",
+        "conversation_epoch",
+        "request_count"
+      ],
+      "retention": {
+        "category": "anonymous-session",
+        "ttlSeconds": 1800,
+        "ttlMeaning": "maximum_access_lifetime",
+        "enforcement": "access_expiry_cleanup"
+      },
+      "thirdPartyTransfer": "disabled_by_default",
+      "possibleRecipients": [
+        "configured PostgreSQL service"
+      ],
+      "liveAcceptance": "not_verified",
+      "verificationCases": [
+        "tests/application-api.test.mjs",
+        "tests/application-security.test.mjs",
+        "tests/postgres/application_session_store.mjs"
+      ],
+      "securityNotes": "An explicit adult or 13-17 session stores random capability/CSRF hashes, age band, epoch and usage count, not name, email or birth date. Capabilities expire in 30 minutes; under-13 requests create no free-input session. Clear session deletes the record and cascades answers. Runtime cleanup runs every minute in batches of at most 100 expired sessions; expiry denies access even if cleanup is delayed or the process is offline.",
+      "requiredBeforeEnable": [
+        "Configure the dedicated tenant-scoped database and session encryption key before hosted startup."
       ]
     },
     {
       "id": "visitor_question",
-      "ownerModule": "packages/grounding/",
+      "ownerModule": "apps/web/application/conversation.mjs",
       "ownerUnit": "AB-029",
-      "implementation": "disabled",
+      "implementation": "implemented",
+      "enabledByDefault": true,
+      "persistentApplicationData": false,
       "dataClasses": [
         "question_text",
+        "selected_source_span",
         "source_version_hash",
         "session_capability"
       ],
       "retention": {
-        "category": "ephemeral-chat",
-        "ttlSeconds": 1800,
-        "enforcement": "pending"
+        "category": "request-only-question",
+        "ttlSeconds": 0,
+        "ttlMeaning": "application_persistence",
+        "enforcement": "request_lifetime"
       },
-      "thirdPartyTransfer": "disabled",
-      "verificationCase": "prompt-injection",
-      "securityNotes": "No free-text live provider enabled; validate source claim spans.",
+      "thirdPartyTransfer": "disabled_by_default",
+      "possibleRecipients": [
+        "configured AI generation/review provider"
+      ],
+      "liveAcceptance": "not_verified",
+      "verificationCases": [
+        "tests/conversation-application.test.mjs",
+        "tests/application-security.test.mjs"
+      ],
+      "securityNotes": "Question text is held only for the current server request and is never written to application tables or standard logs. The default source-only path retrieves exact quotations without an AI transfer. Enabling AI sends the question and selected public evidence to the generation provider; a separately configured model checks the held draft. Only validated segments reach the client, and the raw provider stream is not exposed.",
       "requiredBeforeEnable": [
-        "authenticated tenant scope",
-        "verified data minimization",
-        "negative test evidence"
+        "Live AI requires ASK_BILL_ALLOW_LIVE_AI, private key, distinct models and an operator-verified data-protection decision.",
+        "Verify selected-provider retention, region and sensitive-data handling separately from fixture adapter tests."
       ]
     },
     {
       "id": "conversation_replay",
-      "ownerModule": "apps/api/",
+      "ownerModule": "packages/sessions/pg-store.mjs",
       "ownerUnit": "AB-035",
-      "implementation": "disabled",
+      "implementation": "implemented",
+      "enabledByDefault": true,
+      "persistentApplicationData": true,
       "dataClasses": [
-        "question_text",
         "answer_text",
-        "session_capability"
+        "source_version_hash",
+        "session_capability_hash"
       ],
       "retention": {
-        "category": "ephemeral-chat",
+        "category": "encrypted-answer-replay",
         "ttlSeconds": 1800,
-        "enforcement": "pending"
+        "ttlMeaning": "maximum_access_lifetime",
+        "enforcement": "access_expiry_cleanup"
       },
-      "thirdPartyTransfer": "disabled",
-      "verificationCase": "replay-cross-session",
-      "securityNotes": "Only scoped ephemeral server replay with deletion.",
+      "thirdPartyTransfer": "disabled_by_default",
+      "possibleRecipients": [
+        "configured PostgreSQL service"
+      ],
+      "liveAcceptance": "not_verified",
+      "verificationCases": [
+        "tests/postgres/application_session_store.mjs",
+        "tests/application-api.test.mjs",
+        "tests/application-security.test.mjs"
+      ],
+      "securityNotes": "At most ten accepted answers per session are stored as AES-256-GCM ciphertext bound to publisher/session/answer identity. Raw questions, transcripts and recordings are not part of the replay record. Replay becomes inaccessible at session expiry; explicit erasure cascades immediately and periodic cleanup deletes expired rows. Backup copies require the configured database retention policy.",
       "requiredBeforeEnable": [
-        "authenticated tenant scope",
-        "verified data minimization",
-        "negative test evidence"
+        "Use a unique 32-byte session encryption key and verify session erasure, expiry, backup retention and restoration behavior."
+      ]
+    },
+    {
+      "id": "anonymous_usage_aggregate",
+      "ownerModule": "packages/sessions/pg-store.mjs",
+      "ownerUnit": "AB-034",
+      "implementation": "implemented",
+      "enabledByDefault": true,
+      "persistentApplicationData": true,
+      "dataClasses": [
+        "publisher_id",
+        "usage_day",
+        "aggregate_request_count"
+      ],
+      "retention": {
+        "category": "publisher-daily-usage",
+        "ttlSeconds": 691200,
+        "ttlMeaning": "calendar_window_plus_cleanup_delay",
+        "enforcement": "periodic_cleanup"
+      },
+      "thirdPartyTransfer": "disabled_by_default",
+      "possibleRecipients": [
+        "configured PostgreSQL service"
+      ],
+      "liveAcceptance": "not_verified",
+      "verificationCases": [
+        "tests/postgres/application_session_store.mjs",
+        "tests/application-api.test.mjs"
+      ],
+      "securityNotes": "Daily counts contain no session identifier, question, transcript or IP address. They enforce shared request quotas across replicas and session recreation. Cleanup deletes days older than CURRENT_DATE minus seven; calendar-day granularity means a row may span up to eight days before the next cleanup pass. This is not a dollar-cost ledger.",
+      "requiredBeforeEnable": [
+        "Verify configured request ceilings and the deployed cleanup process."
       ]
     },
     {
       "id": "microphone_audio",
-      "ownerModule": "packages/voice/stt/",
-      "ownerUnit": "AB-080",
-      "implementation": "disabled",
+      "ownerModule": "packages/voice/stt/normalize.mjs",
+      "ownerUnit": "AB-085",
+      "implementation": "implemented",
+      "enabledByDefault": false,
+      "persistentApplicationData": false,
       "dataClasses": [
         "voice_input",
         "transcript"
       ],
       "retention": {
-        "category": "audio-ephemeral",
-        "ttlSeconds": 3600,
-        "enforcement": "pending"
+        "category": "request-only-audio",
+        "ttlSeconds": 0,
+        "ttlMeaning": "application_persistence",
+        "enforcement": "request_lifetime"
       },
-      "thirdPartyTransfer": "disabled",
-      "verificationCase": "microphone-permission",
-      "securityNotes": "Push-to-talk opt-in, delete input after transcription.",
+      "thirdPartyTransfer": "disabled_by_default",
+      "possibleRecipients": [
+        "configured transcription provider"
+      ],
+      "liveAcceptance": "not_verified",
+      "verificationCases": [
+        "tests/push-to-talk.test.mjs",
+        "tests/recording-normalization.test.mjs",
+        "tests/openai-audio-integrations.test.mjs",
+        "tests/application-security.test.mjs"
+      ],
+      "securityNotes": "Adult-only recording requires a separate Record gesture, followed by explicit Transcribe. Bounded FFmpeg pipes decode at most 30 seconds and remove recording metadata before the provider request. Application storage receives neither audio nor transcript; mutable server audio buffers are cleared in finally blocks on success or failure. The browser permits transcript review/editing and requires a separate Ask action. External provider retention is not established by local buffer cleanup.",
       "requiredBeforeEnable": [
-        "authenticated tenant scope",
-        "verified data minimization",
-        "negative test evidence"
+        "Enable ASK_BILL_ALLOW_TRANSCRIPTION with private STT credentials, executable decoder and verified provider data protection.",
+        "Verify real-provider transcription, cancellation and vendor retention; no application one-hour recording archive exists."
       ]
     },
     {
       "id": "synthesized_speech",
-      "ownerModule": "packages/voice/tts/",
-      "ownerUnit": "AB-081",
-      "implementation": "disabled",
+      "ownerModule": "packages/providers/index.mjs",
+      "ownerUnit": "AB-080",
+      "implementation": "implemented",
+      "enabledByDefault": false,
+      "persistentApplicationData": false,
       "dataClasses": [
-        "answer_text",
+        "validated_answer_text",
         "audio_output"
       ],
       "retention": {
-        "category": "speech-ephemeral",
-        "ttlSeconds": 1800,
-        "enforcement": "pending"
+        "category": "request-only-speech",
+        "ttlSeconds": 0,
+        "ttlMeaning": "application_persistence",
+        "enforcement": "request_lifetime"
       },
-      "thirdPartyTransfer": "disabled",
-      "verificationCase": "tts-provider-retention",
-      "securityNotes": "Only speak validated text, provider contractual retention checks required.",
+      "thirdPartyTransfer": "disabled_by_default",
+      "possibleRecipients": [
+        "configured speech provider"
+      ],
+      "liveAcceptance": "not_verified",
+      "verificationCases": [
+        "tests/openai-audio-integrations.test.mjs",
+        "tests/application-security.test.mjs"
+      ],
+      "securityNotes": "Only a server-stored validated segment can be synthesized. Text is sent to the configured speech provider only when voice is enabled and requested. Session epoch and publication are checked before and after synthesis; clear/replacement/drain abort requests. Audio remains in transient server/browser buffers and is not persisted to application storage. External retention and voice licensing need separate verification.",
       "requiredBeforeEnable": [
-        "authenticated tenant scope",
-        "verified data minimization",
-        "negative test evidence"
+        "Enable ASK_BILL_ALLOW_VOICE with private key, verified voice rights and provider data protection.",
+        "Verify selected voice license, provider retention and real playback/cancellation."
+      ]
+    },
+    {
+      "id": "browser_reading_state",
+      "ownerModule": "packages/ui/reader/client-core.mjs",
+      "ownerUnit": "AB-091",
+      "implementation": "implemented",
+      "enabledByDefault": true,
+      "persistentApplicationData": false,
+      "dataClasses": [
+        "reading_preference",
+        "bookmarked_provision_id"
+      ],
+      "retention": {
+        "category": "browser-tab-state",
+        "ttlSeconds": null,
+        "ttlMeaning": "browser_session",
+        "enforcement": "browser_session"
+      },
+      "thirdPartyTransfer": "none",
+      "possibleRecipients": [],
+      "liveAcceptance": "not_applicable",
+      "verificationCases": [
+        "tests/interactive-reader.test.mjs",
+        "tests/browser/test_interactive_reader_browser.py"
+      ],
+      "securityNotes": "Only validated provision IDs and reading/text-size preferences enter sessionStorage. Session credentials, questions, generated answers and transcripts do not. Clear session removes preferences; browser tab storage and page navigation remain under browser control.",
+      "requiredBeforeEnable": [
+        "Verify the deployed configuration and the corresponding acceptance cases."
+      ]
+    },
+    {
+      "id": "browser_history_and_exports",
+      "ownerModule": "apps/web/source-only/reader-client.mjs",
+      "ownerUnit": "AB-092",
+      "implementation": "implemented",
+      "enabledByDefault": true,
+      "persistentApplicationData": false,
+      "dataClasses": [
+        "question_text",
+        "displayed_answer_text",
+        "public_source_text",
+        "explicit_export_file"
+      ],
+      "retention": {
+        "category": "user-controlled-page-and-files",
+        "ttlSeconds": null,
+        "ttlMeaning": "user_controlled",
+        "enforcement": "browser_session"
+      },
+      "thirdPartyTransfer": "none",
+      "possibleRecipients": [],
+      "liveAcceptance": "not_applicable",
+      "verificationCases": [
+        "tests/interactive-reader.test.mjs",
+        "tests/browser/test_interactive_reader_browser.py"
+      ],
+      "securityNotes": "Up to twenty displayed questions/answers are held in page memory, not persisted in sessionStorage. Clear history/session removes them locally and requests server erasure; failed server erasure has an explicit retry state. Conversation export includes the questions the user chooses to save. Offline source downloads contain public source only and no executable script. Saved files cannot be remotely recalled.",
+      "requiredBeforeEnable": [
+        "Verify the deployed configuration and the corresponding acceptance cases."
       ]
     },
     {
       "id": "child_curated",
-      "ownerModule": "apps/web/preview/",
-      "ownerUnit": "AB-004",
-      "implementation": "fixture_only",
+      "ownerModule": "packages/learning/curated/index.mjs",
+      "ownerUnit": "AB-090",
+      "implementation": "implemented",
+      "enabledByDefault": true,
+      "persistentApplicationData": false,
       "dataClasses": [
         "public_legislation"
       ],
       "retention": {
         "category": "no-user-record",
         "ttlSeconds": 0,
-        "enforcement": "fixture_only"
+        "ttlMeaning": "application_persistence",
+        "enforcement": "not_applicable"
       },
-      "thirdPartyTransfer": "disabled",
-      "verificationCase": "child-curated-route",
-      "securityNotes": "No live child free text, speech, analytics or persistent user profiles.",
+      "thirdPartyTransfer": "none",
+      "possibleRecipients": [],
+      "liveAcceptance": "not_applicable",
+      "verificationCases": [
+        "tests/child-learning.test.mjs",
+        "tests/application-api.test.mjs"
+      ],
+      "securityNotes": "The guided learning route supports anonymous public-source reading with no live free text, microphone, analytics or persistent child profile. An under-13 age choice routes to guided learning and does not create an anonymous question session.",
       "requiredBeforeEnable": [
-        "fixture scope only"
+        "Verify the deployed configuration and the corresponding acceptance cases."
       ]
     },
     {
       "id": "child_live_input",
-      "ownerModule": "packages/consent/",
+      "ownerModule": "packages/privacy/index.mjs",
       "ownerUnit": "AB-090",
       "implementation": "disabled",
+      "enabledByDefault": false,
+      "persistentApplicationData": false,
       "dataClasses": [
         "child_identifier",
         "parental_consent_proof",
         "question_text"
       ],
       "retention": {
-        "category": "child-live-protected",
+        "category": "unimplemented-child-live",
         "ttlSeconds": null,
-        "enforcement": "pending"
+        "ttlMeaning": "not_applicable",
+        "enforcement": "not_applicable"
       },
       "thirdPartyTransfer": "disabled",
-      "verificationCase": "unverified-child-consent",
-      "securityNotes": "Disabled until verifiable parental consent and approved provider protections.",
+      "possibleRecipients": [],
+      "liveAcceptance": "not_applicable",
+      "verificationCases": [
+        "tests/privacy.test.mjs",
+        "tests/application-api.test.mjs"
+      ],
+      "securityNotes": "There is no production child free-input or parental-verification adapter. The policy predicate always denies child live data, including when callers provide true booleans. No proposed child records are collected or transferred.",
       "requiredBeforeEnable": [
-        "authenticated tenant scope",
-        "verified data minimization",
-        "negative test evidence"
+        "A separately reviewed real consent adapter and verified provider child-data protections are required before implementing this flow."
       ]
     },
     {
       "id": "feedback_submission",
-      "ownerModule": "packages/feedback/",
-      "ownerUnit": "AB-095",
-      "implementation": "disabled",
+      "ownerModule": "apps/web/feedback/server.mjs",
+      "ownerUnit": "AB-043",
+      "implementation": "partial",
+      "enabledByDefault": false,
+      "persistentApplicationData": false,
       "dataClasses": [
         "opt_in_feedback",
         "source_version_hash"
@@ -313,92 +635,128 @@
       "retention": {
         "category": "opt-in-feedback",
         "ttlSeconds": 7776000,
-        "enforcement": "pending"
+        "ttlMeaning": "operator_target",
+        "enforcement": "operator_policy_pending"
       },
       "thirdPartyTransfer": "disabled",
-      "verificationCase": "feedback-sensitive-data",
-      "securityNotes": "User-visible review/redaction before opt-in send.",
+      "possibleRecipients": [],
+      "liveAcceptance": "not_verified",
+      "verificationCases": [
+        "tests/feedback-incidents.test.mjs"
+      ],
+      "securityNotes": "A standalone review/redaction helper exists, but the deployed application composition has no feedback submission route or durable feedback sink. No automatic conversation capture occurs. Ninety days is the proposed retention target, not a deployed deletion guarantee.",
       "requiredBeforeEnable": [
-        "authenticated tenant scope",
-        "verified data minimization",
-        "negative test evidence"
+        "Implement an explicit reviewed-feedback route, durable sink and tested ninety-day deletion policy before collecting feedback."
       ]
     },
     {
       "id": "publisher_audit",
-      "ownerModule": "packages/db/",
+      "ownerModule": "packages/db/publisher-workflow.mjs",
       "ownerUnit": "AB-007",
-      "implementation": "partial",
+      "implementation": "implemented",
+      "enabledByDefault": false,
+      "persistentApplicationData": true,
       "dataClasses": [
-        "publisher_identity",
-        "action_metadata"
+        "publisher_user_id",
+        "action_metadata",
+        "source_version_hash"
       ],
       "retention": {
         "category": "audit-year",
         "ttlSeconds": 31536000,
-        "enforcement": "pending"
+        "ttlMeaning": "operator_target",
+        "enforcement": "operator_policy_pending"
       },
-      "thirdPartyTransfer": "disabled",
-      "verificationCase": "audit-privacy",
-      "securityNotes": "Never store raw question, private uploads, microphone bytes or keys.",
+      "thirdPartyTransfer": "disabled_by_default",
+      "possibleRecipients": [
+        "configured PostgreSQL service"
+      ],
+      "liveAcceptance": "not_verified",
+      "verificationCases": [
+        "tests/postgres/publisher_workflow.mjs",
+        "tests/postgres/application_role_pool.mjs"
+      ],
+      "securityNotes": "Append-only audit events record actor, action, IDs, hashes and check names. They exclude raw questions, transcripts, source document bytes, provider keys and cookie capabilities. The runtime role cannot update/delete audit history; annual archival/deletion must be performed by a separately authorized maintenance process and has not been deployed.",
       "requiredBeforeEnable": [
-        "authenticated tenant scope",
-        "verified data minimization",
-        "negative test evidence"
+        "Approve audit retention and verify authorized archival/deletion and backup handling."
       ]
     },
     {
       "id": "minimal_security_log",
-      "ownerModule": "packages/privacy/",
+      "ownerModule": "packages/privacy/index.mjs",
       "ownerUnit": "AB-011",
       "implementation": "partial",
+      "enabledByDefault": false,
+      "persistentApplicationData": false,
       "dataClasses": [
         "request_id",
         "error_code",
-        "coarse_latency"
+        "coarse_latency",
+        "process_status"
       ],
       "retention": {
         "category": "security-log",
         "ttlSeconds": 604800,
-        "enforcement": "pending"
+        "ttlMeaning": "operator_target",
+        "enforcement": "operator_policy_pending"
       },
-      "thirdPartyTransfer": "disabled",
-      "verificationCase": "logging-data-leak",
-      "securityNotes": "Allowlist structured metadata; logging defaults off until connected.",
+      "thirdPartyTransfer": "disabled_by_default",
+      "possibleRecipients": [
+        "configured hosting log service"
+      ],
+      "liveAcceptance": "not_verified",
+      "verificationCases": [
+        "tests/privacy.test.mjs",
+        "tests/application-runtime.test.mjs"
+      ],
+      "securityNotes": "The telemetry helper accepts an explicit field/event/error allowlist. Application entrypoints emit only fixed startup/status metadata and sanitized errors, with no raw exception stack or credential dump. No question or recording logging is enabled. Hosting access logs and their deletion schedule are separate from this application; the seven-day target is not provider-side evidence.",
       "requiredBeforeEnable": [
-        "authenticated tenant scope",
-        "verified data minimization",
-        "negative test evidence"
+        "Configure minimal hosting logs, omit URL search queries and verify a seven-day-or-less deletion policy."
       ]
     },
     {
       "id": "background_job",
-      "ownerModule": "packages/jobs/",
+      "ownerModule": "apps/worker/application.mjs",
       "ownerUnit": "AB-010",
-      "implementation": "partial",
+      "implementation": "implemented",
+      "enabledByDefault": false,
+      "persistentApplicationData": true,
       "dataClasses": [
         "job_metadata",
+        "private_object_reference",
         "source_version_hash"
       ],
       "retention": {
         "category": "job-operational",
         "ttlSeconds": null,
-        "enforcement": "pending"
+        "ttlMeaning": "operator_decision_required",
+        "enforcement": "operator_policy_pending"
       },
-      "thirdPartyTransfer": "disabled",
-      "verificationCase": "stale-lease-double-publish",
-      "securityNotes": "At-least-once jobs with fenced commits; payload retention needs deployed TTL policy.",
+      "thirdPartyTransfer": "disabled_by_default",
+      "possibleRecipients": [
+        "configured PostgreSQL service",
+        "configured private source storage",
+        "official source service when enabled"
+      ],
+      "liveAcceptance": "not_verified",
+      "verificationCases": [
+        "tests/worker-application.test.mjs",
+        "tests/postgres/publisher_workflow.mjs",
+        "tests/jobs.test.mjs"
+      ],
+      "securityNotes": "Durable source-import jobs contain bill/version IDs, private object receipts or official bill identities, never credentials or visitor questions. One job per process uses tenant checks, leases and fenced commits. Source extraction receives document bytes in a probed isolated process with a minimal environment; temporary files are removed after extraction. Durable job/request retention requires a recovery-safe archival policy.",
       "requiredBeforeEnable": [
-        "authenticated tenant scope",
-        "verified data minimization",
-        "negative test evidence"
+        "Verify host parser containment and private worker credentials; require the isolation probe before hosted extraction.",
+        "Approve recovery-safe job/request retention and backup handling."
       ]
     },
     {
       "id": "outbox_delivery",
-      "ownerModule": "packages/jobs/",
+      "ownerModule": "apps/worker/application.mjs",
       "ownerUnit": "AB-010",
       "implementation": "partial",
+      "enabledByDefault": false,
+      "persistentApplicationData": true,
       "dataClasses": [
         "outbox_metadata",
         "event_payload"
@@ -406,15 +764,22 @@
       "retention": {
         "category": "outbox-operational",
         "ttlSeconds": null,
-        "enforcement": "pending"
+        "ttlMeaning": "operator_decision_required",
+        "enforcement": "operator_policy_pending"
       },
       "thirdPartyTransfer": "disabled",
-      "verificationCase": "outbox-replay",
-      "securityNotes": "Sink must deduplicate idempotency key; no external publisher delivery active.",
+      "possibleRecipients": [
+        "a future explicitly configured outbox sink"
+      ],
+      "liveAcceptance": "not_verified",
+      "verificationCases": [
+        "tests/jobs.test.mjs",
+        "tests/postgres/jobs.sql",
+        "tests/worker-application.test.mjs"
+      ],
+      "securityNotes": "Source completion creates a durable outbox event. The application worker leaves events pending when no trusted idempotent sink is injected; it does not claim successful delivery. Payload retention remains unset pending a recovery/deduplication policy.",
       "requiredBeforeEnable": [
-        "authenticated tenant scope",
-        "verified data minimization",
-        "negative test evidence"
+        "Configure and verify an idempotent sink and archival/deletion with replay tombstones before external delivery."
       ]
     }
   ]

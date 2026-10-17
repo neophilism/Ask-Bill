@@ -12,7 +12,8 @@ const programs=new Set(['pdfinfo','pdftotext','pdftoppm','tesseract']);
 async function run(program,args,{timeoutMs=12000,maxBytes=MAX_TEXT}={}){
  if(!programs.has(program)||!Array.isArray(args)||args.some(x=>typeof x!=='string'))fail('PDF_COMMAND');
  return await new Promise((resolve,reject)=>{
-  const child=spawn(program,args,{shell:false,stdio:['ignore','pipe','pipe'],env:{PATH:process.env.PATH??'/usr/bin:/bin',LANG:'C.UTF-8',HOME:'/nonexistent'},windowsHide:true});
+  const child=spawn(program,args,{shell:false,stdio:['ignore','pipe','pipe'],env:{PATH:process.env.PATH??'/usr/bin:/bin',LANG:'C.UTF-8',HOME:'/nonexistent',
+    OMP_THREAD_LIMIT:'1',OMP_NUM_THREADS:'1',OPENBLAS_NUM_THREADS:'1'},windowsHide:true});
   let done=false,count=0,out=[],errCount=0;
   const finish=(error,value)=>{if(done)return;done=true;clearTimeout(timer);error?reject(error):resolve(value)};
   const timer=setTimeout(()=>{child.kill('SIGKILL');finish(new PdfPreviewError('PDF_TOOL_TIMEOUT'))},timeoutMs);

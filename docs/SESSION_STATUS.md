@@ -1,31 +1,32 @@
-# Ask Bill — verified GitHub development checkpoint
+# Ask Bill — verified development checkpoint
 
-Observed: 2026-10-17T13:07:59Z UTC, main commit `32ae4435179865f5a8bf7b4ac8d44acd3f1b819a`, repository `neophilism/Ask-Bill`.
+GitHub observation: **2026-10-17T16:07:32Z**, repository `neophilism/Ask-Bill`, main `6da63ea922adbd9d9d36df39dda520bdd7f00429`.
 
-## Pull requests and acceptance
+## Observed source and PR state
 
-GitHub returned **80 actual pull requests: 76 merged, 4 open**. Main includes approved source/conversation foundations, the public source-only reader, candidate Bill models, exact-version citations, developer preview, and scoped AB-066/067 movement geometry. The active registry has 112 original units with 490 original dependency edges.
+The verified registry snapshot contains **100 actual pull requests: 98 merged, one open, one closed without merge**. Stable AB work-unit IDs are not PR numbers. The active plan retains all 112 original units and 490 dependencies; scope, operational acceptance and independent review are not inferred from merge counts.
 
-Current open PRs:
-- #76 `AB-095: Bounded tenant-scoped expired session cleanup (partial)` — draft; exact-head checks and dependency state require live verification
-- #79 `Bill roster: compare 3 animated GLBs and shortlist seven candidates` — reviewable; exact-head checks and dependency state require live verification
-- #80 `AB-068: Bounded Worker path planner and stale-result fencing` — draft; exact-head checks and dependency state require live verification
-- #81 `Bill characters: build verified, locally runnable ZIP of all 20 GLBs` — reviewable; exact-head checks and dependency state require live verification
+PR #100 delivered real OpenAI generation/review/audio adapters, OIDC persistence and MFA, S3-compatible private storage, and the pinned PostgreSQL driver. Its exact head `aef2cd985cb3bcb93503db746804512bb73b1c35` passed GitHub Actions run `39045511208` (quality, browser, PostgreSQL and PDF) before merge.
 
-## Evidence accuracy
+PR #101 composes those adapters with the reader, session API and publisher workflow. It was open at this observation, with initial implementation head `94e8b49f875cbb9257f6d90c26708f51bebcee14`; exact-head CI and merge acceptance were still pending. Re-query GitHub for its final head and merge status. Source paths, test evidence and acceptance boundaries are in `docs/evidence/AB-004-INTEGRATED-APPLICATION.md` and `docs/ops/APPLICATION_RUNTIME.md`.
 
-- The registry reflects **actual** PR numbers and timestamps, including follow-up contributions. Original scope, IDs and graph remain unchanged. A merged PR does **not** mean the full approved unit is delivered, operationally accepted, independently reviewed or certified.
-- The active CI is GitHub Actions, not a presumed working CircleCI installation. CI quality, browser, PDF and disposable PostgreSQL results must be verified at each exact PR head before merges.
-- Source-only public readers work with explicitly complete, published and version-pinned source records; the sample electronic-filing excerpt is incomplete and must never be promoted to enacted law.
-- The Bill character gallery contains prototype/candidate 3D assets. The final approved animated character, voice/license, lip sync, live AI/provider and production website are **not** operationally verified.
-- Public content viewing needs no account or microphone. Child free-input remains disabled until actual consent and provider controls exist.
-- Ask Bill has no integration with unrelated products, companies or data services, including Law Machine.
+## Implemented integration
 
-## Engineering continuation
+- Progressive source reader, exact search/selection, source drawer, bookmarks/preferences, guided reading, sharing and exports, standalone offline reading, and explicit session controls.
+- Source-only quotations or separately reviewed AI explanations; source/version/exception validation precedes every displayed segment.
+- Server-authorized speech, bounded decoded recordings and transcript review; interruption/deletion fence all work by session and conversation epoch.
+- PostgreSQL sessions, atomic quotas across replicas, encrypted accepted answers, enforced access expiry and explicit session erasure. Expired-row cleanup can lag access expiry; private source archival and backup retention remain separate policies.
+- Real OIDC/PKCE/MFA publisher interface, private verified originals, upload/import, extracted-source review, immutable publication, corrections and withdrawal.
+- Executable web/worker startup, owner-only migration/bootstrap commands, pinned container and separate web/worker configuration.
 
-1. Review active PR heads, exact required check results and security evidence; merge in dependency order only when required tests are successful.
-2. Continue standalone, source-pinned reader and geometry improvements; route planning must be epoch/revision-fenced and fail back to source-only reading.
-3. Avoid concurrent edits to the owner-controlled character design/model roster; integrate approved Bill.glb only after its rig, clips and morph names pass actual validation.
-4. Obtain verified provider credentials and isolated hosting only when required for a specifically ready integration, never by copying another company's infrastructure.
+## Remaining operational inputs
 
-This is a dated state snapshot, not evidence that work continues unattended.
+No selected public domain, deployed Ask Bill environment, credentialed AI/voice/identity/storage result or reviewed authoritative public corpus is established by this checkpoint. The worker requires its real host to pass the supplied isolation probe. Local namespace denial is an explicit failed operational check, not successful containment. The optional worker plan is paid and has not been provisioned.
+
+The final approved Bill character is separately owned. Preserve candidate assets and integrate only a validated approved model/rig/clip interface. Child free input remains disabled; guided learning uses no model or microphone. Ask Bill remains independent of unrelated projects and data services.
+
+## Continue from evidence
+
+Re-query live main, open PRs and exact-head CI. Run the installed application via `pnpm dev` or the configured production entrypoint, not the old incomplete-excerpt preview. Complete pending operational gates using private deployment settings and public synthetic smoke content before publishing reviewed official sources. Never enable a fixture login, uncontained hosted parser or unreviewed answer to make a test pass.
+
+This is a dated snapshot; it makes no claim of unattended continued work.

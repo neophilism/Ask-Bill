@@ -1,13 +1,15 @@
 /** AB-014: quarantined document preflight. No extraction, publication or external I/O. */
 import {createHash} from 'node:crypto';
 import {inflateRawSync} from 'node:zlib';
+import {prepareOfflineXml} from '../xml/prolog.mjs';
 const MiB=1024*1024;
 export const LIMITS=Object.freeze({source:25*MiB,entries:350,entry:12*MiB,expanded:40*MiB,ratio:80,filename:240});
 export class IntakeError extends Error{constructor(code){super(code);this.name='IntakeError';this.code=code;}}
 const fail=code=>{throw new IntakeError(code)};
 const ALLOWED=new Set(['text/plain','text/markdown','application/xml','text/xml','application/pdf','application/vnd.openxmlformats-officedocument.wordprocessingml.document']);
 const control=/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/u;
-function checkXml(s){
+function checkXml(s,{allowCongressMetadata=false}={}){
+ try{s=prepareOfflineXml(s,{allowCongressMetadata}).xml;}catch{fail('ACTIVE_XML');}
  if(control.test(s)||/<!DOCTYPE\b|<!ENTITY\b|<\?xml-stylesheet\b|<\s*xi:include\b|(?:\b(?:href|src|schemaLocation)\s*=\s*["']\s*(?:https?:|file:|\/\/))/i.test(s)||/<\s*(?:script|iframe|object|embed)\b/i.test(s))fail('ACTIVE_XML');
 }
 function crc32(bytes){let c=0xffffffff;for(const b of bytes){c^=b;for(let j=0;j<8;j++)c=(c>>>1)^((c&1)?0xedb88320:0);}return(c^0xffffffff)>>>0;}
@@ -67,7 +69,7 @@ export function scanQuarantinedBytes(source,mime){
  }else{
   const text=b.toString('utf8');
   if(!Buffer.from(text).equals(b)||control.test(text))fail('TEXT_ENCODING');
-  if(mime.includes('xml')){if(!text.trimStart().startsWith('<'))fail('XML_SIGNATURE');checkXml(text);}
+  if(mime.includes('xml')){if(!text.trimStart().startsWith('<'))fail('XML_SIGNATURE');checkXml(text,{allowCongressMetadata:true});}
   else if(text.includes('\u0000'))fail('TEXT_ENCODING');
   metadata={kind:mime.includes('xml')?'xml':mime==='text/markdown'?'markdown':'text'};
  }

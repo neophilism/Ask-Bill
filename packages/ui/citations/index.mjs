@@ -16,8 +16,9 @@ async function verifiedSource(versionId,provisionId,sourceLookup){
  if(actual!==source.sha256)deny('SOURCE_DIGEST_MISMATCH');
  return source;
 }
-export async function presentCitation({claim,span,versionId,sourceLookup}={}){
- if(!id(versionId)||!claim||claim.kind!=='bill_text'||claim.support!=='supported'||
+export async function presentCitation({claim,span,versionId,sourceLookup,allowModelReviewed=false}={}){
+ const allowedKind=claim?.kind==='bill_text'||allowModelReviewed&&['interpretation','hypothetical'].includes(claim?.kind);
+ if(!id(versionId)||!claim||!allowedKind||claim.support!=='supported'||
    !Array.isArray(claim.spans)||!span||!id(span.provisionId)||span.sourceVersionId!==versionId||
    !claim.spans.some(x=>x.provisionId===span.provisionId&&x.start===span.start&&x.end===span.end&&
       x.quote===span.quote&&x.quoteHash===span.quoteHash&&x.citationLabel===span.citationLabel))deny('CLAIM_SOURCE_MISMATCH');
@@ -29,7 +30,7 @@ export async function presentCitation({claim,span,versionId,sourceLookup}={}){
    sourceAnchor:'provision-'+span.provisionId,support:claim.support});
 }
 /** Reject every unsupported, nonverbatim or wrong-version event before rendering it. */
-export async function answerView({events,versionId,answerId,epoch,sourceLookup}={}){
+export async function answerView({events,versionId,answerId,epoch,sourceLookup,allowModelReviewed=false}={}){
  if(!id(versionId)||!id(answerId)||!Number.isSafeInteger(epoch)||epoch<0||
    !Array.isArray(events)||events.length<1||events.length>101)deny('INVALID_ANSWER');
  const guard=new AnswerStreamGuard(answerId,versionId,epoch),out=[],spans=[];
@@ -40,15 +41,18 @@ export async function answerView({events,versionId,answerId,epoch,sourceLookup}=
    if(event.sequence!==i)deny('MISSING_EVENT');
    if(event.type==='segment.validated'||event.type==='correction'){
      const s=event.segment;
-     if(!s||!Array.isArray(s.claims)||!s.claims.length||s.claims.some(c=>c.kind!=='bill_text'||
-       c.support!=='supported'||c.spans.length!==1||c.text!==c.spans[0].quote)||
+     const reviewed=allowModelReviewed===true&&s?.validation?.validatorConfig==='ff5ade6a8906f3eb09834a7f7750fdc6090d76de5474ad837d8cbd66a9cb9e99';
+     if(!s||!Array.isArray(s.claims)||!s.claims.length||s.claims.some(c=>!(reviewed?['bill_text','interpretation','hypothetical'].includes(c.kind):c.kind==='bill_text')||
+       c.support!=='supported'||c.spans.length!==1||(!reviewed&&c.text!==c.spans[0].quote))||
        s.text!==s.claims.map(c=>c.text).join('\n\n'))deny('NOT_VERBATIM_REVIEWED');
      const cards=[];
      for(const claim of s.claims){
-       const card=await presentCitation({claim,span:claim.spans[0],versionId,sourceLookup});
+       const card=await presentCitation({claim,span:claim.spans[0],versionId,sourceLookup,allowModelReviewed:reviewed});
        cards.push(card);spans.push(card);
      }
-     out.push(Object.freeze({id:s.id,text:s.text,versionId,citations:Object.freeze(cards)}));
+     out.push(Object.freeze({id:s.id,text:s.text,versionId,citations:Object.freeze(cards),
+       label:reviewed?'AI explanation — check the cited source':'Exact source quotation',
+       qualifications:Object.freeze([...new Set(s.claims.flatMap(claim=>claim.qualifications))])}));
    }
    if(event.type==='citation.ready'){
      if(!spans.some(c=>c.provisionId===event.span.provisionId&&c.quote===event.span.quote&&

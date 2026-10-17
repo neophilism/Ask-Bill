@@ -2,7 +2,20 @@
 
 Ask Bill is an independent public product for exploring legislation through a **source-grounded conversation with Bill**, an original animated character who can walk across a displayed bill, point to passages, gesture, and explain them in accessible spoken or written language. Its content, services, architecture, ownership and release lifecycle are wholly independent of unrelated products.
 
-**Engineering checkpoint (2026-10-17):** GitHub shows **56 merged PRs** covering scoped groundwork across **48 of the 112 planned units**. The independent Ask Bill codebase includes source provenance, publisher-role safeguards, fail-closed AI validation, public read-only bill-version and catalog routes, tenant-scoped PostgreSQL release lookups, and strict Chromium mobile/no-JavaScript tests. **This does not mean the milestones or site have full operational acceptance:** production release data, a deployed website, publisher identity, live AI/voice and full launch gates are still outstanding. The 3D Bill character is being developed separately and will be integrated only through the approved asset interface when provided.
+**Engineering checkpoint (2026-10-17):** The repository now composes the public reader, cited conversation API, optional OpenAI generation/review/speech/transcription, encrypted anonymous sessions, real OIDC publisher authentication, private S3 storage, and PostgreSQL publishing workflow. The reader supports exact search, selection, bookmarks, citations, source tours, offline downloads and accessible exports. Publisher forms cover creation, upload, source review, publication, correction and withdrawal. Read [the runtime guide](docs/ops/APPLICATION_RUNTIME.md) for startup and provider configuration, and [the dated evidence](docs/evidence/AB-004-INTEGRATED-APPLICATION.md) for tests and limits.
+
+**Live activation remains separate:** no production URL, live provider credentials, reviewed authoritative release corpus or hosted parser isolation is verified by these code changes. The 3D Bill character remains separately owned and will be integrated through the approved asset interface when provided. The 112-unit roadmap and launch gates are not marked complete by a merge.
+
+## Run the application locally
+
+```sh
+corepack enable
+corepack pnpm install --frozen-lockfile
+corepack pnpm build
+corepack pnpm dev
+```
+
+Open `http://127.0.0.1:4100`. This explicit local mode contains an entire **synthetic demonstration document**, disables external providers and uses temporary in-memory sessions. `corepack pnpm start` runs the database-backed application; `corepack pnpm worker` runs its separate ingestion worker. The older `pnpm preview` remains an incomplete-excerpt design preview.
 
 ## New agent: start here
 
@@ -10,7 +23,7 @@ Ask Bill is an independent public product for exploring legislation through a **
 2. Read [registry/prs.json](registry/prs.json), the one active plan, and [registry/PR_FORMAT.md](registry/PR_FORMAT.md).
 3. Run Node 24.19.0, activate Corepack, then `corepack pnpm install --frozen-lockfile` and `corepack pnpm verify`. GitHub Actions provides quality, real-browser HTTP and ephemeral PostgreSQL checks.
 4. Check **actual** GitHub branch, PR and CI state before taking the next ready unit. Do not infer progress from the registry snapshot or ID sequence. Run `npm run ready` for graph-only candidates, then verify accepted evidence.
-5. Continue dependency-ready units beyond AB-007 and finish the remaining acceptance gates for the reader, publisher authentication, original 3D Bill, grounding, voice and publishing. Checkpoint often and include head-bound test evidence.
+5. Use the current [session status](docs/SESSION_STATUS.md) and runtime guide to continue the remaining operational gates, final character integration and verified live checks. Checkpoint often and include head-bound test evidence.
 
 ## What is specified
 

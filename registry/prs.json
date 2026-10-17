@@ -4,7 +4,7 @@
   "roadmapVersion": 1,
   "planVerified": true,
   "plannedPrCount": 112,
-  "observedAt": "2026-10-17T13:07:59Z",
+  "observedAt": "2026-10-17T16:07:32Z",
   "approval": {
     "basis": "Owner explicitly directed the complete Ask Bill architecture and PR plan (16 October 2026) and installation of foundational commit.",
     "source": "docs/DEVELOPMENT_PLAN.md"
@@ -15,7 +15,8 @@
       "title": "Repository binding and canonical plan",
       "origin": "original",
       "prs": [
-        1
+        1,
+        82
       ],
       "contributingPrs": [
         58
@@ -54,7 +55,8 @@
       "title": "Toolchain workspace and CircleCI",
       "origin": "original",
       "prs": [
-        2
+        2,
+        87
       ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
@@ -138,7 +140,8 @@
         51,
         54,
         55,
-        57
+        57,
+        101
       ],
       "contributingPrs": [
         61,
@@ -182,7 +185,9 @@
       "prs": [
         5
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-002",
@@ -262,7 +267,10 @@
       "prs": [
         7
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        100,
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-003",
@@ -301,7 +309,10 @@
       "prs": [
         8
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        100,
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-004",
@@ -341,7 +352,10 @@
       "prs": [
         9
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        100,
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-005",
@@ -381,7 +395,9 @@
       "prs": [
         10
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-007",
@@ -420,7 +436,9 @@
       "prs": [
         11
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-003",
@@ -461,7 +479,9 @@
       "prs": [
         12
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-002",
@@ -504,7 +524,9 @@
       "prs": [
         13
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-003",
@@ -543,7 +565,9 @@
       "prs": [
         14
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-009",
@@ -584,7 +608,9 @@
       "prs": [
         15
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-014"
@@ -621,7 +647,9 @@
       "prs": [
         17
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-014"
@@ -659,7 +687,9 @@
       "prs": [
         16
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-014",
@@ -697,7 +727,9 @@
       "prs": [
         18
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-015",
@@ -737,7 +769,9 @@
       "prs": [
         19
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-018"
@@ -772,9 +806,12 @@
       "title": "Official Congress source connector",
       "origin": "original",
       "prs": [
-        20
+        20,
+        84
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-013",
@@ -813,7 +850,9 @@
       "prs": [
         21
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-007",
@@ -893,7 +932,9 @@
       "prs": [
         22
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-007",
@@ -937,7 +978,8 @@
       ],
       "contributingPrs": [
         59,
-        60
+        60,
+        101
       ],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -1063,7 +1105,9 @@
       "prs": [
         41
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-008",
@@ -1103,7 +1147,9 @@
       "prs": [
         46
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-012",
@@ -1145,7 +1191,9 @@
       "prs": [
         24
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-003",
@@ -1183,9 +1231,12 @@
       "title": "Provider adapters capability checks and cancellation",
       "origin": "original",
       "prs": [
-        25
+        25,
+        100
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-003",
@@ -1225,7 +1276,9 @@
       "prs": [
         26
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-019",
@@ -1264,7 +1317,9 @@
       "prs": [
         27
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-003",
@@ -1304,7 +1359,9 @@
       "prs": [
         28
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-031",
@@ -1342,7 +1399,9 @@
       "prs": [
         29
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-007",
@@ -1383,7 +1442,9 @@
       "prs": [
         30
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-003",
@@ -1425,7 +1486,9 @@
       "prs": [
         31
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-004",
@@ -1507,7 +1570,9 @@
       "prs": [
         34
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-011",
@@ -1634,7 +1699,9 @@
       "prs": [
         44
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-011",
@@ -1675,7 +1742,9 @@
       "prs": [
         47
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-021",
@@ -2644,7 +2713,8 @@
       "title": "Traversal graph and protected obstacle zones",
       "origin": "original",
       "prs": [
-        78
+        78,
+        86
       ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
@@ -2682,7 +2752,8 @@
       "title": "Worker path planner and stale result rejection",
       "origin": "original",
       "prs": [
-        80
+        80,
+        85
       ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
@@ -2796,7 +2867,9 @@
       "id": "AB-071",
       "title": "Performance director state machine",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        93
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -2819,7 +2892,7 @@
         "Fuzz cue payloads and replay event races involving cancel, hide, resize, new question and late provider output."
       ],
       "rollback": "Disable dynamic cues and use neutral character presence with text answers.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F5",
       "gate": "G5",
@@ -2876,7 +2949,9 @@
       "id": "AB-073",
       "title": "Mobile docking touch and keyboard geometry",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        95
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -2900,7 +2975,7 @@
         "Run mobile viewport, landscape, keyboard-open and dynamic-toolbar cases with touch and external keyboard."
       ],
       "rollback": "Force mobile poster or docked mode with the full readable interface.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F5",
       "gate": "G5",
@@ -2916,7 +2991,9 @@
       "id": "AB-074",
       "title": "Quality tiers memory and graphics lifecycle",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        96
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -2939,7 +3016,7 @@
         "Run soak tests, force context loss, switch quality repeatedly and measure memory against the budget."
       ],
       "rollback": "Pin to the small pack or poster and disable expensive effects.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F5",
       "gate": "G5",
@@ -2955,7 +3032,9 @@
       "id": "AB-075",
       "title": "Pause hide reduced motion and interaction priority",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        94
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -2978,7 +3057,7 @@
         "Start tours and answers under reduced motion, change preferences mid-action and verify keyboard and screen-reader behavior."
       ],
       "rollback": "Default to hidden or static Bill until interaction conflicts are resolved.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F5",
       "gate": "G5",
@@ -3159,7 +3238,10 @@
       "prs": [
         66
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        100,
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-009",
@@ -3239,8 +3321,12 @@
       "id": "AB-082",
       "title": "Audio clock playback controls and autoplay",
       "origin": "original",
-      "prs": [],
-      "contributingPrs": [],
+      "prs": [
+        90
+      ],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-004",
@@ -3262,7 +3348,7 @@
         "Deny autoplay, interrupt playback, change speed and background the tab while checking monotonic timing and controls."
       ],
       "rollback": "Stop audio and keep the answer readable without resetting the conversation.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F6",
       "gate": "G6",
@@ -3278,7 +3364,9 @@
       "id": "AB-083",
       "title": "Facial lip sync and speech gesture scheduling",
       "origin": "original",
-      "prs": [],
+      "prs": [
+        92
+      ],
       "contributingPrs": [],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -3301,7 +3389,7 @@
         "Compare mouth events and audio in frame captures at multiple speeds and during buffer stalls."
       ],
       "rollback": "Use restrained approximate mouth movement or silent gestures when timing is unavailable.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F6",
       "gate": "G6",
@@ -3317,8 +3405,12 @@
       "id": "AB-084",
       "title": "Captions transcript and accessible speech status",
       "origin": "original",
-      "prs": [],
-      "contributingPrs": [],
+      "prs": [
+        91
+      ],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-036",
@@ -3341,7 +3433,7 @@
         "Run caption-only and screen-reader journeys including paused, corrected, interrupted and failed audio."
       ],
       "rollback": "Show the complete validated text transcript and disable timed highlighting.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F6",
       "gate": "G6",
@@ -3357,8 +3449,13 @@
       "id": "AB-085",
       "title": "Push to talk recognition and transcript editing",
       "origin": "original",
-      "prs": [],
-      "contributingPrs": [],
+      "prs": [
+        97
+      ],
+      "contributingPrs": [
+        100,
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-005",
@@ -3382,7 +3479,7 @@
         "Test codecs and real configured STT, revoked permission, silence, network loss and edited transcription; inspect deletion timing."
       ],
       "rollback": "Disable microphone entry and preserve typing and output speech.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F6",
       "gate": "G6",
@@ -3398,8 +3495,12 @@
       "id": "AB-086",
       "title": "Barge in interruption and conversation epochs",
       "origin": "original",
-      "prs": [],
-      "contributingPrs": [],
+      "prs": [
+        99
+      ],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-035",
@@ -3424,7 +3525,7 @@
         "Race new input, speech delivery, disconnect and source-version changes with deterministic event injection."
       ],
       "rollback": "Use explicit stop-before-new-answer behavior until concurrency passes.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F6",
       "gate": "G6",
@@ -3530,7 +3631,9 @@
       "prs": [
         70
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-024",
@@ -3574,7 +3677,9 @@
       "prs": [
         75
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-011",
@@ -3620,7 +3725,8 @@
         74
       ],
       "contributingPrs": [
-        68
+        68,
+        101
       ],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -3664,7 +3770,9 @@
       "prs": [
         69
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-024",
@@ -3747,7 +3855,9 @@
       "title": "Publisher catalog curation and maintenance UI",
       "origin": "original",
       "prs": [],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-008",
@@ -3772,7 +3882,7 @@
         "Perform a full maintenance workflow with viewer/editor/owner roles and a failed refresh followed by correction."
       ],
       "rollback": "Disable publisher writes and preserve current public release pointers.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F7",
       "gate": "G7",
@@ -3791,7 +3901,9 @@
       "prs": [
         76
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-007",
@@ -3834,7 +3946,9 @@
       "title": "Offline reading reduced data and cache updates",
       "origin": "original",
       "prs": [],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-024",
@@ -3859,7 +3973,7 @@
         "Test offline startup, exhausted storage, interrupted updates and private response cache exclusion."
       ],
       "rollback": "Unregister the faulty cache layer and use standard online reading.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F7",
       "gate": "G7",
@@ -3918,8 +4032,12 @@
       "id": "AB-098",
       "title": "SEO metadata error pages and release identity",
       "origin": "original",
-      "prs": [],
-      "contributingPrs": [],
+      "prs": [
+        83
+      ],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-021",
@@ -3943,7 +4061,7 @@
         "Crawl the staged site, inspect headers and metadata, and confirm source updates do not canonicalize old versions incorrectly."
       ],
       "rollback": "Remove affected indexing metadata and restore known public routes.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F7",
       "gate": "G7",
@@ -3960,7 +4078,9 @@
       "title": "Full accessibility and browser compatibility audit",
       "origin": "original",
       "prs": [],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-088",
@@ -3988,7 +4108,7 @@
         "Run axe plus human-equivalent agent walkthroughs with available assistive tools and record actual physical-device gaps explicitly."
       ],
       "rollback": "Disable the inaccessible enhancement and preserve a tested semantic alternative.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F7",
       "gate": "G7",
@@ -4055,7 +4175,9 @@
       "title": "Security hardening dependency review and AI audit",
       "origin": "original",
       "prs": [],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-011",
@@ -4080,7 +4202,7 @@
         "Attack authorization, upload isolation, SSRF, XSS, quotas and private cache boundaries against the exact build."
       ],
       "rollback": "Disable the vulnerable capability or revert the build; no external human audit is required to proceed after actual fixes pass.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F8",
       "gate": "G8",
@@ -4222,7 +4344,9 @@
       "title": "Production service configuration and secret readiness",
       "origin": "original",
       "prs": [],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-012",
@@ -4246,7 +4370,7 @@
         "Validate configuration and deploy the exact release candidate to staging, including worker drain and migration failure recovery."
       ],
       "rollback": "Redeploy the prior service image and restore its release manifest.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F8",
       "gate": "G8",
@@ -4350,7 +4474,9 @@
       "title": "Operator documentation and agent continuation kit",
       "origin": "original",
       "prs": [],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-100",
@@ -4376,7 +4502,7 @@
         "Perform a clean-room continuation walkthrough from the documentation and verify every linked path and command exists."
       ],
       "rollback": "Correct the documentation and keep the previous operational instructions available.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F8",
       "gate": "G8",
@@ -4393,7 +4519,9 @@
       "title": "Feature flags canary rollout and rollback rehearsal",
       "origin": "original",
       "prs": [],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-100",
@@ -4419,7 +4547,7 @@
         "Trigger each switch under traffic and roll back a deliberately bad asset and answer configuration."
       ],
       "rollback": "Revert to the prior manifest and disable the affected enhancement.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F8",
       "gate": "G8",
@@ -4436,7 +4564,9 @@
       "title": "Content asset and release evidence reconciliation",
       "origin": "original",
       "prs": [],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-025",
@@ -4468,7 +4598,7 @@
         "Run requirement coverage and evidence-link checks and compare the built manifests with the accepted source and asset sets."
       ],
       "rollback": "Mark affected units incomplete and keep release pointers on the previous accepted build.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F8",
       "gate": "G8",
@@ -5447,13 +5577,13 @@
       "id": 76,
       "number": 76,
       "title": "AB-095: Bounded tenant-scoped expired session cleanup (partial)",
-      "state": "open",
+      "state": "closed",
       "url": "https://github.com/neophilism/Ask-Bill/pull/76",
       "createdAt": "2026-10-17T12:51:41Z",
-      "updatedAt": "2026-10-17T12:51:41Z",
-      "mergedAt": null,
-      "closedAt": null,
-      "draft": true
+      "updatedAt": "2026-10-17T14:10:03Z",
+      "mergedAt": "2026-10-17T14:10:03Z",
+      "closedAt": "2026-10-17T14:10:03Z",
+      "draft": false
     },
     {
       "id": 77,
@@ -5483,34 +5613,274 @@
       "id": 79,
       "number": 79,
       "title": "Bill roster: compare 3 animated GLBs and shortlist seven candidates",
-      "state": "open",
+      "state": "closed",
       "url": "https://github.com/neophilism/Ask-Bill/pull/79",
       "createdAt": "2026-10-17T13:01:18Z",
-      "updatedAt": "2026-10-17T13:06:35Z",
-      "mergedAt": null,
-      "closedAt": null,
+      "updatedAt": "2026-10-17T13:10:00Z",
+      "mergedAt": "2026-10-17T13:10:00Z",
+      "closedAt": "2026-10-17T13:10:00Z",
       "draft": false
     },
     {
       "id": 80,
       "number": 80,
       "title": "AB-068: Bounded Worker path planner and stale-result fencing",
-      "state": "open",
+      "state": "closed",
       "url": "https://github.com/neophilism/Ask-Bill/pull/80",
       "createdAt": "2026-10-17T13:04:10Z",
-      "updatedAt": "2026-10-17T13:04:56Z",
-      "mergedAt": null,
-      "closedAt": null,
-      "draft": true
+      "updatedAt": "2026-10-17T13:08:52Z",
+      "mergedAt": "2026-10-17T13:08:52Z",
+      "closedAt": "2026-10-17T13:08:52Z",
+      "draft": false
     },
     {
       "id": 81,
       "number": 81,
       "title": "Bill characters: build verified, locally runnable ZIP of all 20 GLBs",
-      "state": "open",
+      "state": "closed",
       "url": "https://github.com/neophilism/Ask-Bill/pull/81",
       "createdAt": "2026-10-17T13:07:18Z",
-      "updatedAt": "2026-10-17T13:07:45Z",
+      "updatedAt": "2026-10-17T13:20:27Z",
+      "mergedAt": "2026-10-17T13:20:27Z",
+      "closedAt": "2026-10-17T13:20:27Z",
+      "draft": false
+    },
+    {
+      "id": 82,
+      "number": 82,
+      "title": "AB-001: Reconcile live Ask Bill PR registry and agent handoff",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/82",
+      "createdAt": "2026-10-17T13:08:10Z",
+      "updatedAt": "2026-10-17T13:11:55Z",
+      "mergedAt": "2026-10-17T13:11:55Z",
+      "closedAt": "2026-10-17T13:11:55Z",
+      "draft": false
+    },
+    {
+      "id": 83,
+      "number": 83,
+      "title": "AB-098: Accessible privacy-safe public reader errors (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/83",
+      "createdAt": "2026-10-17T13:11:25Z",
+      "updatedAt": "2026-10-17T13:15:52Z",
+      "mergedAt": "2026-10-17T13:15:52Z",
+      "closedAt": "2026-10-17T13:15:52Z",
+      "draft": false
+    },
+    {
+      "id": 84,
+      "number": 84,
+      "title": "AB-020: Strict Congress.gov version date and metadata guards",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/84",
+      "createdAt": "2026-10-17T13:14:03Z",
+      "updatedAt": "2026-10-17T13:19:04Z",
+      "mergedAt": "2026-10-17T13:19:03Z",
+      "closedAt": "2026-10-17T13:19:04Z",
+      "draft": false
+    },
+    {
+      "id": 85,
+      "number": 85,
+      "title": "AB-068: Real Chromium source-geometry and Worker regression",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/85",
+      "createdAt": "2026-10-17T13:20:35Z",
+      "updatedAt": "2026-10-17T13:28:04Z",
+      "mergedAt": "2026-10-17T13:28:04Z",
+      "closedAt": "2026-10-17T13:28:04Z",
+      "draft": false
+    },
+    {
+      "id": 86,
+      "number": 86,
+      "title": "AB-067: Verified transferable graph builder for browser Workers",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/86",
+      "createdAt": "2026-10-17T13:24:00Z",
+      "updatedAt": "2026-10-17T13:28:36Z",
+      "mergedAt": "2026-10-17T13:28:36Z",
+      "closedAt": "2026-10-17T13:28:36Z",
+      "draft": false
+    },
+    {
+      "id": 87,
+      "number": 87,
+      "title": "AB-002: Deduplicate PR CI and cache pinned Playwright Chromium",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/87",
+      "createdAt": "2026-10-17T13:27:34Z",
+      "updatedAt": "2026-10-17T14:09:37Z",
+      "mergedAt": "2026-10-17T14:09:36Z",
+      "closedAt": "2026-10-17T14:09:36Z",
+      "draft": false
+    },
+    {
+      "id": 88,
+      "number": 88,
+      "title": "Bill: 33 real GLB animation clips including eight distinct dances across all 20 characters",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/88",
+      "createdAt": "2026-10-17T13:36:30Z",
+      "updatedAt": "2026-10-17T13:53:49Z",
+      "mergedAt": "2026-10-17T13:53:49Z",
+      "closedAt": "2026-10-17T13:53:49Z",
+      "draft": false
+    },
+    {
+      "id": 89,
+      "number": 89,
+      "title": "Bill: gentle idle dance scheduler, 33-clip audition UI and instant interruption",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/89",
+      "createdAt": "2026-10-17T13:45:20Z",
+      "updatedAt": "2026-10-17T14:17:39Z",
+      "mergedAt": "2026-10-17T14:17:39Z",
+      "closedAt": "2026-10-17T14:17:39Z",
+      "draft": false
+    },
+    {
+      "id": 90,
+      "number": 90,
+      "title": "AB-082: Gesture-gated browser audio transport, speed, mute and interruption (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/90",
+      "createdAt": "2026-10-17T14:13:45Z",
+      "updatedAt": "2026-10-17T14:30:24Z",
+      "mergedAt": "2026-10-17T14:30:24Z",
+      "closedAt": "2026-10-17T14:30:24Z",
+      "draft": false
+    },
+    {
+      "id": 91,
+      "number": 91,
+      "title": "AB-084: Selectable source-grounded captions and accessible transcript (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/91",
+      "createdAt": "2026-10-17T14:16:33Z",
+      "updatedAt": "2026-10-17T14:30:58Z",
+      "mergedAt": "2026-10-17T14:30:58Z",
+      "closedAt": "2026-10-17T14:30:58Z",
+      "draft": false
+    },
+    {
+      "id": 92,
+      "number": 92,
+      "title": "AB-083: Audio-clock viseme coarticulation and source-fenced mouth scheduler (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/92",
+      "createdAt": "2026-10-17T14:19:30Z",
+      "updatedAt": "2026-10-17T14:31:34Z",
+      "mergedAt": "2026-10-17T14:31:34Z",
+      "closedAt": "2026-10-17T14:31:34Z",
+      "draft": false
+    },
+    {
+      "id": 93,
+      "number": 93,
+      "title": "AB-071: Deterministic source-cue performance director and safe interruption (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/93",
+      "createdAt": "2026-10-17T14:22:39Z",
+      "updatedAt": "2026-10-17T14:37:05Z",
+      "mergedAt": "2026-10-17T14:37:05Z",
+      "closedAt": "2026-10-17T14:37:05Z",
+      "draft": false
+    },
+    {
+      "id": 94,
+      "number": 94,
+      "title": "AB-075: Accessible pause, hide and reduced-motion controls (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/94",
+      "createdAt": "2026-10-17T14:25:13Z",
+      "updatedAt": "2026-10-17T14:37:47Z",
+      "mergedAt": "2026-10-17T14:37:47Z",
+      "closedAt": "2026-10-17T14:37:47Z",
+      "draft": false
+    },
+    {
+      "id": 95,
+      "number": 95,
+      "title": "AB-073: Mobile keyboard-safe docking and registered whitespace stage (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/95",
+      "createdAt": "2026-10-17T14:27:17Z",
+      "updatedAt": "2026-10-17T14:38:20Z",
+      "mergedAt": "2026-10-17T14:38:20Z",
+      "closedAt": "2026-10-17T14:38:20Z",
+      "draft": false
+    },
+    {
+      "id": 96,
+      "number": 96,
+      "title": "AB-074: Adaptive frame-budget and graphics lifecycle governor (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/96",
+      "createdAt": "2026-10-17T14:29:27Z",
+      "updatedAt": "2026-10-17T14:40:36Z",
+      "mergedAt": "2026-10-17T14:40:35Z",
+      "closedAt": "2026-10-17T14:40:35Z",
+      "draft": false
+    },
+    {
+      "id": 97,
+      "number": 97,
+      "title": "AB-085: Explicit-gesture microphone and editable transcript preflight (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/97",
+      "createdAt": "2026-10-17T14:34:39Z",
+      "updatedAt": "2026-10-17T14:38:58Z",
+      "mergedAt": "2026-10-17T14:38:58Z",
+      "closedAt": "2026-10-17T14:38:58Z",
+      "draft": false
+    },
+    {
+      "id": 98,
+      "number": 98,
+      "title": "AB-065: Repair real browser scroll-invalidation regression",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/98",
+      "createdAt": "2026-10-17T14:36:37Z",
+      "updatedAt": "2026-10-17T14:40:52Z",
+      "mergedAt": null,
+      "closedAt": "2026-10-17T14:40:52Z",
+      "draft": true
+    },
+    {
+      "id": 99,
+      "number": 99,
+      "title": "AB-086: Version-fenced cancellation across AI, audio, captions and motion (partial)",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/99",
+      "createdAt": "2026-10-17T14:36:40Z",
+      "updatedAt": "2026-10-17T14:41:38Z",
+      "mergedAt": "2026-10-17T14:41:38Z",
+      "closedAt": "2026-10-17T14:41:38Z",
+      "draft": false
+    },
+    {
+      "id": 100,
+      "number": 100,
+      "title": "AB-030: Complete AI, speech, publisher identity and private storage adapters",
+      "state": "closed",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/100",
+      "createdAt": "2026-10-17T15:32:38Z",
+      "updatedAt": "2026-10-17T15:36:02Z",
+      "mergedAt": "2026-10-17T15:36:02Z",
+      "closedAt": "2026-10-17T15:36:02Z",
+      "draft": false
+    },
+    {
+      "id": 101,
+      "number": 101,
+      "title": "AB-004: Complete reader, publisher workflow and provider runtime",
+      "state": "open",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/101",
+      "createdAt": "2026-10-17T16:07:19Z",
+      "updatedAt": "2026-10-17T16:07:19Z",
       "mergedAt": null,
       "closedAt": null,
       "draft": false

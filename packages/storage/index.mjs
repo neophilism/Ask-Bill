@@ -1,5 +1,6 @@
 /** Ask Bill AB-009 server-only signed-object capability contracts. No cloud backend. */
 import {createHash, createHmac, randomBytes, timingSafeEqual} from 'node:crypto';
+import {scanQuarantinedBytes} from '../content/intake/index.mjs';
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const HEX=/^[a-f0-9]{64}$/;
 const MIME=new Set(['application/pdf','text/plain','application/xml','text/xml','application/vnd.openxmlformats-officedocument.wordprocessingml.document']);
@@ -33,7 +34,10 @@ export function sniffUpload(bytes, declaredMime){
  if(declaredMime==='application/vnd.openxmlformats-officedocument.wordprocessingml.document'&&!buf.subarray(0,4).equals(Buffer.from([0x50,0x4b,0x03,0x04])))deny('MIME_MISMATCH');
  if(['text/xml','application/xml'].includes(declaredMime)){
   const prefix=buf.toString('utf8').trimStart();
-  if(!prefix.startsWith('<')||/<!DOCTYPE|<!ENTITY/i.test(prefix))deny('UNSAFE_XML');
+  if(!prefix.startsWith('<'))deny('UNSAFE_XML');
+  // Share the strict offline XML policy with real intake; only the exact known
+  // inert Congress prolog is masked, without resolving a DTD or any entity.
+  try{scanQuarantinedBytes(buf,declaredMime);}catch{deny('UNSAFE_XML');}
  }
  if(declaredMime==='text/plain'&&buf.includes(0))deny('MIME_MISMATCH');
  return Object.freeze({bytes:buf.length,sha256:createHash('sha256').update(buf).digest('hex'),mime:declaredMime});
