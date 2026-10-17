@@ -68,8 +68,7 @@ sleep 0.2
 worker_b=$!
 wait "$worker_a"
 wait "$worker_b"
-wins=$(grep -l '^successprintf '[Ask Bill AB-007/010/013/023] PostgreSQL migrations, isolation, jobs, source provenance and atomic search indexing passed.\n'
- "$race_dir"/*.status | wc -l)
+wins=$(grep -l '^success$' "$race_dir"/*.status | wc -l)
 if [ "$wins" -ne 1 ]; then
   echo 'Expected exactly one concurrent reservation; both or neither succeeded' >&2
   cat "$race_dir"/*.log >&2
