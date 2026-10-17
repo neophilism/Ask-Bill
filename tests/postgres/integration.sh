@@ -90,4 +90,6 @@ echo '[Ask Bill AB-004/024] Verify active release reader SQL against PostgreSQL 
 psql_container < tests/postgres/public_reader.sql
 echo '[Ask Bill AB-004/024] Verify active published catalog query against PostgreSQL schema'
 psql_container < tests/postgres/public_catalog.sql
+echo '[Ask Bill AB-024] Prove authorized active release and revoked source isolation under PostgreSQL FORCE RLS'
+psql_container < tests/postgres/public_reader_policy.sql
 printf '[Ask Bill AB-007/010/013/023] PostgreSQL migrations, isolation, jobs, source provenance and atomic search indexing passed.\n'
