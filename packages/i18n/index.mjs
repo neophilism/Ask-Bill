@@ -19,7 +19,7 @@ export function renderSpanishSourceReader(pack){
  const sections=p.provisions.map(s=>'<section id="provision-'+esc(s.id)+'" data-source-version="'+esc(p.versionId)+
    '" data-provision-id="'+esc(s.id)+'" tabindex="-1"><h2>'+esc(s.heading)+'</h2>'+
    '<pre class="statutory-text" lang="'+esc(p.language)+'">'+esc(s.text)+'</pre>'+
-   '<p><a href="'+esc(publicBillLink({billId:p.billId,versionId:p.versionId,provisionId:s.id))+'">Ver pasaje original</a></p></section>').join('');
+   '<p><a href="'+esc(publicBillLink({billId:p.billId,versionId:p.versionId,provisionId:s.id}))+'">Ver pasaje original</a></p></section>').join('');
  const official=p.sourceUrl?'<a rel="noopener noreferrer" href="'+esc(p.sourceUrl)+'">Fuente oficial</a>':
    'No se ha registrado un enlace oficial';
  return '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'+
