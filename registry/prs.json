@@ -2249,7 +2249,7 @@
       "title": "Pointing presentation reading and social gestures",
       "origin": "original",
       "prs": [],
-      "contributingPrs": [],
+      "contributingPrs": [102],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-050",

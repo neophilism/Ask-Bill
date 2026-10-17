@@ -1,0 +1,39 @@
+name: Bill Meshy animation importer (offline)
+
+on:
+  pull_request:
+    paths:
+      - 'tools/meshy/**'
+      - 'tests/meshy/**'
+      - 'docs/character/MESHY_API_INTEGRATION.md'
+      - '.github/workflows/bill-meshy-offline.yml'
+      - '.github/workflows/bill-meshy-api.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'tools/meshy/**'
+      - 'tests/meshy/**'
+      - '.github/workflows/bill-meshy-offline.yml'
+      - '.github/workflows/bill-meshy-api.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  meshy-offline:
+    name: character / Meshy API dry-run and GLB safety
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Exercise real local GLBs with mocked Meshy responses
+        run: python3 -m unittest discover -s tests/meshy -p 'test_*.py' -v
+      - name: Confirm API script only plans and never charges in CI
+        run: |
+          python3 tools/meshy/fetch_bill_animations.py --tiers core
+          python3 -m py_compile tools/meshy/fetch_bill_animations.py tools/meshy/merge_bill_animations.py
