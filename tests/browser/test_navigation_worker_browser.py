@@ -22,6 +22,7 @@ try:
             result = page.evaluate("""async () => {
               const {createViewportGeometry}=await import('/viewport.mjs');
               const {buildTraversalGraph}=await import('/graph.mjs');
+              const {buildWorkerTraversalGraph}=await import('/transport.mjs');
               const root=document.querySelector('#reader');
               const layout={layoutRevision:3,anchors:Array.from(root.querySelectorAll('section[id^="provision-"]')).map(el=>{
                 const r=el.getBoundingClientRect();
@@ -41,8 +42,7 @@ try:
               const surfaces=layout.anchors.map(a=>({id:a.provisionId,versionId:'v1',layoutRevision:3,kind:'ledge',scrollContainerId:'root',rect:a.viewportRect}));
               const graph=buildTraversalGraph({versionId:'v1',layoutRevision:3,viewport:{x:0,y:0,width:innerWidth,height:innerHeight},surfaces,bodyRadius:8,maxStep:80});
               // Strip graph callbacks: Worker messaging uses only structured-clone data.
-              const clone={versionId:graph.versionId,layoutRevision:graph.layoutRevision,
-                nodes:graph.nodes.map(({id,x,y})=>({id,x,y})),edges:graph.edges};
+              const clone=buildWorkerTraversalGraph({versionId:'v1',layoutRevision:3,viewport:{x:0,y:0,width:innerWidth,height:innerHeight},surfaces,bodyRadius:8,maxStep:80});
               const worker=new Worker('/worker-entry.mjs',{type:'module'});
               const answer=new Promise((resolve,reject)=>{
                 worker.addEventListener('message',event=>resolve(event.data),{once:true});
