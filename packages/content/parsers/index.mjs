@@ -20,6 +20,7 @@ export function parseTextOrMarkdown(bytes,mime){
  if(!['text/plain','text/markdown'].includes(mime))fail('MIME_NOT_SUPPORTED');
  const raw=assertText(bytes,mime);const lines=raw.split(/\r\n|\n|\r/);
  let position=0;const blocks=[],warnings=[],headings=[];
+ const lineBreaks=Array.from(raw.matchAll(/\r\n|\n|\r/g),m=>m[0]);
  for(let i=0;i<lines.length;i++){
   const line=lines[i];
   const m=mime==='text/markdown'?line.match(/^(#{1,6})[ \t]+(.+?)\s*#*\s*$/):null;
@@ -28,7 +29,7 @@ export function parseTextOrMarkdown(bytes,mime){
    mime==='text/markdown'&&/^\s*\|.+\|\s*$/.test(line)?'table':'paragraph';
   if(m)headings.push({line:i+1,level:m[1].length,text:m[2]});
   blocks.push(Object.freeze({kind,text:line,headingLevel:m?m[1].length:null,locator:Object.freeze({line:i+1}),sourceStart:position,sourceEnd:position+cp(line)}));
-  position+=cp(line)+1;
+  position+=cp(line)+(lineBreaks[i] ? cp(lineBreaks[i]) : 0);
  }
  if(mime==='text/markdown'&&/<\s*(?:script|style|iframe|object|embed)\b/i.test(raw))warnings.push('embedded_html_as_inert_text');
  return Object.freeze({format:mime==='text/markdown'?'markdown':'text',canonicalText:raw,sourceComplete:false,publicationAllowed:false,

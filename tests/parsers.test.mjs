@@ -5,7 +5,7 @@ import {pack,docxFixture,docxMime} from './fixtures/createDocx.mjs';
 test('text keeps source bytes and line locators across emoji and CRLF',()=>{
  const raw='§ One 😃\r\nTwo’s clause\r\n';
  const doc=parseTextOrMarkdown(Buffer.from(raw),'text/plain');
- assert.equal(doc.canonicalText,raw);assert.equal(doc.blocks[0].sourceEnd,7);assert.equal(doc.blocks[1].locator.line,2);
+ assert.equal(doc.canonicalText,raw);assert.equal(doc.blocks[0].sourceEnd,7);assert.equal(doc.blocks[1].locator.line,2);assert.equal(doc.blocks[1].sourceStart,9);
  assert.equal(doc.sourceComplete,false);assert.equal(doc.publicationAllowed,false);
 });
 test('Markdown identifies headings, lists, footnotes and tables without rewriting wording',()=>{
