@@ -34,6 +34,10 @@ def proof_render(output):
     scene = bpy.context.scene
     scene.render.engine = 'CYCLES'
     scene.cycles.samples = 8
+    # Ubuntu's packaged Blender is built without the OpenImageDenoiser device.
+    scene.cycles.use_denoising = False
+    for layer in scene.view_layers:
+        layer.cycles.use_denoising = False
     scene.render.image_settings.file_format = 'PNG'
     scene.render.image_settings.color_mode = 'RGBA'
     scene.render.film_transparent = False
