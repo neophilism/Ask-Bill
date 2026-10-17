@@ -60,6 +60,7 @@ jobs:
         run: |
           python tests/browser/test_reader_browser.py
           python tests/browser/test_published_source_browser.py
+          python tests/browser/test_layout_anchor_registry.py
   database:
     name: database / PostgreSQL tenancy and migrations
     runs-on: ubuntu-latest
