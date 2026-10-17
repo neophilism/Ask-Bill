@@ -1,13 +1,34 @@
-# Ask Bill independent development checkpoint
+# Ask Bill — verified GitHub development checkpoint
 
-Observed 2026-10-17T00:10:16Z UTC from GitHub, in repository `neophilism/Ask-Bill`.
+**Observed:** 2026-10-17T03:34:25Z UTC | Repository: `neophilism/Ask-Bill` | Main commit: `37f4b422be8388663923cada4d212a06ade01934`.
 
-**Merged PRs:** #1–#12. The last three add scoped, tested foundations: AB-010 PostgreSQL fenced jobs/outbox; AB-011 privacy/threat inventory and child-live-input hard disable; AB-012 fail-closed health/readiness and cooperative worker drain. Exact-head GitHub quality/Chromium/disposable PostgreSQL checks passed before merge. Complete operational acceptance is still pending for multiple partially delivered units.
+## Live pull request evidence
 
-**Open draft:** PR #13 (AB-013), source provenance with original byte hashes, official URL policy, append-only tenant-bound metadata and disposable PostgreSQL negative tests. Five local Node tests passed; current-head GitHub quality/DB/browser acceptance and security review are pending.
+At this observation, GitHub reported **56 pull requests, all 56 merged**. These represent scoped implementation increments across **48 distinct development units**; a merged PR is not equivalent to complete operational acceptance.
 
-**Canonical plan:** 112 original units and 490 local dependencies unchanged. The registry maps 13 actual PRs; AB-013 is in-progress and operational acceptance is not_run.
+**Canonical roadmap:** 112 approved original units and 490 fixed dependencies. The registry currently marks 3 units `completed`, 45 units `in_progress`, and 64 `not_started`. Do not infer full milestone acceptance from the presence of a PR.
 
-**Actual public status:** no deployed user-facing Ask Bill production website, verified full source/legislative publishing, production identity/MFA, AI/voice provider or delivered/rigged 3D Bill. The available reading demonstration is intentionally incomplete and local-only. User will supply Bill's asset shortly. No unrelated company/product integrations.
+Most recent source-only/public website increments:
 
-**Next:** Complete AB-013 current-head CI/review and merge when green. Continue authorized source/quarantine and grounded-reading functionality, then integrate and validate the user-supplied original character separately.
+- PR #49: AB-044 fail-closed grounding evidence; a caller-submitted staging report cannot authorize live generation.
+- PR #50: AB-004 complete-source, immutable-version reader and plain-text fallback.
+- PR #51: AB-004 guarded read-only HTTP source routes with restrictive CSP.
+- PR #53: AB-024 active release / search generation / original-source PostgreSQL lookup.
+- PR #54: AB-004 strict Chromium desktop/mobile/no-JavaScript reading tests.
+- PR #55: AB-004 public release catalog and bounded pagination.
+- PR #56: AB-024 tenant-scoped active-catalog PostgreSQL lookup.
+- PR #57: AB-004 real localhost Chromium catalog-to-reader navigation.
+
+At each of those merged PR heads GitHub's quality, Chromium, PDF, and disposable PostgreSQL acceptance checks were observed green before merging. Source-only endpoints require explicit publication/back-end configuration and are **not deployed to a production domain**.
+
+## Outstanding work / operational acceptance
+
+- No verified production website, authentic complete current-law source catalog, independent review of live AI, actual publisher IAM/MFA or production DB/object-storage configuration.
+- Source-only demo and synthetic browser cases are not evidence that the actual law or publication status has been verified.
+- The 3D Bill character is developed separately by the owner/team; do not modify or take over the character design, mesh, Blender or animation-asset pipeline in this workstream.
+- Continue Ask Bill web, content, accessibility, privacy and security work independently, with no Law Machine or unrelated-company integrations.
+- Review current GitHub branch and PR status afresh at the next execution; this document is a dated snapshot, not a background-running agent.
+
+## Immediate next steps
+
+Verify all exact-head CI on the next PR; continue accessible publisher-backed web and source-only infrastructure without credentials, and keep new functionality fail-closed until publisher authorization, source authenticity and independent staging evidence are present.
