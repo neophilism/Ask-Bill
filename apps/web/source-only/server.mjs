@@ -34,8 +34,9 @@ export async function createPublishedSourceServer({publisherId,lookupPublishedPa
  // Bound concurrent backend work, including slow and disconnected lookups.
  // Do not free a slot until the lookup settles, even when a client disconnects.
  let activeLookups=0;
+ let draining=false;
  const dispatch=(res,head,task)=>{
-  if(activeLookups>=maxInflight){
+  if(draining||activeLookups>=maxInflight){
    respond(res,503,'Reader temporarily busy','text/plain; charset=utf-8',head,{'Retry-After':'2'});
    return;
   }
@@ -52,6 +53,7 @@ export async function createPublishedSourceServer({publisherId,lookupPublishedPa
  };
  const server=createServer((req,res)=>{
   const head=req.method==='HEAD';
+  if(draining){respond(res,503,'Reader shutting down','text/plain; charset=utf-8',head,{'Retry-After':'2'});return;}
   if(req.method!=='GET'&&!head){
    respond(res,405,'Method not allowed','text/plain; charset=utf-8',false,{Allow:'GET, HEAD'});
    return;
@@ -88,5 +90,13 @@ export async function createPublishedSourceServer({publisherId,lookupPublishedPa
  server.requestTimeout=20000;
  server.keepAliveTimeout=5000;
  server.maxRequestsPerSocket=100;
+ // Stop accepting traffic; already-started backend reads retain their slots.
+ server.beginReaderDrain=()=>{
+  if(draining)return;
+  draining=true;
+  server.close();
+  server.closeIdleConnections?.();
+ };
+ server.readerCapacity=()=>Object.freeze({active:activeLookups,limit:maxInflight,draining});
  return server;
 }
