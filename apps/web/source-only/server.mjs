@@ -6,12 +6,13 @@
 import {createServer} from 'node:http';
 import {createPublicReader} from '../../../packages/ui/reader/index.mjs';
 import {renderPublicCatalog} from '../../../packages/ui/catalog/index.mjs';
+import {findExactPublishedText,renderSourceSearchResults} from '../../../packages/ui/reader/find.mjs';
 import {readFile} from 'node:fs/promises';
 
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const ROUTE=/^\/bills\/([0-9a-f-]{36})\/versions\/([0-9a-f-]{36})(\.txt)?$/i;
 const HEADERS=Object.freeze({
-  'Content-Security-Policy':"default-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; style-src 'self'; script-src 'none'; img-src 'none'",
+  'Content-Security-Policy':"default-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; style-src 'self'; script-src 'none'; img-src 'none'",
   'X-Content-Type-Options':'nosniff',
   'X-Frame-Options':'DENY',
   'X-Robots-Tag':'noindex, nofollow',
@@ -60,6 +61,29 @@ export async function createPublishedSourceServer({publisherId,lookupPublishedPa
   }
   const path=req.url??'';
   if(path==='/public-reader.css'){respond(res,200,css,'text/css; charset=utf-8',head);return;}
+  // Only this read-only source-search route permits a bounded, single query parameter.
+  if(path.includes('/search?')){
+    const ix=path.indexOf('?'),endpoint=path.slice(0,ix),raw=path.slice(ix+1);
+    const match=/^\/bills\/([0-9a-f-]{36})\/versions\/([0-9a-f-]{36})\/search$/i.exec(endpoint);
+    if(!match||!UUID.test(match[1])||!UUID.test(match[2])||!/^q=[^&]{1,280}$/.test(raw)||endpoint.includes('%')){
+      respond(res,404,'Not found','text/plain; charset=utf-8',head);return;
+    }
+    let query;
+    try{query=decodeURIComponent(raw.slice(2).replace(/\+/g,' '));}
+    catch{respond(res,404,'Not found','text/plain; charset=utf-8',head);return;}
+    if(query.length<2||query.length>160||query.trim()!==query||/[\u0000-\u001f\u007f]/.test(query)){
+      respond(res,404,'Not found','text/plain; charset=utf-8',head);return;
+    }
+    dispatch(res,head,async()=>{
+      const billId=match[1].toLowerCase(),versionId=match[2].toLowerCase();
+      const source=await lookupPublishedPack(Object.freeze({publisherId,billId,versionId}));
+      if(!source||source.publisherId?.toLowerCase()!==publisherId.toLowerCase()||
+         source.billId?.toLowerCase()!==billId||source.versionId?.toLowerCase()!==versionId)
+        throw Error('PUBLISHED_RELEASE_NOT_AVAILABLE');
+      const report=findExactPublishedText({pack:source,query});
+      return {body:renderSourceSearchResults(report),type:'text/html; charset=utf-8'};
+    });return;
+  }
   // Reject query strings, percent-encoded paths and alternate URL forms before parsing.
   if(path.includes('%')||path.includes('?')||path.includes('#')||path.length>300){
    respond(res,404,'Not found','text/plain; charset=utf-8',head);return;
