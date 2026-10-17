@@ -37,6 +37,7 @@ export function renderPreview(input) {
   </header>
   <main id="main" class="workspace">
     <nav class="toolbar" aria-label="Reader controls">
+      <a href="/characters">Audition 20 Bills in 3D</a>
       <label for="bill-picker">Document</label>
       <select id="bill-picker" aria-describedby="source-limit"><option>Electronic filing draft — excerpt</option></select>
       <div class="toolbar-spacer"></div>

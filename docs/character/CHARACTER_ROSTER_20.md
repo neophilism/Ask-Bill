@@ -40,7 +40,7 @@ python -m unittest discover -s tests/character-roster -p "test_*.py" -v
 python -m http.server 8000
 ```
 
-Visit `http://localhost:8000/apps/web/preview/characters.html`. It previews **actual GLBs**, not drawings, with in-place exported walking, source selection, cursor attentiveness, 3D orbiting and instant manual character switching. The page temporarily loads a pinned third-party model-viewer module from jsDelivr and therefore requires internet; a production release must bundle/audit the renderer, enforce CSP and verify a11y, loader, animation timing, browser/mobile budgets, and security. It contains no microphone, camera, eye tracking, account access or provider calls.
+Visit `http://localhost:8000/apps/web/preview/characters.html`; or run the existing `pnpm preview` server and visit `http://127.0.0.1:4100/characters` using the new separately scoped local-only route. It previews **actual GLBs**, not drawings, with in-place exported walking, source selection, cursor attentiveness, 3D orbiting and instant manual character switching. The page temporarily loads a pinned third-party model-viewer module from jsDelivr and therefore requires internet; a production release must bundle/audit the renderer, enforce CSP and verify a11y, loader, animation timing, browser/mobile budgets, and security. It contains no microphone, camera, eye tracking, account access or provider calls.
 
 ## Generation workflow and binary provenance
 
