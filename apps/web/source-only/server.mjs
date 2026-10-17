@@ -10,6 +10,7 @@ import {findExactPublishedText,renderSourceSearchResults} from '../../../package
 import {createSourceOnlyShare,renderSourceShareHtml,renderSourceShareText} from '../../../packages/export/index.mjs';
 import {createSourceOnlyTour,renderSourceTourStep} from '../../../packages/tours/index.mjs';
 import {validateEmbedOrigins,renderEmbeddablePublishedSource,embedSecurityHeaders} from '../../../packages/embed/index.mjs';
+import {renderChildLearning} from '../../../packages/learning/curated/index.mjs';
 import {renderSpanishSourceReader} from '../../../packages/i18n/index.mjs';
 import {readFile} from 'node:fs/promises';
 
@@ -168,6 +169,11 @@ export async function createPublishedSourceServer({publisherId,lookupPublishedPa
           type:'text/html; charset=utf-8',embedHeaders:embedSecurityHeaders(embedAllowed)};
       });return;
     }
+  }
+  // No account, free text, microphone or model: local curated child education only.
+  if(path==='/learn'){
+    respond(res,200,renderChildLearning(),'text/html; charset=utf-8',head);
+    return;
   }
   const match=ROUTE.exec(path);
   if(!match||!UUID.test(match[1])||!UUID.test(match[2])){
