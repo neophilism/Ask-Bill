@@ -1,0 +1,51 @@
+name: Ask Bill 20-character walking evaluation kit
+on:
+  pull_request:
+    paths:
+      - 'scripts/package-character-audition.py'
+      - 'tools/character-audition/**'
+      - 'tests/character-kit/**'
+      - 'apps/web/preview/compare.*'
+      - 'packages/character/gallery/**'
+      - '.github/workflows/bill-character-kit.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/package-character-audition.py'
+      - 'tools/character-audition/**'
+      - 'tests/character-kit/**'
+      - 'apps/web/preview/compare.*'
+      - 'packages/character/gallery/**'
+      - '.github/workflows/bill-character-kit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build-portable-lab:
+    name: Package and verify all 20 walking GLBs
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install the pinned reference-baking dependency
+        run: python -m pip install --disable-pip-version-check pillow==11.3.0
+      - name: Validate exact canonical model roster
+        run: python -m unittest discover -s tests/character-roster -p 'test_*.py' -v
+      - name: Build checksum-verified standalone walking lab ZIP
+        run: python scripts/package-character-audition.py --output dist/AskBill-20-Walking-Lab.zip
+      - name: Verify reproducible package and localhost-only server
+        run: python -m unittest discover -s tests/character-kit -p 'test_*.py' -v
+      - name: Display release digest
+        run: sha256sum dist/AskBill-20-Walking-Lab.zip
+      - name: Downloadable 20-character walking lab
+        uses: actions/upload-artifact@v4
+        with:
+          name: AskBill-20-Walking-Lab
+          path: dist/AskBill-20-Walking-Lab.zip
+          if-no-files-found: error
+          retention-days: 21
