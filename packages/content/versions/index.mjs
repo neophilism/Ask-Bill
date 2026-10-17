@@ -27,8 +27,8 @@ export function newVersionSnapshot({versionId,billId,rawSha256,canonicalSha256,s
 export function appendVerifiedStatus(version,{status,observedAt,sourceUrl,evidenceSha256,actionDate,effectiveAt=null,enactedAt=null}={}){
  if(!version||!Object.isFrozen(version)||!Array.isArray(version.statusHistory)||!STATUS.has(status)||status==='unknown'||!TRANSITIONS[version.status]?.includes(status)||!SHA.test(evidenceSha256))fail('STATUS_INVALID');
  const observed=date(observedAt),origin=officialSource(sourceUrl),action=date(actionDate);
- if(Date.parse(action)>Date.parse(observed)+86400000)fail('STATUS_FUTURE_ACTION');
  if(version.lastVerifiedAt&&Date.parse(observed)<Date.parse(version.lastVerifiedAt))fail('STATUS_STALE_UPDATE');
+ if(Date.parse(action)>Date.parse(observed)+86400000)fail('STATUS_FUTURE_ACTION');
  let enacted=version.enactedAt,effective=version.effectiveAt;
  if(status==='enacted'){enacted=date(enactedAt??action);if(Date.parse(enacted)>Date.parse(observed)+86400000)fail('STATUS_FUTURE_ACTION');
   if(effectiveAt!==null){effective=date(effectiveAt);if(Date.parse(effective)<Date.parse(enacted))fail('EFFECTIVE_BEFORE_ENACTMENT');}}
