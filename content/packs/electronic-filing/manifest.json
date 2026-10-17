@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "packId": "electronic-filing-excerpt-reference-v1",
+  "source": "fixtures/electronic-filing-excerpt.json",
+  "kind": "private_fixture",
+  "sourceComplete": false,
+  "publicationAllowed": false,
+  "sourceStatus": "draft",
+  "sha256": "40e08e04859636979f5e0c55131460893729e873d3e76524475aab2d285e15ea",
+  "missing": [
+    "opening_sections",
+    "definitions",
+    "following_clause",
+    "authenticated_full_version"
+  ],
+  "questions": 6,
+  "fullAuthenticSourceRequired": true
+}
