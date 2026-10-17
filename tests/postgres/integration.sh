@@ -38,4 +38,9 @@ psql_container < migrations/003_provenance.sql > /dev/null
 psql_container < migrations/003_provenance.sql > /dev/null
 echo '[Ask Bill AB-013] Verify tenant provenance, immutability and cross-tenant rejection'
 psql_container < tests/postgres/provenance.sql
-printf '[Ask Bill AB-007/010/013] PostgreSQL migrations, tenant isolation, jobs/outbox and source provenance passed.\n'
+echo '[Ask Bill AB-023] Apply versioned lexical search schema twice'
+psql_container < migrations/004_search.sql > /dev/null
+psql_container < migrations/004_search.sql > /dev/null
+echo '[Ask Bill AB-023] Test source-tethered tenant-safe index activation and rollback'
+psql_container < tests/postgres/search.sql
+printf '[Ask Bill AB-007/010/013/023] PostgreSQL migrations, isolation, jobs, source provenance and atomic search indexing passed.\n'
