@@ -45,6 +45,13 @@ export const PUBLIC_PROVISIONS_SQL=[
  'ORDER BY provision_path,id',
  'LIMIT 501'
 ].join('\n');
+export const PUBLIC_PROVISION_BUDGET_SQL=[
+ 'SELECT count(*)::bigint AS provision_count,',
+ 'COALESCE(sum(octet_length(canonical_text)),0)::bigint AS total_bytes',
+ 'FROM ask_bill.provisions',
+ 'WHERE publisher_id=$1::uuid AND version_id=$2::uuid'
+].join('\n');
+const MAX_PUBLIC_SOURCE_BYTES=1500000;
 export function createActiveReleaseLookup({pool,publisherId}={}){
  if(!pool||typeof pool.connect!=='function'||!UUID.test(publisherId??''))fail('TRUSTED_DATABASE_CONFIGURATION_REQUIRED');
  const trustedPublisher=publisherId.toLowerCase();
@@ -66,8 +73,19 @@ export function createActiveReleaseLookup({pool,publisherId}={}){
      row.canonicalization_version!=='reader-canon-v1'||!DIGEST.test(row.canonical_text_sha256??'')){
      await client.query('ROLLBACK');return null;
    }
+   // Do not materialize a potentially enormous result set until PostgreSQL has
+   // checked its tenant-local byte count. This mitigates accidental or abusive
+   // multi-hundred-megabyte provision sets reaching Node process memory.
+   const measured=await client.query(PUBLIC_PROVISION_BUDGET_SQL,[trustedPublisher,versionId.toLowerCase()]);
+   const budget=measured?.rows?.length===1?measured.rows[0]:null;
+   const expectedCount=Number(budget?.provision_count),expectedBytes=Number(budget?.total_bytes);
+   if(!Number.isSafeInteger(expectedCount)||expectedCount<1||expectedCount>500||
+      !Number.isSafeInteger(expectedBytes)||expectedBytes<1||expectedBytes>MAX_PUBLIC_SOURCE_BYTES){
+     await client.query('ROLLBACK');return null;
+   }
    const response=await client.query(PUBLIC_PROVISIONS_SQL,[trustedPublisher,versionId.toLowerCase()]);
-   if(!Array.isArray(response?.rows)||response.rows.length<1||response.rows.length>500){
+   if(!Array.isArray(response?.rows)||response.rows.length!==expectedCount||
+      response.rows.some(section=>typeof section.canonical_text!=='string')){
      await client.query('ROLLBACK');return null;
    }
    const provisions=response.rows.map(section=>({
@@ -76,7 +94,9 @@ export function createActiveReleaseLookup({pool,publisherId}={}){
      text:section.canonical_text,
      sha256:typeof section.canonical_text==='string'?hash(section.canonical_text):''
    }));
-   if(provisions.some(s=>!/^s[a-f0-9]{32}$/.test(s.id)||typeof s.heading!=='string')||
+   const actualBytes=provisions.reduce((total,item)=>total+Buffer.byteLength(item.text,'utf8'),0);
+   if(actualBytes!==expectedBytes||actualBytes>MAX_PUBLIC_SOURCE_BYTES||
+      provisions.some(s=>!/^s[a-f0-9]{32}$/.test(s.id)||typeof s.heading!=='string')||
       hash(provisions.map(p=>p.text).join('\n\n'))!==row.canonical_text_sha256){
      await client.query('ROLLBACK');return null;
    }

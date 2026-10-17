@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
-import {createActiveReleaseLookup,ACTIVE_RELEASE_SQL,PUBLIC_PROVISIONS_SQL,PublicReleaseLookupError} from '../packages/db/public-release.mjs';
+import {createActiveReleaseLookup,ACTIVE_RELEASE_SQL,PUBLIC_PROVISIONS_SQL,PUBLIC_PROVISION_BUDGET_SQL,PublicReleaseLookupError} from '../packages/db/public-release.mjs';
 import {renderPublishedReader} from '../packages/ui/reader/index.mjs';
 import {createPublishedSourceServer} from '../apps/web/source-only/server.mjs';
 const hash=t=>createHash('sha256').update(t,'utf8').digest('hex');
@@ -16,7 +16,7 @@ function fixture(changes={}){
    published_at:new Date('2026-10-16T22:00:00Z'),canonicalization_version:'reader-canon-v1',
    canonical_text_sha256:hash(section),...changes};
 }
-function fakePool({released=[fixture()],sections=[{id:provisionId,provision_path:'1',heading:'Section 1',canonical_text:section}],error=null}={}){
+function fakePool({released=[fixture()],sections=[{id:provisionId,provision_path:'1',heading:'Section 1',canonical_text:section}],budget=null,error=null}={}){
  const calls=[],state={released:0,connected:0};
  return {calls,state,async connect(){
   state.connected++;
@@ -24,6 +24,7 @@ function fakePool({released=[fixture()],sections=[{id:provisionId,provision_path
    calls.push({sql,params});
    if(error&&sql===error)throw new Error('PRIVATE_CONNECTION_DETAILS_MUST_NOT_LEAK');
    if(sql===ACTIVE_RELEASE_SQL)return {rows:released};
+   if(sql===PUBLIC_PROVISION_BUDGET_SQL)return {rows:[budget??{provision_count:String(sections.length),total_bytes:String(sections.reduce((n,s)=>n+Buffer.byteLength(s.canonical_text,'utf8'),0))}]};
    if(sql===PUBLIC_PROVISIONS_SQL)return {rows:sections};
    return {rows:[]};
   },release(){state.released++}};
@@ -41,7 +42,9 @@ test('only active released complete versions are fetched in tenant-bound read-on
  assert.deepEqual(pool.calls[1].params,[publisher]);
  assert.deepEqual(pool.calls[2].params,[publisher,bill,version]);
  assert.deepEqual(pool.calls[3].params,[publisher,version]);
- assert.equal(pool.calls[4].sql,'COMMIT');
+ assert.equal(pool.calls[3].sql,PUBLIC_PROVISION_BUDGET_SQL);
+ assert.equal(pool.calls[4].sql,PUBLIC_PROVISIONS_SQL);
+ assert.equal(pool.calls[5].sql,'COMMIT');
  assert.equal(pool.state.released,1);
  assert.match(ACTIVE_RELEASE_SQL,/JOIN ask_bill.release_active|FROM ask_bill.release_active/);
  assert.match(ACTIVE_RELEASE_SQL,/source_complete=true/);
@@ -81,4 +84,20 @@ test('an explicit HTTP reader can use only the trusted DB adapter',async()=>{
   assert.equal(res.status,200);assert.match(await res.text(),/Draft Act/);
   assert.equal(pool.state.released,1);
  }finally{await new Promise((resolve,reject)=>server.close(e=>e?reject(e):resolve()));}
+});
+
+test('huge or incoherent public source sets are rejected before fetching any provision bytes',async()=>{
+ for(const fake of [{provision_count:'501',total_bytes:'1000'},{provision_count:'1',total_bytes:'1500001'},{provision_count:'0',total_bytes:'0'}]){
+  const pool=fakePool({budget:fake}),lookup=createActiveReleaseLookup({pool,publisherId:publisher});
+  assert.equal(await lookup({publisherId:publisher,billId:bill,versionId:version}),null);
+  assert.equal(pool.calls.some(x=>x.sql===PUBLIC_PROVISIONS_SQL),false);
+  assert(pool.calls.some(x=>x.sql==='ROLLBACK'));assert.equal(pool.state.released,1);
+ }
+});
+test('a changed page count or byte total after the preflight is fail-closed',async()=>{
+ for(const fake of [{provision_count:'2',total_bytes:String(Buffer.byteLength(section,'utf8'))},{provision_count:'1',total_bytes:'1'}]){
+  const pool=fakePool({budget:fake});const lookup=createActiveReleaseLookup({pool,publisherId:publisher});
+  assert.equal(await lookup({publisherId:publisher,billId:bill,versionId:version}),null);
+  assert(pool.calls.some(x=>x.sql==='ROLLBACK'));assert.equal(pool.state.released,1);
+ }
 });
