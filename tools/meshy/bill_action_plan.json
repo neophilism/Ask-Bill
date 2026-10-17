@@ -1,0 +1,871 @@
+{
+  "schemaVersion": 1,
+  "catalog": "https://docs.meshy.ai/en/api/animation-library",
+  "apiCostsCreditsPerAction": 3,
+  "note": "Verify action ids against the live Meshy animation library before paid API use; IDs and availability can change. Web-app billing differs from the API.",
+  "actions": [
+    {
+      "action_id": 0,
+      "tier": "core",
+      "group": "neutral_idle"
+    },
+    {
+      "action_id": 11,
+      "tier": "core",
+      "group": "neutral_idle"
+    },
+    {
+      "action_id": 12,
+      "tier": "core",
+      "group": "neutral_idle"
+    },
+    {
+      "action_id": 243,
+      "tier": "core",
+      "group": "neutral_idle"
+    },
+    {
+      "action_id": 244,
+      "tier": "core",
+      "group": "neutral_idle"
+    },
+    {
+      "action_id": 245,
+      "tier": "core",
+      "group": "neutral_idle"
+    },
+    {
+      "action_id": 246,
+      "tier": "core",
+      "group": "neutral_idle"
+    },
+    {
+      "action_id": 247,
+      "tier": "core",
+      "group": "neutral_idle"
+    },
+    {
+      "action_id": 248,
+      "tier": "core",
+      "group": "neutral_idle"
+    },
+    {
+      "action_id": 249,
+      "tier": "core",
+      "group": "neutral_idle"
+    },
+    {
+      "action_id": 250,
+      "tier": "core",
+      "group": "neutral_idle"
+    },
+    {
+      "action_id": 251,
+      "tier": "core",
+      "group": "neutral_idle"
+    },
+    {
+      "action_id": 252,
+      "tier": "core",
+      "group": "neutral_idle"
+    },
+    {
+      "action_id": 253,
+      "tier": "core",
+      "group": "neutral_idle"
+    },
+    {
+      "action_id": 254,
+      "tier": "core",
+      "group": "neutral_idle"
+    },
+    {
+      "action_id": 599,
+      "tier": "core",
+      "group": "neutral_idle"
+    },
+    {
+      "action_id": 338,
+      "tier": "core",
+      "group": "neutral_idle"
+    },
+    {
+      "action_id": 336,
+      "tier": "core",
+      "group": "neutral_idle"
+    },
+    {
+      "action_id": 2,
+      "tier": "core",
+      "group": "neutral_idle"
+    },
+    {
+      "action_id": 56,
+      "tier": "core",
+      "group": "speech_and_explanation"
+    },
+    {
+      "action_id": 37,
+      "tier": "core",
+      "group": "speech_and_explanation"
+    },
+    {
+      "action_id": 313,
+      "tier": "core",
+      "group": "speech_and_explanation"
+    },
+    {
+      "action_id": 314,
+      "tier": "core",
+      "group": "speech_and_explanation"
+    },
+    {
+      "action_id": 310,
+      "tier": "core",
+      "group": "speech_and_explanation"
+    },
+    {
+      "action_id": 309,
+      "tier": "core",
+      "group": "speech_and_explanation"
+    },
+    {
+      "action_id": 308,
+      "tier": "core",
+      "group": "speech_and_explanation"
+    },
+    {
+      "action_id": 297,
+      "tier": "core",
+      "group": "speech_and_explanation"
+    },
+    {
+      "action_id": 315,
+      "tier": "core",
+      "group": "speech_and_explanation"
+    },
+    {
+      "action_id": 47,
+      "tier": "core",
+      "group": "speech_and_explanation"
+    },
+    {
+      "action_id": 25,
+      "tier": "core",
+      "group": "speech_and_explanation"
+    },
+    {
+      "action_id": 317,
+      "tier": "core",
+      "group": "speech_and_explanation"
+    },
+    {
+      "action_id": 307,
+      "tier": "core",
+      "group": "speech_and_explanation"
+    },
+    {
+      "action_id": 312,
+      "tier": "core",
+      "group": "speech_and_explanation"
+    },
+    {
+      "action_id": 50,
+      "tier": "core",
+      "group": "speech_and_explanation"
+    },
+    {
+      "action_id": 29,
+      "tier": "core",
+      "group": "speech_and_explanation"
+    },
+    {
+      "action_id": 34,
+      "tier": "core",
+      "group": "speech_and_explanation"
+    },
+    {
+      "action_id": 311,
+      "tier": "core",
+      "group": "speech_and_explanation"
+    },
+    {
+      "action_id": 318,
+      "tier": "core",
+      "group": "speech_and_explanation"
+    },
+    {
+      "action_id": 28,
+      "tier": "core",
+      "group": "social_reactions"
+    },
+    {
+      "action_id": 290,
+      "tier": "core",
+      "group": "social_reactions"
+    },
+    {
+      "action_id": 41,
+      "tier": "core",
+      "group": "social_reactions"
+    },
+    {
+      "action_id": 42,
+      "tier": "core",
+      "group": "social_reactions"
+    },
+    {
+      "action_id": 49,
+      "tier": "core",
+      "group": "social_reactions"
+    },
+    {
+      "action_id": 298,
+      "tier": "core",
+      "group": "social_reactions"
+    },
+    {
+      "action_id": 303,
+      "tier": "core",
+      "group": "social_reactions"
+    },
+    {
+      "action_id": 301,
+      "tier": "core",
+      "group": "social_reactions"
+    },
+    {
+      "action_id": 306,
+      "tier": "core",
+      "group": "social_reactions"
+    },
+    {
+      "action_id": 59,
+      "tier": "core",
+      "group": "social_reactions"
+    },
+    {
+      "action_id": 403,
+      "tier": "core",
+      "group": "social_reactions"
+    },
+    {
+      "action_id": 27,
+      "tier": "core",
+      "group": "social_reactions"
+    },
+    {
+      "action_id": 408,
+      "tier": "core",
+      "group": "social_reactions"
+    },
+    {
+      "action_id": 409,
+      "tier": "core",
+      "group": "social_reactions"
+    },
+    {
+      "action_id": 36,
+      "tier": "core",
+      "group": "social_reactions"
+    },
+    {
+      "action_id": 333,
+      "tier": "core",
+      "group": "social_reactions"
+    },
+    {
+      "action_id": 415,
+      "tier": "core",
+      "group": "social_reactions"
+    },
+    {
+      "action_id": 61,
+      "tier": "core",
+      "group": "social_reactions"
+    },
+    {
+      "action_id": 417,
+      "tier": "core",
+      "group": "social_reactions"
+    },
+    {
+      "action_id": 31,
+      "tier": "core",
+      "group": "social_reactions"
+    },
+    {
+      "action_id": 316,
+      "tier": "core",
+      "group": "social_reactions"
+    },
+    {
+      "action_id": 48,
+      "tier": "core",
+      "group": "social_reactions"
+    },
+    {
+      "action_id": 30,
+      "tier": "core",
+      "group": "navigation"
+    },
+    {
+      "action_id": 613,
+      "tier": "core",
+      "group": "navigation"
+    },
+    {
+      "action_id": 566,
+      "tier": "core",
+      "group": "navigation"
+    },
+    {
+      "action_id": 692,
+      "tier": "core",
+      "group": "navigation"
+    },
+    {
+      "action_id": 115,
+      "tier": "core",
+      "group": "navigation"
+    },
+    {
+      "action_id": 106,
+      "tier": "core",
+      "group": "navigation"
+    },
+    {
+      "action_id": 107,
+      "tier": "core",
+      "group": "navigation"
+    },
+    {
+      "action_id": 621,
+      "tier": "core",
+      "group": "navigation"
+    },
+    {
+      "action_id": 563,
+      "tier": "core",
+      "group": "navigation"
+    },
+    {
+      "action_id": 675,
+      "tier": "core",
+      "group": "navigation"
+    },
+    {
+      "action_id": 55,
+      "tier": "core",
+      "group": "navigation"
+    },
+    {
+      "action_id": 114,
+      "tier": "core",
+      "group": "navigation"
+    },
+    {
+      "action_id": 121,
+      "tier": "core",
+      "group": "navigation"
+    },
+    {
+      "action_id": 40,
+      "tier": "core",
+      "group": "navigation"
+    },
+    {
+      "action_id": 543,
+      "tier": "core",
+      "group": "navigation"
+    },
+    {
+      "action_id": 544,
+      "tier": "core",
+      "group": "navigation"
+    },
+    {
+      "action_id": 679,
+      "tier": "core",
+      "group": "navigation"
+    },
+    {
+      "action_id": 572,
+      "tier": "core",
+      "group": "navigation"
+    },
+    {
+      "action_id": 583,
+      "tier": "core",
+      "group": "navigation"
+    },
+    {
+      "action_id": 576,
+      "tier": "core",
+      "group": "navigation"
+    },
+    {
+      "action_id": 586,
+      "tier": "core",
+      "group": "navigation"
+    },
+    {
+      "action_id": 577,
+      "tier": "core",
+      "group": "navigation"
+    },
+    {
+      "action_id": 587,
+      "tier": "core",
+      "group": "navigation"
+    },
+    {
+      "action_id": 116,
+      "tier": "core",
+      "group": "navigation"
+    },
+    {
+      "action_id": 291,
+      "tier": "extended",
+      "group": "social_variants"
+    },
+    {
+      "action_id": 293,
+      "tier": "extended",
+      "group": "social_variants"
+    },
+    {
+      "action_id": 294,
+      "tier": "extended",
+      "group": "social_variants"
+    },
+    {
+      "action_id": 295,
+      "tier": "extended",
+      "group": "social_variants"
+    },
+    {
+      "action_id": 296,
+      "tier": "extended",
+      "group": "social_variants"
+    },
+    {
+      "action_id": 405,
+      "tier": "extended",
+      "group": "social_variants"
+    },
+    {
+      "action_id": 554,
+      "tier": "extended",
+      "group": "navigation_variants"
+    },
+    {
+      "action_id": 632,
+      "tier": "extended",
+      "group": "navigation_variants"
+    },
+    {
+      "action_id": 110,
+      "tier": "extended",
+      "group": "navigation_variants"
+    },
+    {
+      "action_id": 531,
+      "tier": "extended",
+      "group": "navigation_variants"
+    },
+    {
+      "action_id": 118,
+      "tier": "extended",
+      "group": "navigation_variants"
+    },
+    {
+      "action_id": 559,
+      "tier": "extended",
+      "group": "navigation_variants"
+    },
+    {
+      "action_id": 341,
+      "tier": "extended",
+      "group": "navigation_variants"
+    },
+    {
+      "action_id": 33,
+      "tier": "extended",
+      "group": "seated_and_objects"
+    },
+    {
+      "action_id": 57,
+      "tier": "extended",
+      "group": "seated_and_objects"
+    },
+    {
+      "action_id": 53,
+      "tier": "extended",
+      "group": "seated_and_objects"
+    },
+    {
+      "action_id": 58,
+      "tier": "extended",
+      "group": "seated_and_objects"
+    },
+    {
+      "action_id": 60,
+      "tier": "extended",
+      "group": "seated_and_objects"
+    },
+    {
+      "action_id": 302,
+      "tier": "extended",
+      "group": "seated_and_objects"
+    },
+    {
+      "action_id": 299,
+      "tier": "extended",
+      "group": "seated_and_objects"
+    },
+    {
+      "action_id": 305,
+      "tier": "extended",
+      "group": "seated_and_objects"
+    },
+    {
+      "action_id": 354,
+      "tier": "extended",
+      "group": "seated_and_objects"
+    },
+    {
+      "action_id": 355,
+      "tier": "extended",
+      "group": "seated_and_objects"
+    },
+    {
+      "action_id": 357,
+      "tier": "extended",
+      "group": "seated_and_objects"
+    },
+    {
+      "action_id": 364,
+      "tier": "extended",
+      "group": "seated_and_objects"
+    },
+    {
+      "action_id": 285,
+      "tier": "extended",
+      "group": "seated_and_objects"
+    },
+    {
+      "action_id": 286,
+      "tier": "extended",
+      "group": "seated_and_objects"
+    },
+    {
+      "action_id": 287,
+      "tier": "extended",
+      "group": "seated_and_objects"
+    },
+    {
+      "action_id": 288,
+      "tier": "extended",
+      "group": "seated_and_objects"
+    },
+    {
+      "action_id": 289,
+      "tier": "extended",
+      "group": "seated_and_objects"
+    },
+    {
+      "action_id": 276,
+      "tier": "extended",
+      "group": "seated_and_objects"
+    },
+    {
+      "action_id": 284,
+      "tier": "extended",
+      "group": "seated_and_objects"
+    },
+    {
+      "action_id": 259,
+      "tier": "extended",
+      "group": "seated_and_objects"
+    },
+    {
+      "action_id": 260,
+      "tier": "extended",
+      "group": "seated_and_objects"
+    },
+    {
+      "action_id": 342,
+      "tier": "extended",
+      "group": "seated_and_objects"
+    },
+    {
+      "action_id": 343,
+      "tier": "extended",
+      "group": "seated_and_objects"
+    },
+    {
+      "action_id": 22,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 23,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 24,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 54,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 75,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 595,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 596,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 591,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 592,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 593,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 594,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 597,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 74,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 65,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 66,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 79,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 84,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 81,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 63,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 64,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 67,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 68,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 69,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 70,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 71,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 72,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 73,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 76,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 77,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 78,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 80,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 82,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 83,
+      "tier": "dance",
+      "group": "all_33_meshy_dances"
+    },
+    {
+      "action_id": 561,
+      "tier": "dance",
+      "group": "extra_dance_like"
+    },
+    {
+      "action_id": 395,
+      "tier": "dance",
+      "group": "extra_dance_like"
+    },
+    {
+      "action_id": 639,
+      "tier": "antics",
+      "group": "occasional_special"
+    },
+    {
+      "action_id": 387,
+      "tier": "antics",
+      "group": "occasional_special"
+    },
+    {
+      "action_id": 390,
+      "tier": "antics",
+      "group": "occasional_special"
+    },
+    {
+      "action_id": 381,
+      "tier": "antics",
+      "group": "occasional_special"
+    },
+    {
+      "action_id": 452,
+      "tier": "antics",
+      "group": "occasional_special"
+    },
+    {
+      "action_id": 397,
+      "tier": "antics",
+      "group": "occasional_special"
+    },
+    {
+      "action_id": 466,
+      "tier": "antics",
+      "group": "occasional_special"
+    },
+    {
+      "action_id": 460,
+      "tier": "antics",
+      "group": "occasional_special"
+    },
+    {
+      "action_id": 326,
+      "tier": "antics",
+      "group": "occasional_special"
+    },
+    {
+      "action_id": 385,
+      "tier": "antics",
+      "group": "occasional_special"
+    },
+    {
+      "action_id": 268,
+      "tier": "antics",
+      "group": "occasional_special"
+    },
+    {
+      "action_id": 271,
+      "tier": "antics",
+      "group": "occasional_special"
+    },
+    {
+      "action_id": 263,
+      "tier": "antics",
+      "group": "occasional_special"
+    },
+    {
+      "action_id": 565,
+      "tier": "antics",
+      "group": "occasional_special"
+    },
+    {
+      "action_id": 441,
+      "tier": "antics",
+      "group": "occasional_special"
+    },
+    {
+      "action_id": 442,
+      "tier": "antics",
+      "group": "occasional_special"
+    }
+  ],
+  "sourceModel": {
+    "shareUrl": "https://www.meshy.ai/s/S6iLKM",
+    "uploadedFilename": "Meshy_AI_base_basic_pbr_Wave_for_Help_1.glb",
+    "sha256": "5a66e18afcc2cecef1e031dda5b14ea03a44b7c55f0fbdb39043702ff59b3fb9",
+    "existingAnimation": "Wave_for_Help_1",
+    "joints": 66,
+    "policy": "Use the uploaded GLB as the immutable visual reference; Meshy API rigging may yield a different skeleton and must not automatically replace the approved mesh."
+  }
+}

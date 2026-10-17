@@ -1,0 +1,109 @@
+name: Bill Meshy API (manual)
+
+# API access is deliberately opt-in. PRs, pushes, cron and ordinary CI NEVER
+# receive the Meshy credential or create paid animation tasks.
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: 'Read-only key/balance check or paid animation download'
+        type: choice
+        options: [balance, download]
+        default: balance
+        required: true
+      tier:
+        description: 'Animation selection for download (all = 171 actions)'
+        type: choice
+        options: [core, extended, dance, antics, all]
+        default: core
+        required: true
+      max_credits:
+        description: 'Explicit maximum estimated credits for this selection (0 for balance-only)'
+        type: string
+        default: '0'
+        required: true
+      resume_run_id:
+        description: 'Optional previous Actions run ID to restore its checkpoint and avoid duplicate paid tasks'
+        type: string
+        required: false
+      recover_batch:
+        description: 'Optional one ambiguous task recovery, e.g. 1:API-TASK-ID (after checking Meshy Request Logs)'
+        type: string
+        required: false
+      acknowledge_asset_visibility:
+        description: 'I understand that animation GLBs uploaded as Actions artifacts may be accessible to repo readers (required for download)'
+        type: boolean
+        default: false
+        required: true
+
+permissions:
+  contents: read
+  actions: read
+
+# Never stop an in-flight paid task because someone clicked Run workflow again.
+concurrency:
+  group: bill-meshy-${{ inputs.operation }}-${{ inputs.tier }}
+  cancel-in-progress: false
+
+jobs:
+  mesh-assets:
+    name: Verify API or acquire Bill animations
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify Meshy API key and shared credit balance (FREE)
+        if: inputs.operation == 'balance'
+        env:
+          MESHY_API_KEY: ${{ secrets.MESHY_API_KEY }}
+        run: python3 tools/meshy/fetch_bill_animations.py --check-balance
+      - name: Validate explicit paid-operation inputs
+        if: inputs.operation == 'download'
+        shell: bash
+        env:
+          RIG: ${{ secrets.MESHY_RIG_TASK_ID }}
+          BUDGET: ${{ inputs.max_credits }}
+          VISIBILITY: ${{ inputs.acknowledge_asset_visibility }}
+          RESUME_RUN_ID: ${{ inputs.resume_run_id }}
+        run: |
+          set -euo pipefail
+          test "$VISIBILITY" = 'true' || { echo 'Acknowledge asset visibility to enable downloads.'; exit 1; }
+          [[ "$RIG" =~ ^[[:alnum:]-]{20,100}$ ]] || { echo 'Completed API rigging task ID required (the Meshy share ID is not valid).'; exit 1; }
+          [[ "$BUDGET" =~ ^[0-9]+$ ]] || { echo 'Set a nonnegative numeric credit budget.'; exit 1; }
+          [[ -z "$RESUME_RUN_ID" || "$RESUME_RUN_ID" =~ ^[0-9]+$ ]] || { echo 'Invalid previous Actions run ID.'; exit 1; }
+      - name: Restore previous run state and downloaded files
+        if: inputs.operation == 'download' && inputs.resume_run_id != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: bill-meshy-exports
+          run-id: ${{ inputs.resume_run_id }}
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/bill-meshy-exports
+      - name: Run billable Meshy acquisition in bounded batches
+        if: inputs.operation == 'download'
+        shell: bash
+        env:
+          MESHY_API_KEY: ${{ secrets.MESHY_API_KEY }}
+          RIG: ${{ secrets.MESHY_RIG_TASK_ID }}
+          TIER: ${{ inputs.tier }}
+          BUDGET: ${{ inputs.max_credits }}
+          RECOVER_BATCH: ${{ inputs.recover_batch }}
+        run: |
+          set -euo pipefail
+          args=(--execute --rig-task-id "$RIG" --max-credits "$BUDGET" --output "$RUNNER_TEMP/bill-meshy-exports")
+          if [[ "$TIER" != all ]]; then args+=(--tiers "$TIER"); fi
+          if [[ -n "$RECOVER_BATCH" ]]; then args+=(--recover-batch "$RECOVER_BATCH"); fi
+          python3 tools/meshy/fetch_bill_animations.py "${args[@]}"
+      - name: Preserve verified clips and resumable task state
+        if: always() && inputs.operation == 'download'
+        uses: actions/upload-artifact@v4
+        with:
+          name: bill-meshy-exports
+          path: ${{ runner.temp }}/bill-meshy-exports/
+          retention-days: 7
+          if-no-files-found: ignore
