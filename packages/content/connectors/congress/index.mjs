@@ -1,5 +1,6 @@
 /** AB-020: independent Congress.gov v3 adapter. No key/client data enters browser. */
 import {createHash} from 'node:crypto';
+import {validateTextVersion,validatePaginationCount} from './validate.mjs';
 export class CongressError extends Error{constructor(code){super(code);this.code=code;this.name='CongressError';}}
 const fail=c=>{throw new CongressError(c)};
 const TYPES=new Set(['hr','s','hjres','sjres','hconres','sconres','hres','sres']);
@@ -84,12 +85,13 @@ export function createCongressClient({apiKey,fetchImpl=fetch,clock=()=>Date.now(
     const versions=response.data?.textVersions;
     if(!Array.isArray(versions)||versions.length>250)fail('TEXT_RESPONSE_INVALID');
     for(const item of versions){
-     if(typeof item.type!=='string'||!item.type.trim()||typeof item.date!=='string'||!Number.isFinite(Date.parse(item.date))||!Array.isArray(item.formats))fail('TEXT_VERSION_INVALID');
+     try{validateTextVersion(item);}catch{fail('TEXT_VERSION_INVALID');}
      const formats=item.formats.map(f=>sourceFormat(f.url,id,f.type));
      versionItems.push(Object.freeze({type:item.type,date:item.date,formats:Object.freeze(formats),
       sourceKey:createHash('sha256').update(JSON.stringify([id,item.type,item.date,formats])).digest('hex')}));
     }
     const count=response.data?.pagination?.count;
+    try{validatePaginationCount(count);}catch{fail('TEXT_PAGINATION_INVALID');}
     if(versions.length<250||Number.isSafeInteger(count)&&versionItems.length>=count)break;
     if(page===15)fail('TEXT_PAGINATION_LIMIT');
    }
