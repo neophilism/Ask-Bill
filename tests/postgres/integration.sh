@@ -33,4 +33,9 @@ psql_container < migrations/002_jobs.sql > /dev/null
 psql_container < migrations/002_jobs.sql > /dev/null
 echo '[Ask Bill AB-010] Verify tenant-scoped leases, crashes, retries and idempotent outbox'
 psql_container < tests/postgres/jobs.sql
-printf '[Ask Bill AB-007/010] PostgreSQL migrations, tenant isolation and fenced queue/outbox tests passed.\n'
+echo '[Ask Bill AB-013] Apply immutable source-provenance metadata schema twice'
+psql_container < migrations/003_provenance.sql > /dev/null
+psql_container < migrations/003_provenance.sql > /dev/null
+echo '[Ask Bill AB-013] Verify tenant provenance, immutability and cross-tenant rejection'
+psql_container < tests/postgres/provenance.sql
+printf '[Ask Bill AB-007/010/013] PostgreSQL migrations, tenant isolation, jobs/outbox and source provenance passed.\n'

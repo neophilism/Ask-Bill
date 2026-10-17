@@ -43,6 +43,8 @@ importers:
 
   packages/config: {}
 
+  packages/content: {}
+
   packages/db: {}
 
   packages/jobs: {}
