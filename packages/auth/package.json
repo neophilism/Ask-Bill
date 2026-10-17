@@ -6,10 +6,16 @@
   "exports": {
     "./server": {
       "node": "./server.mjs"
+    },
+    "./oidc": {
+      "node": "./oidc.mjs"
+    },
+    "./pg-store": {
+      "node": "./pg-store.mjs"
     }
   },
   "scripts": {
-    "build": "node --check server.mjs",
-    "typecheck": "node --check server.mjs"
+    "build": "node --check server.mjs && node --check oidc.mjs && node --check pg-store.mjs",
+    "typecheck": "node --check server.mjs && node --check oidc.mjs && node --check pg-store.mjs"
   }
 }

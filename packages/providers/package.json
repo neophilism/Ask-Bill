@@ -6,6 +6,9 @@
   "exports": {
     ".": "./index.mjs"
   },
+  "dependencies": {
+    "@ask-bill/contracts": "workspace:*"
+  },
   "scripts": {
     "build": "node --check index.mjs",
     "typecheck": "node --check index.mjs"
