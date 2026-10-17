@@ -53,12 +53,12 @@ Original ten are derived from the user-approved ten character concept images in 
 | 01 | `bill_the_living_parchment_character_sheet.png` | `8beeaa8bf9eb2720f9d3fd139ff1559e27fc6ef555e7b375bdd7cf1090969017` | `29cd45e3b872b8e78c9f774810df78defc71d649b76cec94cb53444f4834d0fd` |
 | 02 | `bill_paper_assistant_character_sheet.png` | `405b468599c54aa18f8c0bf73bdf1f5a49e28ce0f3939a7d2652e9853ab5afea` | `2109143abfb4ff314829c7e167f56c5df0b585fcd66a33256f6af25a2fc8891e` |
 | 03 | `welcoming_parchment_butler_mascot.png` | `c6e1b82bcd34ea9a162c37dc0e35012fb90b07337f943c7d36fc7cee7d950db9` | `a3d5aa245f5c3332d0c84557c2100cd28ff90f6d4aa10b9a6272834f0db0b8e4` |
-| 04 | `option_4_parchment_paper_butler_turnaround.png` | `0e0cc51fa63b4a85a127193a6b3c45ccccbfada76697f11998358ef86e398b92` | `9759064c5bce59b623bb6e5563305a42aa3ae526619e5fb7a9a1cc4f71dcaa3d` |
+| 04 | `option_4_parchment_paper_butler_turnaround.png` | `0e0cc51fa63b4a85a127193a6b3c45ccccbfada76697f11998358ef86e398b92` | `15dd8b981db1b6393f8a3ab491a700b0a8a775aecaeea01ea6633157e49ba945` |
 | 05 | `bill_the_paper_butler_option_5.png` | `8ae43665a000fbdd7cb8e83f8293c2b27b29700dca8b93411a669cce430e88ab` | `c8ab55da732b69a915c7fc4e2619120e423cdcd1b9d424fddc36e4b06bd52576` |
 | 06 | `option_6_charming_bill_mascot.png` | `d770f36010355a0e37c445300d654efa83ef0fe64edee3037a3449750a46bf8b` | `9989bb04af33116d862f85b6e47c694527430ddba767b91fa08ff98ca2ea7107` |
-| 07 | `option_7_parchment_butler_guide.png` | `20481a53c102615492b5e87ee95819dbfda5e9a8a2a8b7b0a30b7fcfaffe175e` | `aad9d04c29862984e908c089a89f1170f6547385459083425868e91dffa35cca` |
-| 08 | `option_8_bill_character_concept_sheet.png` | `8d864a5129be47221e81f3d63f90e39f6d682c8ccf33a2b5d694459ce7bfb8be` | `3cadf21eb7ae0b297d675d04ae90d66a1304d24d289d46169569e3f461103018` |
-| 09 | `option_9_charming_legal_parchment.png` | `ad95355075ddd8cda4f4a31ee2dd0f61735407d56d288ebffa09c4fe81752087` | `8a27aea3c985c8e513846d0c6d1ed143640604898585dcd0f46c693b1430e216` |
+| 07 | `option_7_parchment_butler_guide.png` | `20481a53c102615492b5e87ee95819dbfda5e9a8a2a8b7b0a30b7fcfaffe175e` | `7778720b3a755a20933e60b7db252f0f7b0f57ded960286e3a2c63fcf4d1f543` |
+| 08 | `option_8_bill_character_concept_sheet.png` | `8d864a5129be47221e81f3d63f90e39f6d682c8ccf33a2b5d694459ce7bfb8be` | `07ec18173894d6fbf3a7d5f87865f01c927a1d05787da208a4e8be601395de5e` |
+| 09 | `option_9_charming_legal_parchment.png` | `ad95355075ddd8cda4f4a31ee2dd0f61735407d56d288ebffa09c4fe81752087` | `7e42395ea0decbe07757fa9d5c393998f23d4ec1de326c01808a879115d545d8` |
 | 10 | `parchment_butler_character_concept.png` | `90c8726a42547eb3eb4408417fcef78e5e28fbd2aead7c889815ae332f310596` | `8fbfb2b9637c22be6fc2764f51e44e08d9439f3a324559e4d9acf8e454b720ea` |
 
 ## Personality and user autonomy
