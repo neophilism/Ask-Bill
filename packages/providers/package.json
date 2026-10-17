@@ -1,0 +1,13 @@
+{
+  "name": "@ask-bill/providers",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./index.mjs"
+  },
+  "scripts": {
+    "build": "node --check index.mjs",
+    "typecheck": "node --check index.mjs"
+  }
+}
