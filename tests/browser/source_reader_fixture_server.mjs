@@ -20,6 +20,11 @@ if(!Number.isSafeInteger(port)||port<1||port>65535)throw new Error('Valid PORT r
 const server=await createPublishedSourceServer({
  publisherId:pub,
  lookupPublishedPack:async ({publisherId,billId,versionId})=>
-  publisherId===pub&&billId===bill&&versionId===version?pack:null
+  publisherId===pub&&billId===bill&&versionId===version?pack:null,
+ lookupPublishedCatalog:async ({publisherId,page})=>{
+  if(publisherId!==pub)throw new Error('Invalid publisher');
+  return {items:page===1?[{publisherId:pub,billId:bill,versionId:version,
+   title:pack.title,status:pack.status,publication:'published',sourceComplete:true}]:[],hasNext:false};
+ }
 });
 server.listen(port,'127.0.0.1');
