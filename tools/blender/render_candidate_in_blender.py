@@ -81,6 +81,8 @@ def proof_render(output):
         theta=radians(angle)
         camera.location=(7*sin(theta),-7*cos(theta),1.9)
         target_camera(camera,target)
+        # Blender applies scripted transforms lazily; update before NDC tests.
+        bpy.context.view_layer.update()
         # Audit projection geometry, not merely that a PNG exists: the model's
         # feet and top curl must occupy the viewport in upright order.
         feet=world_to_camera_view(scene,camera,Vector((0,0,0.07)))
