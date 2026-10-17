@@ -1,0 +1,50 @@
+name: Bill original source visual review (candidate only)
+on:
+  pull_request:
+    paths:
+      - "tools/blender/**"
+      - ".github/workflows/character-turnaround.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tools/blender/**"
+      - ".github/workflows/character-turnaround.yml"
+permissions:
+  contents: read
+jobs:
+  turnarounds:
+    name: Render six Blender candidate turnaround views
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install isolated native tools
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y blender python3-numpy
+      - name: Generate source-pinned rigged candidate
+        run: python3 tools/blender/generate_bill.py --output assets/bill/runtime/Bill-Candidate.glb
+      - name: Import and save editable native candidate
+        run: |
+          set -euo pipefail
+          blender --background --factory-startup --python tools/blender/import_candidate_to_blend.py -- assets/bill/runtime/Bill-Candidate.glb assets/bill/source/Bill-Candidate.blend 2>&1 | tee /tmp/bill-native.log
+          test -s assets/bill/source/Bill-Candidate.blend
+          grep -q 'Saved editable candidate:' /tmp/bill-native.log
+          ! grep -q 'Traceback' /tmp/bill-native.log
+      - name: Render and audit source-derived turnarounds
+        run: |
+          set -euo pipefail
+          blender --background assets/bill/source/Bill-Candidate.blend --python tools/blender/render_candidate_in_blender.py -- assets/bill/review/blender 2>&1 | tee /tmp/bill-review.log
+          grep -q '^BLENDER_TURNAROUND_AUDIT=' /tmp/bill-review.log
+          ! grep -q 'Traceback' /tmp/bill-review.log
+          test -s assets/bill/review/blender/render-evidence.json
+          ls assets/bill/review/blender/*.png | wc -l | grep -q '^6$'
+      - name: Upload 3D review renders
+        uses: actions/upload-artifact@v4
+        with:
+          name: option10-blender-turnaround-candidate
+          path: assets/bill/review/blender/
+          if-no-files-found: error
+          retention-days: 14
