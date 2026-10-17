@@ -3,8 +3,11 @@
 Repository: `neophilism/Ask-Bill`. Implementation date: 2026-10-17.
 Base: `6da63ea922adbd9d9d36df39dda520bdd7f00429`, which includes provider PR
 [#100](https://github.com/neophilism/Ask-Bill/pull/100).
-Branch: `feat/ask-bill-live-experience`. The integration PR and its current-head CI
-are recorded after GitHub creates them; no future PR number or result is assumed.
+Branch: `feat/ask-bill-live-experience`. Actual integration PR:
+[#101](https://github.com/neophilism/Ask-Bill/pull/101). Initial implementation head:
+`94e8b49f875cbb9257f6d90c26708f51bebcee14`, tree
+`bda4d241fdab315faaa29e8075d1a1874fc1bc29`. The remote tree was checked against the
+staged local tree byte-for-byte, including executable script modes.
 
 ## Implemented scope and source paths
 
@@ -137,6 +140,9 @@ weaken the parser/authorization checks to restore availability.
 
 ## Release checkpoint
 
-The next checkpoint records the actual integration PR, observed head, database result
-and exact-head GitHub Actions run. This section currently makes no merge or deployed
-acceptance claim.
+Observed 2026-10-17T16:07:32Z: PR #101 is open at the initial implementation head
+above. The final local database run passed 28/28 plus publisher authorization SQL.
+GitHub CI has been requested but is not yet accepted. Re-query the PR checks for the
+current head after evidence or CI fixes; never reuse an earlier-head result. The
+registry records this actual PR without promoting operational acceptance. No merged
+or deployed acceptance is claimed by this dated checkpoint.

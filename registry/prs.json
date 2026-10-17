@@ -4,7 +4,7 @@
   "roadmapVersion": 1,
   "planVerified": true,
   "plannedPrCount": 112,
-  "observedAt": "2026-10-17T15:48:52Z",
+  "observedAt": "2026-10-17T16:07:32Z",
   "approval": {
     "basis": "Owner explicitly directed the complete Ask Bill architecture and PR plan (16 October 2026) and installation of foundational commit.",
     "source": "docs/DEVELOPMENT_PLAN.md"
@@ -140,7 +140,8 @@
         51,
         54,
         55,
-        57
+        57,
+        101
       ],
       "contributingPrs": [
         61,
@@ -184,7 +185,9 @@
       "prs": [
         5
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-002",
@@ -265,7 +268,8 @@
         7
       ],
       "contributingPrs": [
-        100
+        100,
+        101
       ],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -306,7 +310,8 @@
         8
       ],
       "contributingPrs": [
-        100
+        100,
+        101
       ],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -348,7 +353,8 @@
         9
       ],
       "contributingPrs": [
-        100
+        100,
+        101
       ],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -389,7 +395,9 @@
       "prs": [
         10
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-007",
@@ -428,7 +436,9 @@
       "prs": [
         11
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-003",
@@ -469,7 +479,9 @@
       "prs": [
         12
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-002",
@@ -512,7 +524,9 @@
       "prs": [
         13
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-003",
@@ -551,7 +565,9 @@
       "prs": [
         14
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-009",
@@ -592,7 +608,9 @@
       "prs": [
         15
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-014"
@@ -629,7 +647,9 @@
       "prs": [
         17
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-014"
@@ -667,7 +687,9 @@
       "prs": [
         16
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-014",
@@ -705,7 +727,9 @@
       "prs": [
         18
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-015",
@@ -745,7 +769,9 @@
       "prs": [
         19
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-018"
@@ -783,7 +809,9 @@
         20,
         84
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-013",
@@ -822,7 +850,9 @@
       "prs": [
         21
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-007",
@@ -902,7 +932,9 @@
       "prs": [
         22
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-007",
@@ -946,7 +978,8 @@
       ],
       "contributingPrs": [
         59,
-        60
+        60,
+        101
       ],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -1072,7 +1105,9 @@
       "prs": [
         41
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-008",
@@ -1112,7 +1147,9 @@
       "prs": [
         46
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-012",
@@ -1154,7 +1191,9 @@
       "prs": [
         24
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-003",
@@ -1195,7 +1234,9 @@
         25,
         100
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-003",
@@ -1235,7 +1276,9 @@
       "prs": [
         26
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-019",
@@ -1274,7 +1317,9 @@
       "prs": [
         27
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-003",
@@ -1314,7 +1359,9 @@
       "prs": [
         28
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-031",
@@ -1352,7 +1399,9 @@
       "prs": [
         29
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-007",
@@ -1393,7 +1442,9 @@
       "prs": [
         30
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-003",
@@ -1435,7 +1486,9 @@
       "prs": [
         31
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-004",
@@ -1517,7 +1570,9 @@
       "prs": [
         34
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-011",
@@ -1644,7 +1699,9 @@
       "prs": [
         44
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-011",
@@ -1685,7 +1742,9 @@
       "prs": [
         47
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-021",
@@ -3180,7 +3239,8 @@
         66
       ],
       "contributingPrs": [
-        100
+        100,
+        101
       ],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -3264,7 +3324,9 @@
       "prs": [
         90
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-004",
@@ -3346,7 +3408,9 @@
       "prs": [
         91
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-036",
@@ -3389,7 +3453,8 @@
         97
       ],
       "contributingPrs": [
-        100
+        100,
+        101
       ],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -3433,7 +3498,9 @@
       "prs": [
         99
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-035",
@@ -3564,7 +3631,9 @@
       "prs": [
         70
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-024",
@@ -3608,7 +3677,9 @@
       "prs": [
         75
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-011",
@@ -3654,7 +3725,8 @@
         74
       ],
       "contributingPrs": [
-        68
+        68,
+        101
       ],
       "priorEvidencePrs": [],
       "dependsOn": [
@@ -3698,7 +3770,9 @@
       "prs": [
         69
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-024",
@@ -3781,7 +3855,9 @@
       "title": "Publisher catalog curation and maintenance UI",
       "origin": "original",
       "prs": [],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-008",
@@ -3806,7 +3882,7 @@
         "Perform a full maintenance workflow with viewer/editor/owner roles and a failed refresh followed by correction."
       ],
       "rollback": "Disable publisher writes and preserve current public release pointers.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F7",
       "gate": "G7",
@@ -3825,7 +3901,9 @@
       "prs": [
         76
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-007",
@@ -3868,7 +3946,9 @@
       "title": "Offline reading reduced data and cache updates",
       "origin": "original",
       "prs": [],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-024",
@@ -3893,7 +3973,7 @@
         "Test offline startup, exhausted storage, interrupted updates and private response cache exclusion."
       ],
       "rollback": "Unregister the faulty cache layer and use standard online reading.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F7",
       "gate": "G7",
@@ -3955,7 +4035,9 @@
       "prs": [
         83
       ],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-021",
@@ -3996,7 +4078,9 @@
       "title": "Full accessibility and browser compatibility audit",
       "origin": "original",
       "prs": [],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-088",
@@ -4024,7 +4108,7 @@
         "Run axe plus human-equivalent agent walkthroughs with available assistive tools and record actual physical-device gaps explicitly."
       ],
       "rollback": "Disable the inaccessible enhancement and preserve a tested semantic alternative.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F7",
       "gate": "G7",
@@ -4091,7 +4175,9 @@
       "title": "Security hardening dependency review and AI audit",
       "origin": "original",
       "prs": [],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-011",
@@ -4116,7 +4202,7 @@
         "Attack authorization, upload isolation, SSRF, XSS, quotas and private cache boundaries against the exact build."
       ],
       "rollback": "Disable the vulnerable capability or revert the build; no external human audit is required to proceed after actual fixes pass.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F8",
       "gate": "G8",
@@ -4258,7 +4344,9 @@
       "title": "Production service configuration and secret readiness",
       "origin": "original",
       "prs": [],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-012",
@@ -4282,7 +4370,7 @@
         "Validate configuration and deploy the exact release candidate to staging, including worker drain and migration failure recovery."
       ],
       "rollback": "Redeploy the prior service image and restore its release manifest.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F8",
       "gate": "G8",
@@ -4386,7 +4474,9 @@
       "title": "Operator documentation and agent continuation kit",
       "origin": "original",
       "prs": [],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-100",
@@ -4412,7 +4502,7 @@
         "Perform a clean-room continuation walkthrough from the documentation and verify every linked path and command exists."
       ],
       "rollback": "Correct the documentation and keep the previous operational instructions available.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F8",
       "gate": "G8",
@@ -4429,7 +4519,9 @@
       "title": "Feature flags canary rollout and rollback rehearsal",
       "origin": "original",
       "prs": [],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-100",
@@ -4455,7 +4547,7 @@
         "Trigger each switch under traffic and roll back a deliberately bad asset and answer configuration."
       ],
       "rollback": "Revert to the prior manifest and disable the affected enhancement.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F8",
       "gate": "G8",
@@ -4472,7 +4564,9 @@
       "title": "Content asset and release evidence reconciliation",
       "origin": "original",
       "prs": [],
-      "contributingPrs": [],
+      "contributingPrs": [
+        101
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-025",
@@ -4504,7 +4598,7 @@
         "Run requirement coverage and evidence-link checks and compare the built manifests with the accepted source and asset sets."
       ],
       "rollback": "Mark affected units incomplete and keep release pointers on the previous accepted build.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F8",
       "gate": "G8",
@@ -5422,7 +5516,7 @@
     {
       "id": 71,
       "number": 71,
-      "title": "AB-046\u2013062: Generate 20 distinct animated Bill GLBs and walking audition gallery",
+      "title": "AB-046–062: Generate 20 distinct animated Bill GLBs and walking audition gallery",
       "state": "closed",
       "url": "https://github.com/neophilism/Ask-Bill/pull/71",
       "createdAt": "2026-10-17T12:35:19Z",
@@ -5777,6 +5871,18 @@
       "updatedAt": "2026-10-17T15:36:02Z",
       "mergedAt": "2026-10-17T15:36:02Z",
       "closedAt": "2026-10-17T15:36:02Z",
+      "draft": false
+    },
+    {
+      "id": 101,
+      "number": 101,
+      "title": "AB-004: Complete reader, publisher workflow and provider runtime",
+      "state": "open",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/101",
+      "createdAt": "2026-10-17T16:07:19Z",
+      "updatedAt": "2026-10-17T16:07:19Z",
+      "mergedAt": null,
+      "closedAt": null,
       "draft": false
     }
   ]

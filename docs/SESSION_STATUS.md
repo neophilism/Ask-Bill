@@ -1,14 +1,14 @@
 # Ask Bill — verified development checkpoint
 
-GitHub observation: **2026-10-17T15:48:52Z**, repository `neophilism/Ask-Bill`, main `6da63ea922adbd9d9d36df39dda520bdd7f00429`.
+GitHub observation: **2026-10-17T16:07:32Z**, repository `neophilism/Ask-Bill`, main `6da63ea922adbd9d9d36df39dda520bdd7f00429`.
 
 ## Observed source and PR state
 
-The verified registry snapshot contains **99 actual pull requests: 98 merged, none open, one closed without merge**. Stable AB work-unit IDs are not PR numbers. The active plan retains all 112 original units and 490 dependencies; scope, operational acceptance and independent review are not inferred from merge counts.
+The verified registry snapshot contains **100 actual pull requests: 98 merged, one open, one closed without merge**. Stable AB work-unit IDs are not PR numbers. The active plan retains all 112 original units and 490 dependencies; scope, operational acceptance and independent review are not inferred from merge counts.
 
 PR #100 delivered real OpenAI generation/review/audio adapters, OIDC persistence and MFA, S3-compatible private storage, and the pinned PostgreSQL driver. Its exact head `aef2cd985cb3bcb93503db746804512bb73b1c35` passed GitHub Actions run `39045511208` (quality, browser, PostgreSQL and PDF) before merge.
 
-The next application change composes those adapters with the reader, session API and publisher workflow. Its final head and merge status must be read from GitHub; this dated observation predates that PR. Source paths, test evidence and acceptance boundaries are in `docs/evidence/AB-004-INTEGRATED-APPLICATION.md` and `docs/ops/APPLICATION_RUNTIME.md`.
+PR #101 composes those adapters with the reader, session API and publisher workflow. It was open at this observation, with initial implementation head `94e8b49f875cbb9257f6d90c26708f51bebcee14`; exact-head CI and merge acceptance were still pending. Re-query GitHub for its final head and merge status. Source paths, test evidence and acceptance boundaries are in `docs/evidence/AB-004-INTEGRATED-APPLICATION.md` and `docs/ops/APPLICATION_RUNTIME.md`.
 
 ## Implemented integration
 
