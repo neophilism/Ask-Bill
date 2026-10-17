@@ -11,7 +11,7 @@ DECLARE
  reviewer uuid:='33333333-3333-4333-8333-333333333333';
  entry_id uuid;
  generation uuid;
- release_id uuid;
+ chosen_release uuid;
  txt text;
  digest text;
 BEGIN
@@ -33,10 +33,10 @@ BEGIN
  INSERT INTO ask_bill.release_packs(publisher_id,bill_id,version_id,generation_id,
   original_sha256,canonical_sha256,manifest_sha256,review_sha256,reviewed_by)
  VALUES(pub,bill,version,generation,repeat('a',64),digest,repeat('b',64),repeat('c',64),reviewer)
- RETURNING id INTO release_id;
- IF NOT ask_bill.activate_reviewed_release(pub,bill,release_id,NULL,reviewer)
+ RETURNING id INTO chosen_release;
+ IF NOT ask_bill.activate_reviewed_release(pub,bill,chosen_release,NULL,reviewer)
   THEN RAISE EXCEPTION 'Publishing failed for a reviewed synthetic version'; END IF;
- IF NOT EXISTS(SELECT 1 FROM ask_bill.release_active WHERE publisher_id=pub AND bill_id=bill AND release_id IS NOT NULL)
+ IF NOT EXISTS(SELECT 1 FROM ask_bill.release_active WHERE publisher_id=pub AND bill_id=bill AND release_id=chosen_release)
   THEN RAISE EXCEPTION 'A valid release did not activate'; END IF;
 END $setup$;
 
