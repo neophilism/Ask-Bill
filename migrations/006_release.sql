@@ -16,7 +16,8 @@ CREATE TABLE IF NOT EXISTS ask_bill.release_packs (
  FOREIGN KEY(publisher_id,bill_id,version_id) REFERENCES ask_bill.bill_versions(publisher_id,bill_id,id) ON DELETE RESTRICT,
  FOREIGN KEY(publisher_id,version_id,generation_id) REFERENCES ask_bill.search_generations(publisher_id,version_id,id) ON DELETE RESTRICT,
  FOREIGN KEY(publisher_id,reviewed_by) REFERENCES ask_bill.publisher_memberships(publisher_id,user_id) ON DELETE RESTRICT,
- UNIQUE(publisher_id,id)
+ UNIQUE(publisher_id,id),
+ UNIQUE(publisher_id,bill_id,id)
 );
 CREATE INDEX IF NOT EXISTS release_packs_by_version ON ask_bill.release_packs(publisher_id,version_id,created_at DESC);
 CREATE TABLE IF NOT EXISTS ask_bill.release_active (
@@ -27,7 +28,7 @@ CREATE TABLE IF NOT EXISTS ask_bill.release_active (
  activated_at timestamptz NOT NULL DEFAULT now(),
  PRIMARY KEY(publisher_id,bill_id),
  FOREIGN KEY(publisher_id,bill_id) REFERENCES ask_bill.bills(publisher_id,id) ON DELETE RESTRICT,
- FOREIGN KEY(publisher_id,release_id) REFERENCES ask_bill.release_packs(publisher_id,id) ON DELETE RESTRICT
+ FOREIGN KEY(publisher_id,bill_id,release_id) REFERENCES ask_bill.release_packs(publisher_id,bill_id,id) ON DELETE RESTRICT
 );
 CREATE OR REPLACE FUNCTION ask_bill.reject_release_pack_change() RETURNS trigger
 LANGUAGE plpgsql SECURITY INVOKER SET search_path=pg_catalog AS $$
@@ -86,7 +87,7 @@ BEGIN
 END $$;
 CREATE OR REPLACE FUNCTION ask_bill.withdraw_reviewed_release(p_publisher uuid,p_bill uuid,p_release uuid,p_actor uuid)
 RETURNS boolean LANGUAGE plpgsql SECURITY INVOKER SET search_path=pg_catalog AS $$
-DECLARE old_release uuid; version_id uuid;
+DECLARE old_release uuid; selected_version uuid;
 BEGIN
  IF p_publisher IS DISTINCT FROM ask_bill.current_publisher_id() THEN
   RAISE EXCEPTION 'Publisher scope required' USING ERRCODE='42501';
@@ -99,11 +100,11 @@ BEGIN
  SELECT release_id INTO old_release FROM ask_bill.release_active
    WHERE publisher_id=p_publisher AND bill_id=p_bill FOR UPDATE;
  IF old_release IS DISTINCT FROM p_release THEN RETURN false; END IF;
- SELECT version_id INTO version_id FROM ask_bill.release_packs
-   WHERE publisher_id=p_publisher AND bill_id=p_bill AND id=p_release;
+ SELECT rp.version_id INTO selected_version FROM ask_bill.release_packs rp
+   WHERE rp.publisher_id=p_publisher AND rp.bill_id=p_bill AND rp.id=p_release;
  DELETE FROM ask_bill.release_active WHERE publisher_id=p_publisher AND bill_id=p_bill AND release_id=p_release;
  UPDATE ask_bill.bill_versions SET publication='withdrawn'
-   WHERE publisher_id=p_publisher AND bill_id=p_bill AND id=version_id;
+   WHERE publisher_id=p_publisher AND bill_id=p_bill AND id=selected_version;
  INSERT INTO ask_bill.outbox_events(publisher_id,event_type,idempotency_key,payload)
    VALUES(p_publisher,'release.withdrawn','withdraw-'||p_release::text,jsonb_build_object('billId',p_bill,'releaseId',p_release))
  ON CONFLICT(publisher_id,idempotency_key) DO NOTHING;
