@@ -1,6 +1,6 @@
 /** AB-028: private quarantine ingestion never directly publishes legislative bytes. */
 import {createHash} from 'node:crypto';
-import {JobError} from '../../../jobs/index.mjs';
+import {JobError} from '../../jobs/index.mjs';
 import {scanQuarantinedBytes} from '../intake/index.mjs';
 import {parseTextOrMarkdown,parseDocx} from '../parsers/index.mjs';
 import {parseLegislativeXml} from '../xml/index.mjs';
