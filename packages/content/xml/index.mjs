@@ -1,17 +1,22 @@
 /** AB-017: offline, bounded legislative-XML hierarchy; no DTD, network, or publication. */
 import {scanQuarantinedBytes} from '../intake/index.mjs';
 import {createHash} from 'node:crypto';
+import {prepareOfflineXml} from './prolog.mjs';
 export class XmlSourceError extends Error{constructor(code){super(code);this.code=code;this.name='XmlSourceError';}}
 const fail=c=>{throw new XmlSourceError(c);};
 const SECTION=new Set(['section','subsection','paragraph','subparagraph','clause','subclause','item','subitem','part','title','chapter','article','division']);
 const TOP=new Set(['bill','law','legislation','uslm','legis-body','body','title','chapter','part','section','subsection','paragraph','subparagraph','clause','subclause','num','header','text','term','definition','definitions','reference','xref','quoted-block','table','row','entry','p','list','list-item','date','effective-date','note','act','enacting-clause','chapeau']);
 const cp=s=>Array.from(s).length;
-const quoteDecode=s=>s.replace(/&([^;]{1,30});/g,(all,x)=>{
+const quoteDecode=s=>{
+ if(/&(?!(?:amp|lt|gt|quot|apos|#[0-9]+|#x[0-9a-fA-F]+);)/.test(s))fail('XML_ENTITY');
+ return s.replace(/&([^;]+);/g,(all,x)=>{
  if(x==='amp')return '&';if(x==='lt')return '<';if(x==='gt')return '>';if(x==='quot')return '"';if(x==='apos')return "'";
  const n=x.startsWith('#x')?parseInt(x.slice(2),16):x.startsWith('#')?parseInt(x.slice(1),10):NaN;
- if(!Number.isInteger(n)||n<1||n>0x10ffff||(n>=0xd800&&n<=0xdfff))fail('XML_ENTITY');
+ if(!Number.isInteger(n)||n<1||n>0x10ffff||(n<32&&![9,10,13].includes(n))||
+   (n>=0xd800&&n<=0xdfff)||n===0xfffe||n===0xffff)fail('XML_ENTITY');
  return String.fromCodePoint(n);
-});
+ });
+};
 function attrs(raw){
  const out={};let tail=raw.trim();
  while(tail.length){
@@ -85,8 +90,9 @@ export function parseLegislativeXml(bytes,{versionId}={}){
  if(!(bytes instanceof Uint8Array))fail('XML_INPUT');
  scanQuarantinedBytes(bytes,'application/xml');
  if(typeof versionId!=='string'||!(/^[A-Za-z0-9][A-Za-z0-9._:-]{0,95}$/).test(versionId))fail('XML_VERSION');
- const xml=Buffer.from(bytes).toString('utf8');
- const {root,warnings}=buildTree(xml),provisions=[];
+ const prepared=prepareOfflineXml(Buffer.from(bytes).toString('utf8'),{allowCongressMetadata:true});
+ const {root,warnings}=buildTree(prepared.xml),provisions=[];
+ warnings.push(...prepared.warnings);
  walk(root,null,'',provisions,versionId,new Set());
  if(!provisions.length)warnings.push('no_recognized_provisions');
  return Object.freeze({versionId,sourceComplete:false,publicationAllowed:false,provisions:Object.freeze(provisions),

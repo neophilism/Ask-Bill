@@ -1,5 +1,7 @@
 /** AB-004 follow-up: source-only renderer, never a publication authority. */
 import {createHash} from 'node:crypto';
+import {renderInteractiveReader} from './interactive.mjs';
+export {renderInteractiveReader};
 export class PublicReaderError extends Error {constructor(code){super(code);this.code=code;this.name='PublicReaderError';}}
 const fail=code=>{throw new PublicReaderError(code)};
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -63,8 +65,9 @@ export function renderPublishedPlainText(pack){
     ...p.provisions.flatMap(s=>['',s.heading,s.text])].join('\n')+'\n';
 }
 /** The injected lookup must independently authenticate active publication and publisher scope. */
-export function createPublicReader({lookupPublishedPack}={}){
+export function createPublicReader({lookupPublishedPack,interactive=false}={}){
   if(typeof lookupPublishedPack!=='function')fail('TRUSTED_LOOKUP_REQUIRED');
+  if(typeof interactive!=='boolean')fail('INVALID_READER_MODE');
   return Object.freeze({async read({publisherId,billId,versionId,format='html'}={}){
     if(!UUID.test(publisherId??'')||!UUID.test(billId??'')||!UUID.test(versionId??'')||
       !['html','text'].includes(format))fail('INVALID_PUBLIC_READ');
@@ -73,7 +76,7 @@ export function createPublicReader({lookupPublishedPack}={}){
     catch{fail('PUBLIC_RELEASE_UNAVAILABLE')}
     if(!result||result.publisherId?.toLowerCase()!==publisherId.toLowerCase()||
       result.billId?.toLowerCase()!==billId.toLowerCase()||result.versionId?.toLowerCase()!==versionId.toLowerCase())fail('PUBLIC_RELEASE_UNAVAILABLE');
-    try{return format==='html'?renderPublishedReader(result):renderPublishedPlainText(result)}
+    try{return format==='html'?(interactive?renderInteractiveReader(result):renderPublishedReader(result)):renderPublishedPlainText(result)}
     catch{fail('PUBLIC_RELEASE_UNAVAILABLE')}
   }});
 }

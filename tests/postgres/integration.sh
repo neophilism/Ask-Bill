@@ -9,6 +9,7 @@ trap cleanup EXIT
 
 echo "[Ask Bill AB-007] Starting isolated test PostgreSQL container: $image"
 docker run --detach --rm --name "$container" \
+  --publish 127.0.0.1::5432 \
   --env POSTGRES_USER=askbill_test_owner \
   --env POSTGRES_PASSWORD=temporary_ci_test_only \
   --env POSTGRES_DB=askbill_fixture "$image" >/dev/null
@@ -98,4 +99,17 @@ echo '[Ask Bill AB-095] Apply tenant-scoped retention function twice and test ex
 psql_container < migrations/007_retention.sql > /dev/null
 psql_container < migrations/007_retention.sql > /dev/null
 psql_container < tests/postgres/retention.sql
+echo '[Ask Bill application] Apply anonymous sessions, publisher workflow and identity constraints twice'
+for migration in migrations/008_anonymous_sessions.sql migrations/009_publisher_workflow.sql packages/auth/migrations/001_publisher_auth.sql packages/auth/migrations/002_identity_binding.sql; do
+  psql_container < "$migration" > /dev/null
+  psql_container < "$migration" > /dev/null
+done
+psql_container < tests/postgres/publisher_auth.sql
+test_port=$(docker port "$container" 5432/tcp)
+test_port=${test_port##*:}
+export ASK_BILL_TEST_DATABASE_URL="postgresql://askbill_test_owner:temporary_ci_test_only@127.0.0.1:$test_port/askbill_fixture"
+node tests/postgres/application_session_store.mjs
+node tests/postgres/application_role_pool.mjs
+node tests/postgres/publisher_workflow.mjs
+node tests/postgres/deployment_bootstrap.mjs
 printf '[Ask Bill AB-007/010/013/023] PostgreSQL migrations, isolation, jobs, source provenance and atomic search indexing passed.\n'

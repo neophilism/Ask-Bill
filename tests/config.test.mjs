@@ -24,14 +24,14 @@ test('production must use HTTPS and forbids fake provider capabilities',()=>{
   assert.equal(prod.sourcePolicy,'published-only');
   assert.throws(()=>createPublicSettings('local','http://example.org'),e=>e.code==='LOCAL_ORIGIN_NOT_LOOPBACK');
 });
-test('credentialed live features fail closed until implemented',()=>{
+test('legacy fixture preview cannot activate live providers; application runtime owns them',()=>{
   const base={ASK_BILL_PUBLIC_ORIGIN:'https://askbill.example'};
   const ai={...base,ASK_BILL_ALLOW_LIVE_AI:'true'};
   assert.throws(()=>validateServerSettings(ai,'production'),e=>e.code==='LLM_CREDENTIAL_MISSING');
   assert.throws(()=>validateServerSettings({...ai,ASK_BILL_LLM_API_KEY:'secret'},'production'),e=>e.code==='PROVIDER_DATA_PROTECTION_MISSING');
-  assert.throws(()=>validateServerSettings({...ai,ASK_BILL_LLM_API_KEY:'secret',ASK_BILL_PROVIDER_DATA_PROTECTION:'verified'},'production'),e=>e.code==='LIVE_ADAPTER_NOT_IMPLEMENTED');
+  assert.throws(()=>validateServerSettings({...ai,ASK_BILL_LLM_API_KEY:'secret',ASK_BILL_PROVIDER_DATA_PROTECTION:'verified'},'production'),e=>e.code==='APPLICATION_RUNTIME_REQUIRED');
   assert.throws(()=>validateServerSettings({...base,ASK_BILL_ALLOW_VOICE:'true'},'production'),e=>e.code==='VOICE_CREDENTIAL_MISSING');
-  assert.throws(()=>validateServerSettings({...base,ASK_BILL_ALLOW_VOICE:'true',ASK_BILL_TTS_API_KEY:'secret'},'production'),e=>e.code==='VOICE_ADAPTER_NOT_IMPLEMENTED');
+  assert.throws(()=>validateServerSettings({...base,ASK_BILL_ALLOW_VOICE:'true',ASK_BILL_TTS_API_KEY:'secret'},'production'),e=>e.code==='APPLICATION_RUNTIME_REQUIRED');
   assert.throws(()=>validateServerSettings({...base,ASK_BILL_ALLOW_LIVE_AI:'yes'},'production'),e=>e.code==='INVALID_FLAG');
   assert.throws(()=>validateServerSettings({...base,ASK_BILL_DATABASE_URL:'file:///secrets'},'production'),e=>e.code==='DATABASE_SCHEME_INVALID');
   assert.throws(()=>validateServerSettings({...base,ASK_BILL_STORAGE_URL:'http://evil.example'},'production'),e=>e.code==='STORAGE_TLS_REQUIRED');

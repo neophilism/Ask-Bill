@@ -4,3 +4,5 @@
 *.png binary
 *.jpg binary
 *.mp3 binary
+# Preserve the independently hashed public source, including its original whitespace.
+tests/fixtures/congress/BILLS-119hr123ih.xml -text -whitespace

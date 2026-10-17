@@ -1,0 +1,10 @@
+{
+  "description": "Pinned complete public XML used for offline parser compatibility tests; never trusted as provenance for uploaded content.",
+  "url": "https://www.govinfo.gov/content/pkg/BILLS-119hr123ih/xml/BILLS-119hr123ih.xml",
+  "equivalentCongressUrl": "https://www.congress.gov/119/bills/hr123/BILLS-119hr123ih.xml",
+  "retrievedAt": "2026-10-17T15:51:24.415356Z",
+  "bytes": 16073,
+  "sha256": "6e28624dac5abaf462edd60e3c090291afa9280596b5dd93369f7297a54a2caf",
+  "documentStatus": "Introduced in House; not enacted law",
+  "purpose": "Verify that only the known inert bill.dtd and billres.xsl prolog metadata are ignored while original bytes, source text and offsets remain intact."
+}
