@@ -35,3 +35,41 @@ jobs:
           path: assets/bill/runtime/Bill-Candidate.glb
           if-no-files-found: error
           retention-days: 14
+  blender-reconstruction:
+    name: Native Blender scene reconstruction (candidate)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install Blender from Ubuntu packages
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y blender python3-numpy
+          blender --version | head -n 3
+          blender --background --factory-startup --python-expr 'import sys; print("Embedded Blender Python:", sys.version); import numpy; print("NumPy available:", numpy.__version__)'
+      - name: Build original rigged GLB from source
+        run: python3 tools/blender/generate_bill.py --output assets/bill/runtime/Bill-Candidate.glb
+      - name: Import mesh, skins, clips and morphs into an editable Blender scene
+        run: |
+          set -euo pipefail
+          blender --background --factory-startup --python tools/blender/import_candidate_to_blend.py -- assets/bill/runtime/Bill-Candidate.glb assets/bill/source/Bill-Candidate.blend 2>&1 | tee /tmp/option10-import.log
+          test -s assets/bill/source/Bill-Candidate.blend
+          grep -q 'Saved editable candidate:' /tmp/option10-import.log
+          ! grep -q 'Traceback' /tmp/option10-import.log
+      - name: Reopen and audit native Blender scene
+        run: |
+          set -euo pipefail
+          blender --background assets/bill/source/Bill-Candidate.blend --python tools/blender/verify_candidate_blend.py 2>&1 | tee /tmp/option10-audit.log
+          grep -q '^BLENDER_CANDIDATE_AUDIT=' /tmp/option10-audit.log
+          ! grep -q 'Traceback' /tmp/option10-audit.log
+      - name: Candidate source hash
+        run: sha256sum assets/bill/source/Bill-Candidate.blend
+      - name: Upload reconstructed editable scene (not production)
+        uses: actions/upload-artifact@v4
+        with:
+          name: option10-editable-blender-candidate
+          path: assets/bill/source/Bill-Candidate.blend
+          if-no-files-found: error
+          retention-days: 14
