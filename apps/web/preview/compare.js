@@ -2,14 +2,21 @@
  * The character style influences presentation only; never alters legal truth.
  */
 import { safeRoster, normalizeShortlist, toggleShortlist, feedbackJson, MAX_SHORTLIST } from '../../../packages/character/gallery/shortlist.mjs';
+import { createIdleDirector } from '../../../packages/character/animation/idle-director.mjs';
 const $=id=>document.getElementById(id);
 const actorIds=['bill-10','bill-12','bill-14'];
 const modelBase=new URL('../../../assets/bill/characters/dist/',import.meta.url);
 const referenceBase=new URL('../../../assets/bill/characters/reference/',import.meta.url);
 const clock=performance.now();
 const reducedSystem=window.matchMedia('(prefers-reduced-motion: reduce)');
-let roster=[],selection=[...actorIds],controllers=[],shortlist=[],chosen='bill-10';
-let paused=false,reduced=reducedSystem.matches,last=clock;
+let roster=[],selection=[...actorIds],controllers=[],directors=[],shortlist=[],chosen='bill-10',motionLibrary=null;
+let paused=false,reduced=reducedSystem.matches,last=clock,autoIdle=true;
+const automaticClips=[null,null,null];
+const elapsed=()=>performance.now()-clock;
+function activity(){const t=elapsed();for(const d of directors)d?.activity(t);for(let i=0;i<3;i++){const had=automaticClips[i]!==null;automaticClips[i]=null;if(had)setActiveClip(i,$('animation').value);}}
+function activeClip(i){return automaticClips[i]||$('animation').value;}
+function setActiveClip(i,name){const v=$('viewer-'+i);if(v.getAttribute('animation-name')!==name){v.setAttribute('animation-name',name);try{if('currentTime' in v)v.currentTime=0;}catch{}}if(paused||reduced||document.hidden)pause(i);else play(i);}
+function fillClips(){const sel=$('animation');sel.replaceChildren();for(const clip of motionLibrary.clips){const o=document.createElement('option');o.value=clip.name;o.textContent=clip.name.replace(/([a-z])([A-Z])/g,'$1 $2')+' — '+clip.category;sel.append(o);}sel.value='WalkFunny';}
 const validIds=()=>roster.map(x=>x.id);
 function loadStored(key,otherwise) {try{const value=JSON.parse(localStorage.getItem(key));return value===null?otherwise:value}catch{return otherwise}}
 function save(key,value){try{localStorage.setItem(key,JSON.stringify(value))}catch{}}
@@ -22,7 +29,7 @@ function play(i){
 function pause(i){const v=$('viewer-'+i);try{if(v && v.pause)v.pause()}catch{}}
 function syncAnimations(){
  for(let i=0;i<3;i++){
-  $('viewer-'+i).setAttribute('animation-name',$('animation').value);
+  setActiveClip(i,activeClip(i));
   if(paused || reduced || document.hidden)pause(i);else play(i);
   controllers[i]?.setPaused(paused || document.hidden);
   controllers[i]?.setReducedMotion(reduced);
@@ -46,7 +53,7 @@ function showCard(i){
  const viewer=$('viewer-'+i);
  viewer.alt='3D animation of '+record.name;
  viewer.setAttribute('src',new URL(record.id+'.glb',modelBase).href);
- viewer.setAttribute('animation-name',$('animation').value);
+ viewer.setAttribute('animation-name',activeClip(i));
  $('choice-'+i).value=record.id;
  $('persona-'+i).textContent=record.name+' — '+record.form+'. '+record.personality;
  const ref=$('reference-'+i);
@@ -83,10 +90,12 @@ function updateShortlist(id){
 }
 function chooseSlot(i,id){
  if(!validIds().includes(id))return;
+ activity();
  selection[i]=id;save('bill-comparison-lineup-v1',selection);showCard(i);
  status('Showing '+roster.find(x=>x.id===id).name+' in stage '+(i+1)+'.');
 }
 function chooseDefault(i){
+ activity();
  chosen=selection[i];save('bill-selected',chosen);
  for(let j=0;j<3;j++)showCard(j);
  status('Your preferred Bill is now '+selectedCard(i).name+'. You can change it any time.');
@@ -100,12 +109,22 @@ function exportFeedback(){
  $('export-status').textContent='Saved a local JSON file containing only chosen character IDs and public names/styles.';
 }
 function tick(now){
- const dt=Math.max(0,Math.min(50,now-last)),t=now-clock;last=now;
+ const dt=Math.max(0,Math.min(50,now-last)),t=elapsed();last=now;
  for(let i=0;i<controllers.length;i++){
-  const s=controllers[i].tick(dt,t);
+  const c=controllers[i],s=c.tick(dt,t);
+  const manual=!['WalkFunny','Idle'].includes($('animation').value);
+  const d=directors[i]?.tick(t,{enabled:autoIdle,visible:!document.hidden,paused,
+     reducedMotion:reduced,focused:!!document.activeElement?.matches('input,textarea,select,[contenteditable="true"]'),
+     hasSelection:s.hasSelection,manualAnimation:manual,
+     activeNavigation:s.mode==='following'||s.mode==='approach_selection'});
+  const next=d?.clip||null;
+  if(next!==automaticClips[i]){
+    automaticClips[i]=next;setActiveClip(i,activeClip(i));
+  }
+  // In-place dance clips own the body pose, so freeze stage travel.
+  c.setPaused(paused||document.hidden||Boolean(next));
   $('actor-'+i).style.transform='translate3d('+s.x.toFixed(1)+'px,'+s.y.toFixed(1)+'px,0)';
-  // Keep readable fallback text if the renderer cannot load.
-  $('move-'+i).textContent=(reduced?'Reduced motion':s.mode)+' · '+Math.round(s.speed)+' px/s';
+  $('move-'+i).textContent=next?('Performing '+next):((reduced?'Reduced motion':s.mode)+' · '+Math.round(s.speed)+' px/s');
  }
  requestAnimationFrame(tick);
 }
@@ -117,6 +136,7 @@ function selectExample(){
  if(!text || text.length>800)return;
  const prefix=range.cloneRange();prefix.selectNodeContents(source);prefix.setEnd(range.startContainer,range.startOffset);
  const start=prefix.toString().length;
+ activity();
  // Only the trusted fixture DOM adapter sets validated:true. No LLM
  // input or arbitrary selector is involved.
  const success=controllers.map((c,i)=>c.setSelection({
@@ -133,6 +153,10 @@ async function init(){
   const r=await fetch(new URL('manifest.json',modelBase),{cache:'no-store'});
   if(!r.ok)throw Error('Character manifest unavailable');
   const data=await r.json();roster=safeRoster(data);
+  const libraryResponse=await fetch(new URL('../../../assets/bill/characters/animation-library.json',import.meta.url),{cache:'no-store'});
+  if(!libraryResponse.ok)throw Error('Animation library unavailable');
+  motionLibrary=await libraryResponse.json();
+  fillClips();
   chosen=loadStored('bill-selected','bill-10');if(!validIds().includes(chosen))chosen='bill-10';
   shortlist=normalizeShortlist(loadStored('bill-shortlist-v1',loadStored('bill-favorites',[])),validIds());
   const remembered=loadStored('bill-comparison-lineup-v1',actorIds);
@@ -154,17 +178,35 @@ async function init(){
    $('viewer-'+i).addEventListener('load',()=>play(i));
    $('viewer-'+i).addEventListener('error',()=>status('A GLB could not load. Check the renderer connection and asset route.'));
   }
-  controllersReset();for(let i=0;i<3;i++)showCard(i);drawShortlist();
-  $('animation').addEventListener('change',syncAnimations);
-  $('pause').addEventListener('click',()=>{paused=!paused;syncAnimations();});
-  $('motion').addEventListener('click',()=>{reduced=!reduced;syncAnimations();});
-  $('reset').addEventListener('click',()=>{selection=[...actorIds];save('bill-comparison-lineup-v1',selection);for(let i=0;i<3;i++)showCard(i);status('Original comparison lineup restored.');});
+  controllersReset();directors=[0,1,2].map(i=>createIdleDirector({library:motionLibrary,seed:313+i*37,startedAt:0}));
+  for(let i=0;i<3;i++)showCard(i);drawShortlist();
+  $('animation').addEventListener('change',()=>{activity();syncAnimations();});
+  $('auto-idle').addEventListener('click',()=>{
+    autoIdle=!autoIdle;activity();$('auto-idle').setAttribute('aria-pressed',String(autoIdle));
+    $('auto-idle').textContent='Automatic idle antics: '+(autoIdle?'on':'off');
+    syncAnimations();
+  });
+  for(let i=0;i<3;i++)$('dance-'+i).addEventListener('click',()=>{
+    if(paused||reduced||document.hidden){status('Unpause and enable motion to audition dances.');return;}
+    // Explicit dance request may supersede a previous passage selection.
+    controllers[i].clearSelection();
+    activity();$('animation').value='WalkFunny';syncAnimations();
+    const d=directors[i].auditionDance(elapsed());
+    automaticClips[i]=d.clip;setActiveClip(i,d.clip);
+    status('Stage '+(i+1)+' performs '+d.clip+'. All dances are in-place and silent.');
+  });
+  $('pause').addEventListener('click',()=>{activity();paused=!paused;syncAnimations();});
+  $('motion').addEventListener('click',()=>{activity();reduced=!reduced;syncAnimations();});
+  $('reset').addEventListener('click',()=>{activity();selection=[...actorIds];save('bill-comparison-lineup-v1',selection);for(let i=0;i<3;i++)showCard(i);status('Original comparison lineup restored.');});
   $('export').addEventListener('click',exportFeedback);
-  window.addEventListener('resize',()=>{controllersReset();syncAnimations();});
-  document.addEventListener('visibilitychange',syncAnimations);
+  window.addEventListener('resize',()=>{activity();controllersReset();syncAnimations();});
+  for(const event of ['pointermove','pointerdown','keydown','touchstart','wheel','focusin']){
+    document.addEventListener(event,activity,{passive:true});
+  }
+  document.addEventListener('visibilitychange',()=>{activity();syncAnimations();});
   document.addEventListener('mouseup',selectExample);
   document.addEventListener('keyup',e=>{if(e.key.startsWith('Arrow')||e.key==='Shift')selectExample();});
-  if(reducedSystem.addEventListener)reducedSystem.addEventListener('change',e=>{reduced=e.matches;syncAnimations();});
+  if(reducedSystem.addEventListener)reducedSystem.addEventListener('change',e=>{activity();reduced=e.matches;syncAnimations();});
   syncAnimations();requestAnimationFrame(tick);
   status('Loaded 20 real GLB candidates. Compare three at once; shortlist at most seven.');
   setTimeout(()=>{if(!customElements.get('model-viewer'))status('3D renderer could not load. An internet connection is currently required for model-viewer.');},6000);

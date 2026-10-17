@@ -25,6 +25,7 @@ PUBLIC_FILES=[
     'apps/web/preview/compare.js',
     'apps/web/preview/compare.css',
     'packages/character/attention/option10-controller.cjs',
+    'packages/character/animation/idle-director.mjs',
     'packages/character/gallery/shortlist.mjs',
     'tools/character-audition/start_audition.py',
     'tools/character-audition/README.md',

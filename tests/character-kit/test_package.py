@@ -40,6 +40,7 @@ class CharacterKit(unittest.TestCase):
         for p in ['assets/bill/characters/animation-library.json','apps/web/preview/compare.html','apps/web/preview/compare.js',
                   'apps/web/preview/characters.html','apps/web/preview/characters.js',
                   'packages/character/attention/option10-controller.cjs',
+                  'packages/character/animation/idle-director.mjs',
                   'packages/character/gallery/shortlist.mjs',
                   'start_audition.py','START-MAC.command','START-WINDOWS.bat','README-FIRST.md']:
             self.assertIn(p,self.entries)

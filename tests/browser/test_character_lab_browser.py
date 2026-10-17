@@ -51,6 +51,8 @@ try:
         page.locator('#global-status').filter(has_text='Loaded 20 real GLB candidates').wait_for(timeout=15000)
         assert page.locator('model-viewer').count()==3
         assert page.locator('#choice-0 option').count()==20
+        assert page.locator('#animation option').count()==33
+        assert page.locator('#animation option[value^="Dance"]').count()==8
         assert page.locator('#viewer-0').get_attribute('src').endswith('bill-10.glb')
         assert page.locator('#viewer-1').get_attribute('src').endswith('bill-12.glb')
         page.locator('#choice-0').select_option('bill-19')
@@ -74,6 +76,19 @@ try:
         page.locator('#motion').click()
         assert page.locator('#viewer-0').get_attribute('data-playing')=='false'
         page.locator('#motion').click()
+        # Real animation-name routing; not merely button text.
+        page.locator('#dance-0').click()
+        assert (page.locator('#viewer-0').get_attribute('animation-name') or '').startswith('Dance')
+        assert page.locator('#viewer-0').get_attribute('data-playing')=='true'
+        page.keyboard.press('Escape')  # input interrupts dancing immediately.
+        page.locator('#viewer-0[animation-name="WalkFunny"]').wait_for(timeout=5000)
+        page.locator('#animation').select_option('DanceRobot')
+        assert page.locator('#viewer-0').get_attribute('animation-name')=='DanceRobot'
+        page.locator('#animation').select_option('WalkFunny')
+        page.locator('#auto-idle').click()
+        assert page.locator('#auto-idle').get_attribute('aria-pressed')=='false'
+        page.locator('#auto-idle').click()
+        assert page.locator('#auto-idle').get_attribute('aria-pressed')=='true'
         stage=page.locator('#stage-0')
         box=stage.bounding_box()
         stage.hover(position={'x':max(10,int(box['width']*.83)),
@@ -92,6 +107,14 @@ try:
         page.locator('#global-status').filter(has_text='Loaded 20 real GLB candidates').wait_for(timeout=15000)
         assert page.locator('#count').inner_text()=='7 / 7'
         assert page.evaluate("() => JSON.parse(localStorage.getItem('bill-selected'))")=='bill-19'
+        # Single-character gallery uses the same full motion inventory.
+        page.goto(base+'/characters',wait_until='domcontentloaded')
+        page.locator('#clip option').nth(32).wait_for(state='attached',timeout=15000)
+        assert page.locator('#clip option').count()==33
+        page.locator('#dance-now').click()
+        assert (page.locator('#viewer').get_attribute('animation-name') or '').startswith('Dance')
+        page.keyboard.press('Escape')
+        page.locator('#viewer[animation-name="WalkFunny"]').wait_for(timeout=5000)
         assert not errors,errors
         page.close()
         browser.close()

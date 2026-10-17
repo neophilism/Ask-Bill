@@ -17,7 +17,8 @@ const routeFiles = new Map([
   ['/packages/character/gallery/shortlist.mjs', {file: new URL('../../../packages/character/gallery/shortlist.mjs', import.meta.url), type:'text/javascript; charset=utf-8'}],
   ['/characters.js', {file: new URL('./characters.js', import.meta.url), type:'text/javascript; charset=utf-8'}],
   ['/characters.css', {file: new URL('./characters.css', import.meta.url), type:'text/css; charset=utf-8'}],
-  ['/packages/character/attention/option10-controller.cjs', {file: new URL('../../../packages/character/attention/option10-controller.cjs', import.meta.url), type:'text/javascript; charset=utf-8'}]
+  ['/packages/character/attention/option10-controller.cjs', {file: new URL('../../../packages/character/attention/option10-controller.cjs', import.meta.url), type:'text/javascript; charset=utf-8'}],
+  ['/packages/character/animation/idle-director.mjs', {file: new URL('../../../packages/character/animation/idle-director.mjs', import.meta.url), type:'text/javascript; charset=utf-8'}]
 ]);
 export async function createPreviewServer({healthMonitor=createHealthMonitor({stage:'local'})}={}) {
   const fixture = assertIncompleteFixture(JSON.parse(await readFile(fixturePath, 'utf8')));
