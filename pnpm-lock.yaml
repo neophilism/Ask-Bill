@@ -61,6 +61,8 @@ importers:
 
   packages/storage: {}
 
+  packages/voice: {}
+
   packages/streaming:
     dependencies:
       '@ask-bill/contracts':

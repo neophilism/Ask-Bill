@@ -1,0 +1,7 @@
+{
+  "name": "@ask-bill/voice",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {"./direction": "./direction/index.mjs"}
+}
