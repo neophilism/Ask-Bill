@@ -1,0 +1,73 @@
+name: Ask Bill twenty character GLB generator
+on:
+  pull_request:
+    paths:
+      - 'tools/blender/roster/**'
+      - 'assets/bill/characters/reference/**'
+      - 'tests/character-roster/**'
+      - 'apps/web/preview/characters.html'
+      - '.github/workflows/bill-character-roster.yml'
+      - 'docs/character/CHARACTER_ROSTER_20.md'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  generate-roster:
+    name: Generate and verify 20 animated GLBs
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: write
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned image-bake dependency
+        run: python -m pip install --disable-pip-version-check pillow==11.3.0
+      - name: Deterministic build of all 20 real animated GLBs
+        run: |
+          python tools/blender/roster/generate_roster.py \
+            --references assets/bill/characters/reference \
+            --output assets/bill/characters/dist
+      - name: Verify full roster, animation clips, binary bounds, identity and reproducibility
+        run: python -m unittest discover -s tests/character-roster -p 'test_*.py' -v
+      - name: Enforce reasonable per-candidate file size and exact count
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          folder=Path('assets/bill/characters/dist')
+          files=sorted(folder.glob('bill-*.glb'))
+          manifest=json.loads((folder/'manifest.json').read_text())
+          assert len(files)==len(manifest['characters'])==20
+          assert all(50000<p.stat().st_size<15000000 for p in files)
+          print('20 valid candidate GLBs:',sum(p.stat().st_size for p in files),'bytes')
+          PY
+      - name: Commit generated GLB assets to the same protected feature PR branch
+        env:
+          HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f assets/bill/characters/dist/manifest.json assets/bill/characters/dist/bill-*.glb
+          if git diff --cached --quiet; then
+            echo 'Generated assets already match this commit.'
+          else
+            git commit -m 'AB-roster: generated and locally validated all 20 candidate GLBs'
+            git push origin "HEAD:refs/heads/$HEAD_BRANCH"
+          fi
+      - name: Audit and upload build digest
+        run: |
+          sha256sum assets/bill/characters/dist/bill-*.glb > /tmp/ask-bill-roster-sha256.txt
+          cat /tmp/ask-bill-roster-sha256.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ask-bill-20-character-build-digests
+          path: /tmp/ask-bill-roster-sha256.txt
+          retention-days: 14
