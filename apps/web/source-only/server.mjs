@@ -13,6 +13,7 @@ import {validateEmbedOrigins,renderEmbeddablePublishedSource,embedSecurityHeader
 import {renderChildLearning} from '../../../packages/learning/curated/index.mjs';
 import {renderSpanishSourceReader} from '../../../packages/i18n/index.mjs';
 import {readFile} from 'node:fs/promises';
+import {formatPublicError} from '../../../packages/ui/errors/index.mjs';
 
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const ROUTE=/^\/bills\/([0-9a-f-]{36})\/versions\/([0-9a-f-]{36})(\.txt)?$/i;
@@ -30,6 +31,11 @@ function respond(res,status,body,type,head=false,extra={}){
  res.writeHead(status,{...HEADERS,'Content-Type':type,'Content-Length':bytes.length,...extra});
  res.end(head?undefined:bytes);
 }
+function respondError(req,res,status,head=false,extra={},fallbackText){
+ const rendered=formatPublicError({status,accept:req?.headers?.accept??''});
+ const html=rendered.contentType.startsWith('text/html');
+ respond(res,status,html?rendered.body:(fallbackText??rendered.body),rendered.contentType,head,extra);
+}
 export async function createPublishedSourceServer({publisherId,lookupPublishedPack,lookupPublishedCatalog,maxInflight=64,embedOrigins=[]}={}){
  if(typeof publisherId!=='string'||!UUID.test(publisherId)||typeof lookupPublishedPack!=='function')
    throw new Error('TRUSTED_PUBLICATION_ADAPTER_REQUIRED');
@@ -42,9 +48,9 @@ export async function createPublishedSourceServer({publisherId,lookupPublishedPa
  // Do not free a slot until the lookup settles, even when a client disconnects.
  let activeLookups=0;
  let draining=false;
- const dispatch=(res,head,task)=>{
+ const dispatch=(req,res,head,task)=>{
   if(draining||activeLookups>=maxInflight){
-   respond(res,503,'Reader temporarily busy','text/plain; charset=utf-8',head,{'Retry-After':'2'});
+   respondError(req,res,503,head,{'Retry-After':'2'},'Reader temporarily busy');
    return;
   }
   activeLookups++;
@@ -60,15 +66,15 @@ export async function createPublishedSourceServer({publisherId,lookupPublishedPa
    }
   },()=>{
    if(!res.destroyed&&!res.writableEnded){
-    try{respond(res,404,'Not found','text/plain; charset=utf-8',head)}catch{}
+    try{respondError(req,res,404,head)}catch{}
    }
   }).finally(()=>{activeLookups--;});
  };
  const server=createServer((req,res)=>{
   const head=req.method==='HEAD';
-  if(draining){respond(res,503,'Reader shutting down','text/plain; charset=utf-8',head,{'Retry-After':'2'});return;}
+  if(draining){respondError(req,res,503,head,{'Retry-After':'2'},'Reader shutting down');return;}
   if(req.method!=='GET'&&!head){
-   respond(res,405,'Method not allowed','text/plain; charset=utf-8',false,{Allow:'GET, HEAD'});
+   respondError(req,res,405,false,{Allow:'GET, HEAD'});
    return;
   }
   const path=req.url??'';
@@ -79,9 +85,9 @@ export async function createPublishedSourceServer({publisherId,lookupPublishedPa
     const match=/^\/bills\/([0-9a-f-]{36})\/versions\/([0-9a-f-]{36})\/share(\.txt)?$/i.exec(endpoint);
     if(!match||!UUID.test(match[1])||!UUID.test(match[2])||
        !/^section=[A-Za-z][A-Za-z0-9_-]{0,100}$/.test(raw)||endpoint.includes('%')){
-      respond(res,404,'Not found','text/plain; charset=utf-8',head);return;
+      respondError(req,res,404,head);return;
     }
-    dispatch(res,head,async()=>{
+    dispatch(req,res,head,async()=>{
       const billId=match[1].toLowerCase(),versionId=match[2].toLowerCase();
       const source=await lookupPublishedPack(Object.freeze({publisherId,billId,versionId}));
       if(!source||source.publisherId?.toLowerCase()!==publisherId.toLowerCase()||
@@ -97,15 +103,15 @@ export async function createPublishedSourceServer({publisherId,lookupPublishedPa
     const ix=path.indexOf('?'),endpoint=path.slice(0,ix),raw=path.slice(ix+1);
     const match=/^\/bills\/([0-9a-f-]{36})\/versions\/([0-9a-f-]{36})\/search$/i.exec(endpoint);
     if(!match||!UUID.test(match[1])||!UUID.test(match[2])||!/^q=[^&]{1,280}$/.test(raw)||endpoint.includes('%')){
-      respond(res,404,'Not found','text/plain; charset=utf-8',head);return;
+      respondError(req,res,404,head);return;
     }
     let query;
     try{query=decodeURIComponent(raw.slice(2).replace(/\+/g,' '));}
-    catch{respond(res,404,'Not found','text/plain; charset=utf-8',head);return;}
+    catch{respondError(req,res,404,head);return;}
     if(query.length<2||query.length>160||query.trim()!==query||/[\u0000-\u001f\u007f]/.test(query)){
-      respond(res,404,'Not found','text/plain; charset=utf-8',head);return;
+      respondError(req,res,404,head);return;
     }
-    dispatch(res,head,async()=>{
+    dispatch(req,res,head,async()=>{
       const billId=match[1].toLowerCase(),versionId=match[2].toLowerCase();
       const source=await lookupPublishedPack(Object.freeze({publisherId,billId,versionId}));
       if(!source||source.publisherId?.toLowerCase()!==publisherId.toLowerCase()||
@@ -117,13 +123,13 @@ export async function createPublishedSourceServer({publisherId,lookupPublishedPa
   }
   // Reject query strings, percent-encoded paths and alternate URL forms before parsing.
   if(path.includes('%')||path.includes('?')||path.includes('#')||path.length>300){
-   respond(res,404,'Not found','text/plain; charset=utf-8',head);return;
+   respondError(req,res,404,head);return;
   }
   const catalog=/^\/bills(?:\/page\/([1-9][0-9]?))?$/.exec(path);
   if(catalog&&lookupPublishedCatalog){
     const page=catalog[1]?Number(catalog[1]):1;
-    if(page>50){respond(res,404,'Not found','text/plain; charset=utf-8',head);return;}
-    dispatch(res,head,async()=>{
+    if(page>50){respondError(req,res,404,head);return;}
+    dispatch(req,res,head,async()=>{
       const records=await lookupPublishedCatalog(Object.freeze({publisherId,page}));
       return {body:renderPublicCatalog({publisherId,page,items:records.items,hasNext:records.hasNext}),
         type:'text/html; charset=utf-8'};
@@ -133,7 +139,7 @@ export async function createPublishedSourceServer({publisherId,lookupPublishedPa
   // Optional source-only guided tour: exact complete active version and no provider calls.
   const tourMatch=/^\/bills\/([0-9a-f-]{36})\/versions\/([0-9a-f-]{36})\/tour\/([1-9][0-9]?)$/i.exec(path);
   if(tourMatch&&UUID.test(tourMatch[1])&&UUID.test(tourMatch[2])){
-    dispatch(res,head,async()=>{
+    dispatch(req,res,head,async()=>{
       const billId=tourMatch[1].toLowerCase(),versionId=tourMatch[2].toLowerCase();
       const pack=await lookupPublishedPack(Object.freeze({publisherId,billId,versionId}));
       if(!pack||pack.publisherId?.toLowerCase()!==publisherId.toLowerCase()||
@@ -146,7 +152,7 @@ export async function createPublishedSourceServer({publisherId,lookupPublishedPa
   // Spanish navigation remains bound to the unchanged, original-language published source.
   const spanish=/^\/bills\/([0-9a-f-]{36})\/versions\/([0-9a-f-]{36})\/es$/i.exec(path);
   if(spanish&&UUID.test(spanish[1])&&UUID.test(spanish[2])){
-    dispatch(res,head,async()=>{
+    dispatch(req,res,head,async()=>{
       const billId=spanish[1].toLowerCase(),versionId=spanish[2].toLowerCase();
       const pack=await lookupPublishedPack(Object.freeze({publisherId,billId,versionId}));
       if(!pack||pack.publisherId?.toLowerCase()!==publisherId.toLowerCase()||
@@ -159,7 +165,7 @@ export async function createPublishedSourceServer({publisherId,lookupPublishedPa
   if(embedAllowed.length){
     const embed=/^\/embed\/bills\/([0-9a-f-]{36})\/versions\/([0-9a-f-]{36})$/i.exec(path);
     if(embed&&UUID.test(embed[1])&&UUID.test(embed[2])){
-      dispatch(res,head,async()=>{
+      dispatch(req,res,head,async()=>{
         const billId=embed[1].toLowerCase(),versionId=embed[2].toLowerCase();
         const pack=await lookupPublishedPack(Object.freeze({publisherId,billId,versionId}));
         if(!pack||pack.publisherId?.toLowerCase()!==publisherId.toLowerCase()||
@@ -177,10 +183,10 @@ export async function createPublishedSourceServer({publisherId,lookupPublishedPa
   }
   const match=ROUTE.exec(path);
   if(!match||!UUID.test(match[1])||!UUID.test(match[2])){
-   respond(res,404,'Not found','text/plain; charset=utf-8',head);return;
+   respondError(req,res,404,head);return;
   }
   const format=match[3]?'text':'html';
-  dispatch(res,head,async()=>{
+  dispatch(req,res,head,async()=>{
     const body=await read.read({publisherId,billId:match[1],versionId:match[2],format});
     return {body,type:format==='html'?'text/html; charset=utf-8':'text/plain; charset=utf-8'};
   });

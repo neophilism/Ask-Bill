@@ -1,0 +1,5 @@
+# AB-098: public reader error UX and release-safe identity (partial)
+
+This patch changes Ask Bill's existing opt-in public HTTP source reader only. On requests explicitly accepting HTML it returns semantic, keyboard-usable 404/405/503 pages, with no JavaScript and no reflected URL, cookie, provider error, private document title or stack trace. Preserves the existing generic plain-text error bodies for API clients, private lookup failures, source-version authorization and existing tests. Keeps the default non-indexing headers for all responses and supplies no invented canonical production domain.
+
+Local Node 22.16.0: 5 passing unit tests `node --test tests/public-error-pages.test.mjs`. New HTTP tests cover CSP, navigation, generic 404 confidentiality, 405, overloaded 503 and HEAD. Hosted exact-head CI and actual screenshot/accessibility evidence are still required; AB-098's SEO, official release identity and publisher-catalog integration remain pending. Rollback: remove the response formatter import and restore original generic error responses.
