@@ -25,7 +25,7 @@ export async function presentCitation({claim,span,versionId,sourceLookup}={}){
  try{await verifySourceSpan(span,{versionId,provisionId:span.provisionId,text:source.text});}
  catch{deny('EXACT_QUOTE_INVALID');}
  return Object.freeze({kind:'exact_source',versionId,provisionId:span.provisionId,
-   citationLabel:span.citationLabel,quote:span.quote,
+   citationLabel:span.citationLabel,quote:span.quote,quoteHash:span.quoteHash,start:span.start,end:span.end,
    sourceAnchor:'provision-'+span.provisionId,support:claim.support});
 }
 /** Reject every unsupported, nonverbatim or wrong-version event before rendering it. */
@@ -52,7 +52,7 @@ export async function answerView({events,versionId,answerId,epoch,sourceLookup}=
    }
    if(event.type==='citation.ready'){
      if(!spans.some(c=>c.provisionId===event.span.provisionId&&c.quote===event.span.quote&&
-       c.versionId===event.span.sourceVersionId))deny('UNAPPROVED_CITATION');
+       c.versionId===event.span.sourceVersionId&&c.start===event.span.start&&c.end===event.span.end&&c.quoteHash===event.span.quoteHash))deny('UNAPPROVED_CITATION');
    }
    if(event.type==='speech.ready')deny('SPEECH_NOT_REVIEWED');
  }
