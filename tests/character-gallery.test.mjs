@@ -19,8 +19,11 @@ test('preview serves 20-character audition as a separate local-only route with r
     const html=await r.text();
     assert.match(html,/Twenty-character walking audition/);
     assert.match(html,/model-viewer/);
+    assert.match(html,/id="dance-now"/);
+    assert.match(html,/id="auto-idle"/);
+    assert.match(html,/type="module" src="\.\/characters\.js"/);
     assert.doesNotMatch(html,/<script>\s*\(\(/);
-    for(const route of ['/characters.js','/characters.css','/packages/character/attention/option10-controller.cjs']){
+    for(const route of ['/characters.js','/characters.css','/packages/character/attention/option10-controller.cjs','/packages/character/animation/idle-director.mjs']){
       const f=await fetch(base+route);assert.equal(f.status,200,route);
       assert.ok(Number(f.headers.get('content-length')||0)>100 || (await f.text()).length>100,route);
     }

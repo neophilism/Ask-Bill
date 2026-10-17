@@ -9,6 +9,7 @@ on:
       - 'assets/bill/characters/animation-library.json'
       - 'assets/bill/characters/dist/**'
       - 'packages/character/gallery/**'
+      - 'packages/character/animation/**'
       - '.github/workflows/bill-character-kit.yml'
   push:
     branches: [main]
