@@ -1,0 +1,9 @@
+{
+  "name": "@ask-bill/streaming",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "@ask-bill/contracts": "workspace:*"
+  }
+}
