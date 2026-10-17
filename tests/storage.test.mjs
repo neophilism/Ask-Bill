@@ -61,3 +61,13 @@ test('cannot initialize signer without a trusted key and replay database',()=>{
  const ticket=asyncNonce.issueUpload({publisherId:a,key,sha256:data.sha256,size:data.bytes,mime:data.mime});
  denied('TICKET_REPLAY',()=>asyncNonce.verifyUpload({ticket,publisherId:a,key,content:buf,mime:data.mime}));
 });
+
+test('ticket TTL binds to one clock snapshot instead of drift between separate reads',()=>{
+ let timestamp=1000;
+ const signer=createCapabilityService({secret:randomBytes(32),now:()=>timestamp++,nonceRegistry:{consume:()=>true}});
+ const ticket=signer.issueUpload({publisherId:a,key,sha256:data.sha256,size:data.bytes,mime:data.mime});
+ const envelope=JSON.parse(Buffer.from(ticket.split('.')[0],'base64url').toString('utf8'));
+ assert.equal(envelope.exp-envelope.iat,300000);
+ const upload=signer.verifyUpload({ticket,publisherId:a,key,content:buf,mime:data.mime});
+ assert.equal(upload.publisherId,a);
+});

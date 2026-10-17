@@ -1,0 +1,16 @@
+# Ask Bill AB-012: staging-only health service blueprint template.
+# NOT deployed. Import into an explicitly selected Ask Bill workspace only.
+# No production domain, production data, storage/AI credentials or paid services provisioned by this commit.
+services:
+  - type: web
+    name: ask-bill-staging-health-only
+    runtime: node
+    autoDeploy: false
+    buildCommand: corepack enable && corepack pnpm install --frozen-lockfile && corepack pnpm verify
+    startCommand: node apps/web/health/health-server.mjs
+    healthCheckPath: /health/ready
+    envVars:
+      - key: ASK_BILL_STAGE
+        value: staging
+      - key: ASK_BILL_BUILD_SHA
+        sync: false
