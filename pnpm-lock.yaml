@@ -45,7 +45,11 @@ importers:
 
   packages/content: {}
 
-  packages/grounding: {}
+  packages/grounding:
+    dependencies:
+      '@ask-bill/contracts':
+        specifier: workspace:*
+        version: link:../contracts
 
   packages/providers: {}
 
