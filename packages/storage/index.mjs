@@ -51,7 +51,8 @@ export function createCapabilityService({secret,now=()=>Date.now(),nonceRegistry
    if(!Number.isSafeInteger(size)||size<1||size>MAX_UPLOAD)deny('UPLOAD_LIMIT');
    if(!MIME.has(mime))deny('MIME_FORBIDDEN');
    if(!Number.isSafeInteger(ttlMs)||ttlMs<1000||ttlMs>300000)deny('INVALID_EXPIRY');
-   const payload={v:1,act:'upload',scope:'quarantine',pub,key,digest:sha256,size,mime,iat:nowSafe(now()),exp:nowSafe(now())+ttlMs,nonce:randomBytes(16).toString('base64url')};
+   const issuedAt=nowSafe(now());
+   const payload={v:1,act:'upload',scope:'quarantine',pub,key,digest:sha256,size,mime,iat:issuedAt,exp:issuedAt+ttlMs,nonce:randomBytes(16).toString('base64url')};
    const body=b64(JSON.stringify(payload));return body+'.'+sign(body);
   },
   verifyUpload({ticket,publisherId,key,content,mime}){
