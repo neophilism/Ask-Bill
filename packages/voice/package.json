@@ -3,5 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "exports": {"./direction": "./direction/index.mjs"}
+  "exports": {
+    "./direction": "./direction/index.mjs",
+    "./tts": "./tts/index.mjs"
+  }
 }
