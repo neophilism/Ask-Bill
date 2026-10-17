@@ -22,6 +22,7 @@ from PIL import Image, ImageDraw, ImageFilter, ImageOps
 THIS=Path(__file__).resolve().parent
 sys.path.insert(0,str(THIS))
 import generate_bill_fidelity as f
+import animation_library as motion
 from generate_bill import GLB
 
 GOLD=(.81,.58,.29,1)
@@ -197,7 +198,7 @@ def extras(g,root,m,spec):
 def make(spec, output,ref_dir):
     n,title,form,color,style,persona=spec
     orig_page=f.page; orig_wave=f.top_wave; orig_lapels=f.paper_lapels
-    orig_cravat=f.paper_cravat;orig_mat=f.material;orig_output=GLB.output;orig_weighted=f.weighted_page
+    orig_cravat=f.paper_cravat;orig_mat=f.material;orig_output=GLB.output;orig_weighted=f.weighted_page;orig_animations=f.animations
     # Variants differ in actual 3D silhouette, not merely texture or name.
     def page_variant(u,t,face=0):
         p=orig_page(u,t,face)
@@ -252,11 +253,14 @@ def make(spec, output,ref_dir):
         p,uv,tri,joints,weights,morphs=data
         nvertices=2*101*61+2*35*61
         return p[:nvertices],uv[:nvertices],tri[:99888],joints[:nvertices],weights[:nvertices],[(name,delta[:nvertices]) for name,delta in morphs]
+    def animations_decorated(g,root,sheet,l,r,hips,mouth_node,eye_nodes):
+        orig_animations(g,root,sheet,l,r,hips,mouth_node,eye_nodes)
+        motion.augment(g,root,sheet,l,r,hips,mouth_node,form)
     def output_decorated(g,path):
         g.doc['asset']['generator']='Ask Bill 20 character roster - source-based study'
         g.doc.setdefault('extras',{})['billCharacter']={'id':f'bill-{n:02}','title':title,'form':form,'persona':persona,'visualStatus':'candidate-not-approved'}
         return orig_output(g,path)
-    f.page=page_variant;f.top_wave=top_variant;f.paper_lapels=lapels;f.paper_cravat=cravat;f.material=mat_variant;f.weighted_page=weight_variant;GLB.output=output_decorated
+    f.page=page_variant;f.top_wave=top_variant;f.paper_lapels=lapels;f.paper_cravat=cravat;f.material=mat_variant;f.weighted_page=weight_variant;f.animations=animations_decorated;GLB.output=output_decorated
     try:
         with tempfile.TemporaryDirectory() as tmp:
             face_path=None
@@ -267,8 +271,8 @@ def make(spec, output,ref_dir):
                 fit_reference_crop(ref,face_path)
             data=f.build(str(output),str(face_path) if face_path else None)
     finally:
-        f.page=orig_page;f.top_wave=orig_wave;f.paper_lapels=orig_lapels;f.paper_cravat=orig_cravat;f.material=orig_mat;f.weighted_page=orig_weighted;GLB.output=orig_output
-    data.update({'id':f'bill-{n:02}','name':title,'form':form,'style':color,'personality':persona,'reference':ORIGINAL_FILES.get(n), 'approved':False,'default':n==10})
+        f.page=orig_page;f.top_wave=orig_wave;f.paper_lapels=orig_lapels;f.paper_cravat=orig_cravat;f.material=orig_mat;f.weighted_page=orig_weighted;f.animations=orig_animations;GLB.output=orig_output
+    data.update({'id':f'bill-{n:02}','name':title,'form':form,'style':color,'personality':persona,'reference':ORIGINAL_FILES.get(n), 'approved':False,'default':n==10,'version':'art-study-v4-motion-library'})
     return data
 
 def main():
@@ -290,7 +294,8 @@ def main():
         print(n,entry['name'],entry['bytes'],'bytes',entry['sha256'][:14],flush=True)
         entries.append(entry)
     manifest={'schemaVersion':1,'owner':'Ask Bill','generation':'visual experiments; no auto-approval',
-              'default':'bill-10','count':len(entries),'characters':entries}
+              'default':'bill-10','count':len(entries),'animationLibrary':'assets/bill/characters/animation-library.json',
+              'characters':entries}
     (args.output/'manifest.json').write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n')
     print('Saved manifest',len(entries))
 if __name__=='__main__':main()

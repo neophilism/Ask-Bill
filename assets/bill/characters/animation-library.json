@@ -1,0 +1,291 @@
+{
+  "schemaVersion": 1,
+  "product": "Ask Bill",
+  "status": "candidate-library-not-visual-approved",
+  "policy": {
+    "idleMinSeconds": 45,
+    "idleMaxSeconds": 75,
+    "performanceCooldownMinSeconds": 105,
+    "performanceCooldownMaxSeconds": 195,
+    "danceChance": 0.28,
+    "noAutoplayAudio": true,
+    "interruptOn": [
+      "pointer",
+      "keyboard",
+      "touch",
+      "focus",
+      "selection",
+      "question",
+      "speech",
+      "visibilitychange",
+      "pause",
+      "reduced-motion"
+    ]
+  },
+  "clips": [
+    {
+      "name": "Idle",
+      "category": "ambient",
+      "durationSeconds": 2.4,
+      "loop": true,
+      "autoIdle": true,
+      "motionTier": 0
+    },
+    {
+      "name": "WalkFunny",
+      "category": "locomotion",
+      "durationSeconds": 1.2,
+      "loop": true,
+      "autoIdle": false,
+      "motionTier": 2
+    },
+    {
+      "name": "Talk",
+      "category": "conversation",
+      "durationSeconds": 1.2,
+      "loop": false,
+      "autoIdle": false,
+      "motionTier": 1
+    },
+    {
+      "name": "Wave",
+      "category": "gesture",
+      "durationSeconds": 1.2,
+      "loop": false,
+      "autoIdle": false,
+      "motionTier": 1
+    },
+    {
+      "name": "Point",
+      "category": "gesture",
+      "durationSeconds": 1.15,
+      "loop": false,
+      "autoIdle": false,
+      "motionTier": 1
+    },
+    {
+      "name": "Laugh",
+      "category": "reaction",
+      "durationSeconds": 0.9,
+      "loop": false,
+      "autoIdle": false,
+      "motionTier": 1
+    },
+    {
+      "name": "Celebrate",
+      "category": "reaction",
+      "durationSeconds": 1.4,
+      "loop": false,
+      "autoIdle": false,
+      "motionTier": 2
+    },
+    {
+      "name": "Look",
+      "category": "attention",
+      "durationSeconds": 1.4,
+      "loop": false,
+      "autoIdle": false,
+      "motionTier": 0
+    },
+    {
+      "name": "IdleLookAround",
+      "category": "ambient",
+      "durationSeconds": 3.2,
+      "loop": false,
+      "autoIdle": true,
+      "motionTier": 0
+    },
+    {
+      "name": "IdlePaperFlutter",
+      "category": "ambient",
+      "durationSeconds": 2.5,
+      "loop": false,
+      "autoIdle": true,
+      "motionTier": 0
+    },
+    {
+      "name": "IdleFootTap",
+      "category": "ambient",
+      "durationSeconds": 3,
+      "loop": false,
+      "autoIdle": true,
+      "motionTier": 1
+    },
+    {
+      "name": "IdleStretch",
+      "category": "ambient",
+      "durationSeconds": 3.6,
+      "loop": false,
+      "autoIdle": true,
+      "motionTier": 1
+    },
+    {
+      "name": "IdleInspect",
+      "category": "ambient",
+      "durationSeconds": 3.1,
+      "loop": false,
+      "autoIdle": true,
+      "motionTier": 0
+    },
+    {
+      "name": "IdleYawn",
+      "category": "ambient",
+      "durationSeconds": 3.4,
+      "loop": false,
+      "autoIdle": true,
+      "motionTier": 0
+    },
+    {
+      "name": "Think",
+      "category": "conversation",
+      "durationSeconds": 2.7,
+      "loop": false,
+      "autoIdle": false,
+      "motionTier": 0
+    },
+    {
+      "name": "Read",
+      "category": "conversation",
+      "durationSeconds": 3,
+      "loop": false,
+      "autoIdle": false,
+      "motionTier": 0
+    },
+    {
+      "name": "Nod",
+      "category": "reaction",
+      "durationSeconds": 1.2,
+      "loop": false,
+      "autoIdle": false,
+      "motionTier": 0
+    },
+    {
+      "name": "ShakeHead",
+      "category": "reaction",
+      "durationSeconds": 1.3,
+      "loop": false,
+      "autoIdle": false,
+      "motionTier": 0
+    },
+    {
+      "name": "Shrug",
+      "category": "gesture",
+      "durationSeconds": 1.65,
+      "loop": false,
+      "autoIdle": false,
+      "motionTier": 1
+    },
+    {
+      "name": "Bow",
+      "category": "gesture",
+      "durationSeconds": 2.2,
+      "loop": false,
+      "autoIdle": false,
+      "motionTier": 1
+    },
+    {
+      "name": "Greet",
+      "category": "gesture",
+      "durationSeconds": 1.8,
+      "loop": false,
+      "autoIdle": false,
+      "motionTier": 1
+    },
+    {
+      "name": "Curious",
+      "category": "attention",
+      "durationSeconds": 2.5,
+      "loop": false,
+      "autoIdle": false,
+      "motionTier": 0
+    },
+    {
+      "name": "Explain",
+      "category": "conversation",
+      "durationSeconds": 2.4,
+      "loop": false,
+      "autoIdle": false,
+      "motionTier": 1
+    },
+    {
+      "name": "Surprised",
+      "category": "reaction",
+      "durationSeconds": 1.5,
+      "loop": false,
+      "autoIdle": false,
+      "motionTier": 1
+    },
+    {
+      "name": "Cheer",
+      "category": "reaction",
+      "durationSeconds": 2.2,
+      "loop": false,
+      "autoIdle": false,
+      "motionTier": 2
+    },
+    {
+      "name": "DanceWaltz",
+      "category": "dance",
+      "durationSeconds": 5.4,
+      "loop": true,
+      "autoIdle": true,
+      "motionTier": 2
+    },
+    {
+      "name": "DanceSwing",
+      "category": "dance",
+      "durationSeconds": 4.8,
+      "loop": true,
+      "autoIdle": true,
+      "motionTier": 3
+    },
+    {
+      "name": "DanceShuffle",
+      "category": "dance",
+      "durationSeconds": 4.5,
+      "loop": true,
+      "autoIdle": true,
+      "motionTier": 3
+    },
+    {
+      "name": "DanceTwist",
+      "category": "dance",
+      "durationSeconds": 4,
+      "loop": true,
+      "autoIdle": true,
+      "motionTier": 2
+    },
+    {
+      "name": "DanceDisco",
+      "category": "dance",
+      "durationSeconds": 5,
+      "loop": true,
+      "autoIdle": true,
+      "motionTier": 3
+    },
+    {
+      "name": "DanceJig",
+      "category": "dance",
+      "durationSeconds": 4,
+      "loop": true,
+      "autoIdle": true,
+      "motionTier": 3
+    },
+    {
+      "name": "DanceRobot",
+      "category": "dance",
+      "durationSeconds": 4.8,
+      "loop": true,
+      "autoIdle": true,
+      "motionTier": 2
+    },
+    {
+      "name": "DanceSalsa",
+      "category": "dance",
+      "durationSeconds": 4.8,
+      "loop": true,
+      "autoIdle": true,
+      "motionTier": 3
+    }
+  ]
+}

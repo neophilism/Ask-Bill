@@ -3,7 +3,8 @@ import argparse,hashlib,json,struct,subprocess,sys,tempfile,unittest
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 DIST=ROOT/'assets/bill/characters/dist';REFS=ROOT/'assets/bill/characters/reference'
-NAMES={'Idle','WalkFunny','Talk','Wave','Point','Laugh','Celebrate','Look'}
+LIBRARY=json.loads((ROOT/'assets/bill/characters/animation-library.json').read_text())
+NAMES={c['name'] for c in LIBRARY['clips']}
 
 def read_glb(path):
     raw=Path(path).read_bytes()
@@ -30,6 +31,7 @@ class Roster(unittest.TestCase):
         ids=[x['id'] for x in items];self.assertEqual(ids,[f'bill-{i:02}' for i in range(1,21)])
         self.assertEqual(len({x['sha256'] for x in items}),20)
         self.assertEqual(self.data['default'],'bill-10')
+        self.assertEqual(self.data['animationLibrary'],'assets/bill/characters/animation-library.json')
     def test_every_candidate_is_structurally_animated_and_has_visemes(self):
         for item in self.data['characters']:
             with self.subTest(item=item['id']):
@@ -41,6 +43,9 @@ class Roster(unittest.TestCase):
                 self.assertEqual(d['extras']['billCharacter']['id'],item['id'])
                 self.assertGreaterEqual(len(next(m for m in d['meshes'] if m['name']=='MouthVisemes')['primitives'][0]['targets']),12)
                 self.assertFalse(item['approved'])
+                self.assertEqual(len(d['animations']),33)
+                self.assertEqual(d['extras']['billAnimationLibrary']['clipCount'],33)
+                self.assertEqual(d['extras']['billAnimationLibrary']['danceCount'],8)
                 for a in d['animations']:
                     self.assertGreaterEqual(len(a['channels']),1)
                     for c in a['channels']:
