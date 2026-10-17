@@ -20,7 +20,10 @@ export function assessGroundingRelease({candidate,cases=[],results=[],providerEv
  }
  const omitted=[...ids].filter(id=>!seen.has(id));
  const mustFailed=[...mustPass].filter(id=>!seen.has(id)||failures.includes(id));
- const live=providerEvidence?.mode==='live_staging'&&providerEvidence.candidate===candidate&&providerEvidence.reviewed===true&&typeof providerEvidence.reportSha256==='string'&&/^[a-f0-9]{64}$/.test(providerEvidence.reportSha256);
- const passing=omitted.length===0&&mustFailed.length===0&&supported/assessed>=minimumSupported&&failures.length===0&&live;
- return Object.freeze({candidate,approved:passing,liveProviderVerified:Boolean(live),caseCount:cases.length,evaluated:assessed,supported,supportRate:assessed?supported/assessed:0,missing:omitted.length,mustPassFailures:mustFailed.length,materialFailures:failures.length,releaseAction:passing?'eligible_for_review':'keep_live_generation_disabled',reportDigest:hash(JSON.stringify({candidate,supported,assessed,omitted,mustFailed,failures,live}))});
+ // Provider reports supplied as JSON are untrusted declarations, not independently verified attestations.
+ const reportSubmitted=providerEvidence?.mode==='live_staging'&&providerEvidence.candidate===candidate&&providerEvidence.reviewed===true&&typeof providerEvidence.reportSha256==='string'&&/^[a-f0-9]{64}$/.test(providerEvidence.reportSha256);
+ const preliminaryEvidenceComplete=omitted.length===0&&mustFailed.length===0&&supported/assessed>=minimumSupported&&failures.length===0&&reportSubmitted;
+ // This pure evaluator must never grant production release authority: server-side provenance
+ // and real staging runs require an independent, authenticated acceptance step.
+ return Object.freeze({candidate,approved:false,liveProviderVerified:false,reportSubmitted:Boolean(reportSubmitted),preliminaryEvidenceComplete:Boolean(preliminaryEvidenceComplete),caseCount:cases.length,evaluated:assessed,supported,supportRate:assessed?supported/assessed:0,missing:omitted.length,mustPassFailures:mustFailed.length,materialFailures:failures.length,releaseAction:preliminaryEvidenceComplete?'requires_independent_review':'keep_live_generation_disabled',reportDigest:hash(JSON.stringify({candidate,cases,results,omitted,mustFailed,failures,providerEvidence}))});
 }
