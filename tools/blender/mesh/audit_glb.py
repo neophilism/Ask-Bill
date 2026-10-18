@@ -124,6 +124,8 @@ def audit(doc, data):
                 problems.append(label + ": " + str(degenerate) + " degenerate triangles")
             if nonmanifold:
                 problems.append(label + ": " + str(nonmanifold) + " over-connected edges")
+            if label == "ONE_CONTINUOUS_FOLIO_PARCHMENT" and boundaries:
+                problems.append(label + ": " + str(boundaries) + " open boundary edges")
             metrics.append({"mesh": label, "vertices": len(positions),
                             "triangles": len(indices) // 3, "boundaryEdges": boundaries,
                             "degenerateTriangles": degenerate, "nonmanifoldEdges": nonmanifold})
@@ -146,3 +148,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

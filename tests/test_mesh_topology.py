@@ -2,6 +2,7 @@
 import importlib.util
 from pathlib import Path
 import struct
+import tempfile
 import unittest
 
 PATH = Path(__file__).resolve().parents[1] / "tools/blender/mesh/audit_glb.py"
@@ -83,6 +84,30 @@ class AuditTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             audit_glb.audit(doc, data)
 
+    def test_open_sheet_boundary_rejected(self):
+        doc, data = fixture()
+        doc["meshes"][0]["name"] = "ONE_CONTINUOUS_FOLIO_PARCHMENT"
+        result = audit_glb.audit(doc, data)
+        self.assertFalse(result["passesStructuralAudit"])
+        self.assertTrue(any("open boundary edges" in p for p in result["problems"]))
+
+    def test_generated_candidate_has_closed_sheet_and_clean_primitives(self):
+        generator_path = PATH.parents[1] / "generate_bill.py"
+        generator_spec = importlib.util.spec_from_file_location("generate_bill", generator_path)
+        generator = importlib.util.module_from_spec(generator_spec)
+        generator_spec.loader.exec_module(generator)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "candidate.glb"
+            generator.build(path)
+            result = audit_glb.audit(*audit_glb.load_glb(path))
+        self.assertTrue(result["passesStructuralAudit"], result["problems"])
+        sheet = next(mesh for mesh in result["meshes"]
+                     if mesh["mesh"] == "ONE_CONTINUOUS_FOLIO_PARCHMENT")
+        self.assertEqual(sheet["boundaryEdges"], 0)
+        self.assertEqual(sheet["nonmanifoldEdges"], 0)
+        self.assertEqual(sheet["degenerateTriangles"], 0)
+
 
 if __name__ == "__main__":
     unittest.main()
+

@@ -177,18 +177,27 @@ def vertex_normals(points,inds):
 
 
 def ellipsoid(glb,name,pos,scale,material,parent,segments=16,rings=10):
-    p=[];uv=[];tri=[]
-    for j in range(rings+1):
+    # Shared poles and wrapped rings avoid zero-area pole faces and seam holes.
+    p=[[0,scale[1],0]];tri=[]
+    for j in range(1,rings):
         theta=PI*j/rings
-        for i in range(segments+1):
+        for i in range(segments):
             phi=2*PI*i/segments
             p.append([scale[0]*math.sin(theta)*math.cos(phi), scale[1]*math.cos(theta), scale[2]*math.sin(theta)*math.sin(phi)])
-            uv.append([i/segments,j/rings])
-    for j in range(rings):
+    bottom=len(p);p.append([0,-scale[1],0])
+    for i in range(segments):
+        n=(i+1)%segments
+        tri.extend([0,1+i,1+n])
+    for j in range(rings-2):
+        a=1+j*segments;b=a+segments
         for i in range(segments):
-            a=j*(segments+1)+i;b=a+segments+1
-            tri.extend([a,b,a+1,a+1,b,b+1])
-    mesh=glb.mesh(name,p,tri,material,uvs=uv)
+            n=(i+1)%segments
+            tri.extend([a+i,b+i,a+n,a+n,b+i,b+n])
+    last=1+(rings-2)*segments
+    for i in range(segments):
+        n=(i+1)%segments
+        tri.extend([last+i,bottom,last+n])
+    mesh=glb.mesh(name,p,tri,material)
     return glb.node(name,mesh,parent,translation=pos)
 
 
@@ -252,28 +261,20 @@ def sheet_surface():
         for i in range(segments):
             a=j*(segments+1)+i;b=a+1;c=a+stride;d=b+stride
             indices.extend([a,b,c,b,d,c] if j==0 else [a,c,b,b,c,d])
-    # Folded top edge sweeps right and forward into *one* curl, sharing its first row.
-    base=len(pos); min_i=23
-    for j in range(17):
-        angle=1.8*PI*j/16
-        for i in range(min_i,segments+1):
-            u=2*i/segments-1
-            rho=.22*(1-.17*j/16)
-            xx=u*(1.01)+.05 + .04*j/16
-            yy=3.42 + rho*math.sin(angle) + .14*j/16
-            zz=.14 + rho*(1-math.cos(angle)) +.04*j/16
-            # seam j=0 matches the top-right edge of the primary mesh (front).
-            pos.append([xx,yy,zz]);uv.append([(u+1)/2,.03+j/16*.13])
-            joints.append([0,0,0,0]);weights.append([1,0,0,0]);t1.append([0.,0.,0.]);t2.append([0.,.03*j/16,0.])
-    sw=segments-min_i+1
-    for j in range(16):
-        for i in range(sw-1):
-            a=base+j*sw+i;b=a+sw
-            indices.extend([a,b,a+1,a+1,b,b+1])
-    # Stitch front seam to the main sheet edge to enforce single continuous topology.
-    for k in range(sw-1):
-        a=levels*(segments+1)+(min_i+k);b=a+1;c=base+k;d=c+1
-        indices.extend([a,c,b,b,c,d])
+    # The upper-right fold is sculpted into the closed sheet volume. A separate
+    # strip along the capped top edge made thirteen nonmanifold edges and left
+    # the strip open on three sides.
+    for face in range(2):
+        for j in range(levels+1):
+            t=j/levels
+            rise=max(0.,min(1.,(t-.78)/.22))
+            for i in range(segments+1):
+                u=2*i/segments-1
+                right=max(0.,min(1.,(u-.28)/.72))
+                fold=rise*rise*(3-2*rise)*right*right*(3-2*right)
+                v=face*stride+j*(segments+1)+i
+                pos[v][1]+=.11*fold
+                pos[v][2]+=.19*fold
     return pos,uv,indices,joints,weights,[('TailFlutter',t1),('PaperBreathe',t2)]
 
 
@@ -404,3 +405,4 @@ def main():
 
 
 if __name__=='__main__':main()
+
