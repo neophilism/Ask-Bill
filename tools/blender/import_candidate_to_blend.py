@@ -10,6 +10,9 @@ import sys
 from pathlib import Path
 import bpy
 
+sys.path.insert(0, str(Path(__file__).resolve().parent / 'mesh'))
+from audit_glb import audit, load_glb
+
 
 def main():
     args=sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else []
@@ -18,6 +21,9 @@ def main():
     src,dst=(Path(v).expanduser().resolve() for v in args)
     if not src.is_file() or src.suffix.lower()!='.glb':raise ValueError('Missing .glb candidate source')
     if dst.suffix.lower()!='.blend':raise ValueError('Destination must be a .blend file')
+    geometry = audit(*load_glb(src))
+    if not geometry['passesStructuralAudit']:
+        raise RuntimeError('Refusing editable scene from invalid mesh: '+repr(geometry['problems']))
     bpy.ops.wm.read_factory_settings(use_empty=True)
     bpy.ops.import_scene.gltf(filepath=str(src))
     if not any(o.type=='MESH' for o in bpy.data.objects):raise RuntimeError('No mesh imported')
@@ -28,3 +34,4 @@ def main():
 
 
 if __name__=='__main__':main()
+

@@ -96,6 +96,12 @@ class AuditTests(unittest.TestCase):
         self.assertFalse(result["passesStructuralAudit"])
         self.assertTrue(any("open boundary edges" in p for p in result["problems"]))
 
+    def test_sheet_requires_valid_uv_layout(self):
+        doc, data = fixture()
+        doc["meshes"][0]["name"] = "ONE_CONTINUOUS_FOLIO_PARCHMENT"
+        result = audit_glb.audit(doc, data)
+        self.assertTrue(any("missing sheet UV" in p for p in result["problems"]))
+
     def test_open_unknown_surface_rejected(self):
         doc, data = fixture()
         doc["meshes"][0]["name"] = "Glove_L"

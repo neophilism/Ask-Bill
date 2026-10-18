@@ -84,9 +84,19 @@ def audit(doc, data):
                 continue
             if any(not all(math.isfinite(x) for x in vertex) for vertex in positions):
                 problems.append(label + ": nonfinite position")
-            if any(i >= len(positions) for i in indices):
+            if any(i < 0 or i >= len(positions) for i in indices):
                 problems.append(label + ": index outside vertex array")
                 continue
+            if label == "ONE_CONTINUOUS_FOLIO_PARCHMENT":
+                if "TEXCOORD_0" not in attrs:
+                    problems.append(label + ": missing sheet UV coordinates")
+                else:
+                    uvs = accessor(doc, data, attrs["TEXCOORD_0"])
+                    if len(uvs) != len(positions) or any(
+                        not all(math.isfinite(x) and 0 <= x <= 1 for x in uv)
+                        for uv in uvs
+                    ):
+                        problems.append(label + ": invalid sheet UV coordinates")
             if "NORMAL" not in attrs:
                 problems.append(label + ": missing normals")
             else:
