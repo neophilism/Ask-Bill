@@ -1,0 +1,71 @@
+"""Unit tests for AB-048 candidate structural audit."""
+import importlib.util
+from pathlib import Path
+import struct
+import unittest
+
+PATH = Path(__file__).resolve().parents[1] / "tools/blender/mesh/audit_glb.py"
+spec = importlib.util.spec_from_file_location("audit_glb", PATH)
+audit_glb = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(audit_glb)
+
+
+def fixture(indices=(0, 1, 2), include_normals=True):
+    vertices = [(0., 0., 0.), (1., 0., 0.), (0., 1., 0.)]
+    normals = [(0., 0., 1.)] * 3
+    data = bytearray()
+    views = []
+    accessors = []
+
+    def add(values, fmt, width, component, kind):
+        start = len(data)
+        for row in values:
+            data.extend(struct.pack("<" + fmt * width, *row))
+        view = len(views)
+        views.append({"buffer": 0, "byteOffset": start, "byteLength": len(data)-start})
+        acc = len(accessors)
+        accessors.append({"bufferView": view, "componentType": component,
+                          "count": len(values), "type": kind})
+        return acc
+    pos = add(vertices, "f", 3, 5126, "VEC3")
+    norm = add(normals, "f", 3, 5126, "VEC3")
+    idx = add([(i,) for i in indices], "I", 1, 5125, "SCALAR")
+    attrs = {"POSITION": pos}
+    if include_normals:
+        attrs["NORMAL"] = norm
+    doc = {"accessors": accessors, "bufferViews": views,
+           "meshes": [{"name": "fixture", "primitives": [{"attributes": attrs,
+               "indices": idx, "mode": 4}]}]}
+    return doc, bytes(data)
+
+
+class AuditTests(unittest.TestCase):
+    def test_triangle_is_valid(self):
+        result = audit_glb.audit(*fixture())
+        self.assertTrue(result["passesStructuralAudit"])
+        self.assertFalse(result["deformationStressPosesVerified"])
+        self.assertEqual(result["meshes"][0]["triangles"], 1)
+
+    def test_degenerate_triangle_rejected(self):
+        result = audit_glb.audit(*fixture(indices=(0, 1, 1)))
+        self.assertFalse(result["passesStructuralAudit"])
+        self.assertTrue(any("degenerate" in p for p in result["problems"]))
+
+    def test_missing_normals_rejected(self):
+        result = audit_glb.audit(*fixture(include_normals=False))
+        self.assertFalse(result["passesStructuralAudit"])
+        self.assertTrue(any("normals" in p for p in result["problems"]))
+
+    def test_bad_index_rejected(self):
+        result = audit_glb.audit(*fixture(indices=(0, 1, 9)))
+        self.assertFalse(result["passesStructuralAudit"])
+
+    def test_invalid_buffer_bounds_rejected(self):
+        doc, data = fixture()
+        doc["bufferViews"][0]["byteLength"] = 1
+        with self.assertRaises(ValueError):
+            audit_glb.audit(doc, data)
+
+
+if __name__ == "__main__":
+    unittest.main()
