@@ -68,6 +68,8 @@ def accessor(doc, data, index):
 
 def audit(doc, data):
     problems, metrics = [], []
+    if not doc.get("meshes"):
+        problems.append("scene has no meshes")
     for mesh in doc.get("meshes", []):
         for primitive in mesh.get("primitives", []):
             label = mesh.get("name", "unnamed")
@@ -85,8 +87,15 @@ def audit(doc, data):
             if any(i >= len(positions) for i in indices):
                 problems.append(label + ": index outside vertex array")
                 continue
-            if "NORMAL" not in attrs or len(accessor(doc, data, attrs["NORMAL"])) != len(positions):
-                problems.append(label + ": missing or mismatched normals")
+            if "NORMAL" not in attrs:
+                problems.append(label + ": missing normals")
+            else:
+                normals = accessor(doc, data, attrs["NORMAL"])
+                if len(normals) != len(positions):
+                    problems.append(label + ": mismatched normals")
+                elif any(not all(math.isfinite(v) for v in normal) or
+                         sum(v * v for v in normal) < 1e-12 for normal in normals):
+                    problems.append(label + ": nonfinite or zero-length normals")
             if ("JOINTS_0" in attrs) != ("WEIGHTS_0" in attrs):
                 problems.append(label + ": incomplete skin attributes")
             if "WEIGHTS_0" in attrs:

@@ -46,6 +46,23 @@ class AuditTests(unittest.TestCase):
         self.assertFalse(result["deformationStressPosesVerified"])
         self.assertEqual(result["meshes"][0]["triangles"], 1)
 
+    def test_empty_scene_rejected(self):
+        doc, data = fixture()
+        doc["meshes"] = []
+        result = audit_glb.audit(doc, data)
+        self.assertFalse(result["passesStructuralAudit"])
+        self.assertIn("scene has no meshes", result["problems"])
+
+    def test_invalid_normals_rejected(self):
+        for value in (float("nan"), 0.0):
+            doc, data = fixture()
+            buffer = bytearray(data)
+            normal_view = doc["bufferViews"][1]
+            struct.pack_into("<fff", buffer, normal_view["byteOffset"], value, 0.0, 0.0)
+            result = audit_glb.audit(doc, bytes(buffer))
+            self.assertFalse(result["passesStructuralAudit"])
+            self.assertTrue(any("normals" in p for p in result["problems"]))
+
     def test_degenerate_triangle_rejected(self):
         result = audit_glb.audit(*fixture(indices=(0, 1, 1)))
         self.assertFalse(result["passesStructuralAudit"])
