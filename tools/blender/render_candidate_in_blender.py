@@ -73,9 +73,11 @@ def render_stress_poses(scene, camera, output, baseline):
     records=[]
     poses=[
         ('bent-limbs', {'Rig_Shoulder_L': .72, 'Rig_Shoulder_R': -.72,
-                        'Rig_Hip_L': .54, 'Rig_Hip_R': -.54}, {}),
+                        'Rig_Elbow_L': -.95, 'Rig_Elbow_R': .95,
+                        'Rig_Hip_L': .54, 'Rig_Hip_R': -.54,
+                        'Rig_Knee_L': -.8, 'Rig_Knee_R': .8}, {}),
         ('compressed-body', {}, {'TailFlutter': 1.0, 'PaperBreathe': 1.0}),
-        ('extreme-expression', {'Rig_Eye_0': .20, 'Rig_Eye_1': -.20},
+        ('extreme-expression', {'Rig_Eyelid_0': .20, 'Rig_Eyelid_1': -.20},
                                {'viseme_AA': 1.0}),
     ]
     camera.location=(0,-7,1.9)

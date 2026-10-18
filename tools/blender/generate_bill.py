@@ -338,6 +338,8 @@ def build(path):
         ellipsoid(g,'Iris_'+str(ix),[0,0,0],[.14,.174,.039],brown,iris)
         ellipsoid(g,'Pupil_'+str(ix),[0,0,.032],[.077,.128,.03],black,iris)
         ellipsoid(g,'Gleam_'+str(ix),[-.046,.075,.06],[.033,.044,.018],white,iris)
+        lid=g.node('Rig_Eyelid_'+str(ix),parent=eye)
+        tube(g,'Upper_Eyelid_'+str(ix),[-.19,.205,.085],[.19,.205,.085],.035,ivory,lid)
         tube(g,'Eyebrow_'+str(ix),[-.13,.35,.08],[.125,.41,.08],.035,brown,eye)
         ellipsoid(g,'Cheek_'+str(ix),[0,-.335,-.025],[.21,.089,.017],blush,eye)
     mouth_node,num_visemes=mouth(g,black,face)
@@ -354,16 +356,22 @@ def build(path):
     shoulders=[]
     for side,sign in [('L',-1),('R',1)]:
         parent=g.node('Rig_Shoulder_'+side,parent=root,translation=[sign*.82,2.18,.065]);shoulders.append(parent)
-        tube(g,'Paper_Sleeve_'+side,[0,0,0],[sign*.33,-.66,.035],.135,navy,parent)
-        tube(g,'Folded_Cuff_'+side,[sign*.30,-.62,.035],[sign*.34,-.72,.035],.16,ivory,parent)
-        ellipsoid(g,'Glove_'+side,[sign*.36,-.83,.065],[.17,.19,.093],white,parent)
+        tube(g,'Paper_UpperArm_'+side,[0,0,0],[sign*.20,-.37,.02],.135,navy,parent)
+        elbow=g.node('Rig_Elbow_'+side,parent=parent,translation=[sign*.20,-.37,.02])
+        ellipsoid(g,'Elbow_Cover_'+side,[0,0,0],[.14,.14,.135],navy,elbow)
+        tube(g,'Paper_Forearm_'+side,[0,0,0],[sign*.13,-.32,.015],.125,navy,elbow)
+        tube(g,'Folded_Cuff_'+side,[sign*.11,-.29,.015],[sign*.15,-.39,.015],.15,ivory,elbow)
+        ellipsoid(g,'Glove_'+side,[sign*.16,-.47,.045],[.17,.19,.093],white,elbow)
         for k in range(3):
-            ellipsoid(g,'Finger_'+side+str(k),[sign*(.41+k*.038),-.934,.093],[.045,.12,.044],white,parent,10,8)
+            ellipsoid(g,'Finger_'+side+str(k),[sign*(.21+k*.038),-.574,.073],[.045,.12,.044],white,elbow,10,8)
     hips=[]
     for side,sign in [('L',-1),('R',1)]:
         hip=g.node('Rig_Hip_'+side,parent=root,translation=[sign*.33,.99,-.015]);hips.append(hip)
-        tube(g,'Paper_Leg_'+side,[0,0,0],[0,-.66,.06],.105,ivory,hip)
-        shoe=g.node('Rig_Shoe_'+side,parent=hip,translation=[0,-.71,.19])
+        tube(g,'Paper_Thigh_'+side,[0,0,0],[0,-.34,.03],.105,ivory,hip)
+        knee=g.node('Rig_Knee_'+side,parent=hip,translation=[0,-.34,.03])
+        ellipsoid(g,'Knee_Cover_'+side,[0,0,0],[.115,.12,.115],ivory,knee)
+        tube(g,'Paper_Shin_'+side,[0,0,0],[0,-.34,.03],.10,ivory,knee)
+        shoe=g.node('Rig_Shoe_'+side,parent=knee,translation=[0,-.37,.16])
         ellipsoid(g,'Shoe_'+side,[0,0,0],[.185,.11,.31],navy,shoe)
         ellipsoid(g,'Buckle_'+side,[0,.10,.02],[.075,.025,.06],gold,shoe)
     # All animation is in place: the application owns world-space travel and safe paths.

@@ -58,6 +58,26 @@ class TestOption10(unittest.TestCase):
         self.assertEqual(len(self.doc['skins'][0]['joints']),3)
         self.assertFalse(any('curl' in m['name'].lower() for m in self.doc['meshes'] if m!=folio[0]))
 
+    def test_elbows_knees_and_eyelids_have_independent_controls(self):
+        nodes=self.doc['nodes']
+        by_name={node['name']:i for i,node in enumerate(nodes)}
+        for side in ('L','R'):
+            shoulder=nodes[by_name['Rig_Shoulder_'+side]]
+            elbow=by_name['Rig_Elbow_'+side]
+            self.assertIn(elbow,shoulder['children'])
+            self.assertIn(by_name['Paper_Forearm_'+side],nodes[elbow]['children'])
+            self.assertIn(by_name['Glove_'+side],nodes[elbow]['children'])
+            hip=nodes[by_name['Rig_Hip_'+side]]
+            knee=by_name['Rig_Knee_'+side]
+            self.assertIn(knee,hip['children'])
+            self.assertIn(by_name['Paper_Shin_'+side],nodes[knee]['children'])
+            self.assertIn(by_name['Rig_Shoe_'+side],nodes[knee]['children'])
+        for eye in ('0','1'):
+            eye_node=nodes[by_name['Rig_Eye_'+eye]]
+            lid=by_name['Rig_Eyelid_'+eye]
+            self.assertIn(lid,eye_node['children'])
+            self.assertIn(by_name['Upper_Eyelid_'+eye],nodes[lid]['children'])
+
     def test_eight_action_clips_genuine_channels(self):
         found={a['name'] for a in self.doc['animations']}
         self.assertEqual(found,{'Idle','WalkFunny','Talk','Wave','Point','Laugh','Celebrate','Look'})
@@ -106,3 +126,4 @@ class TestOption10(unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main()
+
