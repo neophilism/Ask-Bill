@@ -219,8 +219,8 @@ def tube(glb,name,start,end,radius,mat,parent,radials=9):
     for i in range(radials):
         j=(i+1)%radials
         idx.extend([i,j,i+radials,j,j+radials,i+radials])
-    idx.extend([i for q in range(1,radials-1) for i in (0,q,q+1)])
-    idx.extend([i for q in range(1,radials-1) for i in (radials,radials+q+1,radials+q)])
+    idx.extend([i for q in range(1,radials-1) for i in (0,q+1,q)])
+    idx.extend([i for q in range(1,radials-1) for i in (radials,radials+q,radials+q+1)])
     return glb.node(name,glb.mesh(name,p,idx,mat),parent)
 
 

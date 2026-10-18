@@ -4,7 +4,7 @@
 Diagnostics are development evidence, not a deformation/visual acceptance verdict.
 """
 import argparse
-from collections import Counter
+from collections import Counter, defaultdict
 import json
 import math
 from pathlib import Path
@@ -105,7 +105,7 @@ def audit(doc, data):
                     for row in weights
                 ):
                     problems.append(label + ": invalid joint weights")
-            degenerate, edges, signed_volume = 0, Counter(), 0.0
+            degenerate, edges, edge_directions, signed_volume = 0, Counter(), defaultdict(list), 0.0
             for t in range(0, len(indices), 3):
                 ids = indices[t:t + 3]
                 a, b, c = (positions[i] for i in ids)
@@ -120,20 +120,28 @@ def audit(doc, data):
                 if len(set(ids)) < 3 or sum(x*x for x in cross) < 1e-16:
                     degenerate += 1
                 for k in range(3):
-                    edges[tuple(sorted((ids[k], ids[(k + 1) % 3])))] += 1
+                    start, end = ids[k], ids[(k + 1) % 3]
+                    edge = tuple(sorted((start, end)))
+                    edges[edge] += 1
+                    edge_directions[edge].append((start, end))
             nonmanifold = sum(n > 2 for n in edges.values())
             boundaries = sum(n == 1 for n in edges.values())
+            misoriented = sum(len(directions) == 2 and directions[0] == directions[1]
+                              for directions in edge_directions.values())
             if degenerate:
                 problems.append(label + ": " + str(degenerate) + " degenerate triangles")
             if nonmanifold:
                 problems.append(label + ": " + str(nonmanifold) + " over-connected edges")
-            if label == "ONE_CONTINUOUS_FOLIO_PARCHMENT" and boundaries:
+            if boundaries and label != "MouthWithVisemes":
                 problems.append(label + ": " + str(boundaries) + " open boundary edges")
+            if misoriented:
+                problems.append(label + ": " + str(misoriented) + " inconsistently wound edges")
             if not boundaries and signed_volume <= 1e-10:
                 problems.append(label + ": closed surface has inward or zero volume")
             metrics.append({"mesh": label, "vertices": len(positions),
                             "triangles": len(indices) // 3, "boundaryEdges": boundaries,
                             "degenerateTriangles": degenerate, "nonmanifoldEdges": nonmanifold,
+                            "misorientedEdges": misoriented,
                             "signedVolume": signed_volume})
     return {"passesStructuralAudit": not problems, "meshes": metrics, "problems": problems,
             "deformationStressPosesVerified": False}

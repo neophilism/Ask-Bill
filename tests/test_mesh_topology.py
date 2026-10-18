@@ -35,7 +35,7 @@ def fixture(indices=(0, 1, 2), include_normals=True):
     if include_normals:
         attrs["NORMAL"] = norm
     doc = {"accessors": accessors, "bufferViews": views,
-           "meshes": [{"name": "fixture", "primitives": [{"attributes": attrs,
+           "meshes": [{"name": "MouthWithVisemes", "primitives": [{"attributes": attrs,
                "indices": idx, "mode": 4}]}]}
     return doc, bytes(data)
 
@@ -69,6 +69,11 @@ class AuditTests(unittest.TestCase):
         self.assertFalse(result["passesStructuralAudit"])
         self.assertTrue(any("degenerate" in p for p in result["problems"]))
 
+    def test_duplicate_face_winding_rejected(self):
+        result = audit_glb.audit(*fixture(indices=(0, 1, 2, 0, 1, 2)))
+        self.assertFalse(result["passesStructuralAudit"])
+        self.assertTrue(any("inconsistently wound" in p for p in result["problems"]))
+
     def test_missing_normals_rejected(self):
         result = audit_glb.audit(*fixture(include_normals=False))
         self.assertFalse(result["passesStructuralAudit"])
@@ -87,6 +92,13 @@ class AuditTests(unittest.TestCase):
     def test_open_sheet_boundary_rejected(self):
         doc, data = fixture()
         doc["meshes"][0]["name"] = "ONE_CONTINUOUS_FOLIO_PARCHMENT"
+        result = audit_glb.audit(doc, data)
+        self.assertFalse(result["passesStructuralAudit"])
+        self.assertTrue(any("open boundary edges" in p for p in result["problems"]))
+
+    def test_open_unknown_surface_rejected(self):
+        doc, data = fixture()
+        doc["meshes"][0]["name"] = "Glove_L"
         result = audit_glb.audit(doc, data)
         self.assertFalse(result["passesStructuralAudit"])
         self.assertTrue(any("open boundary edges" in p for p in result["problems"]))
