@@ -12,6 +12,7 @@ sys.path.insert(0,str(ROOT/'tools'/'blender'))
 sys.path.insert(0,str(ROOT/'tools'/'blender'/'mesh'))
 from generate_bill import build
 from audit_glb import audit, load_glb
+from stress_glb import run as stress_run, stress_primitive
 
 
 def parse(data):
@@ -72,6 +73,19 @@ class TestOption10(unittest.TestCase):
             self.assertEqual(mesh['boundaryEdges'],0,mesh['mesh'])
             self.assertEqual(mesh['misorientedEdges'],0,mesh['mesh'])
             self.assertGreater(mesh['signedVolume'],0,mesh['mesh'])
+
+    def test_page_compression_and_extreme_mouth_preserve_triangle_orientation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'candidate.glb'
+            build(path)
+            stress=stress_run(path)
+            doc,data=load_glb(path)
+        self.assertTrue(stress['passesNumericalStress'],stress['cases'])
+        self.assertFalse(stress['visualAndJointClearanceVerified'])
+        collapsed=stress_primitive(doc,data,'ONE_CONTINUOUS_FOLIO_PARCHMENT',{},0)
+        self.assertFalse(collapsed['passesNumericalStress'])
+        with self.assertRaises(ValueError):
+            stress_primitive(doc,data,'MouthWithVisemes',{'unknown_viseme':1})
 
     def test_elbows_knees_and_eyelids_have_independent_controls(self):
         nodes=self.doc['nodes']
