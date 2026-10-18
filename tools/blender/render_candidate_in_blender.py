@@ -75,16 +75,17 @@ def render_stress_poses(scene, camera, output, baseline):
         ('bent-limbs', {'Rig_Shoulder_L': .72, 'Rig_Shoulder_R': -.72,
                         'Rig_Elbow_L': -.95, 'Rig_Elbow_R': .95,
                         'Rig_Hip_L': .54, 'Rig_Hip_R': -.54,
-                        'Rig_Knee_L': -.8, 'Rig_Knee_R': .8}, {}),
-        ('compressed-body', {}, {'TailFlutter': 1.0, 'PaperBreathe': 1.0}),
+                        'Rig_Knee_L': -.8, 'Rig_Knee_R': .8}, {}, {}),
+        ('compressed-body', {}, {'TailFlutter': 1.0, 'PaperBreathe': 1.0},
+         {'SingleSheet_Body': .72}),
         ('extreme-expression', {'Rig_Eyelid_0': .20, 'Rig_Eyelid_1': -.20},
-                               {'viseme_AA': 1.0}),
+                               {'viseme_AA': 1.0}, {}),
     ]
     camera.location=(0,-7,1.9)
     target_camera(camera,(0,0,1.9))
     scene.render.resolution_x=320
     scene.render.resolution_y=440
-    for name, rotations, shapes in poses:
+    for name, rotations, shapes, scales in poses:
         changed=[]
         try:
             for node, angle in rotations.items():
@@ -97,6 +98,10 @@ def render_stress_poses(scene, camera, output, baseline):
                 item=shape_key(key)
                 changed.append(('shape',item,item.value))
                 item.value=value
+            for node, value in scales.items():
+                item=control(node)
+                changed.append(('scale',item,item.scale.copy()))
+                item.scale.z=value
             bpy.context.view_layer.update()
             areas=mesh_areas()
             for mesh, area in areas.items():
@@ -116,6 +121,8 @@ def render_stress_poses(scene, camera, output, baseline):
                 if kind=='rotation':
                     item.rotation_mode=old[0]
                     item.rotation_euler=old[1]
+                elif kind=='scale':
+                    item.scale=old
                 else:
                     item.value=old
             bpy.context.view_layer.update()
