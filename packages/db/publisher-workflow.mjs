@@ -309,7 +309,8 @@ export function createPublisherWorkflow({pool,publisherId,storage,congressClient
           (SELECT g.status FROM ask_bill.search_active a JOIN ask_bill.search_generations g ON g.publisher_id=a.publisher_id
             AND g.version_id=a.version_id AND g.id=a.generation_id WHERE a.publisher_id=v.publisher_id AND a.version_id=v.id) AS index_status,
           (SELECT r.checks FROM ask_bill.publisher_version_reviews r WHERE r.publisher_id=v.publisher_id AND r.version_id=v.id
-            AND r.canonical_sha256=v.canonical_text_sha256 ORDER BY r.created_at DESC,r.id DESC LIMIT 1) AS review_checks
+            AND r.canonical_sha256=v.canonical_text_sha256 ORDER BY r.created_at DESC,r.id DESC LIMIT 1) AS review_checks,
+          (SELECT e.warnings FROM ask_bill.publisher_version_extractions e WHERE e.publisher_id=v.publisher_id AND e.version_id=v.id) AS warnings
           FROM ask_bill.bill_versions v WHERE v.publisher_id=$1::uuid AND v.bill_id=$2::uuid ORDER BY v.created_at DESC,v.id LIMIT 501`,[publisher,billId])).rows;
         if(rows.length>500)fail('RESULT_LIMIT');
         const requests=(await client.query(`SELECT r.id,r.job_id,r.kind,r.state,r.version_id,r.error_code,r.created_at,j.status AS job_status
@@ -317,7 +318,7 @@ export function createPublisherWorkflow({pool,publisherId,storage,congressClient
           WHERE r.publisher_id=$1::uuid AND r.bill_id=$2::uuid ORDER BY r.created_at DESC,r.id LIMIT 100`,[publisher,billId])).rows;
         return {id:billId,publisherId:publisher,title:bill.title,jurisdiction:bill.jurisdiction,activeReleaseId:await activeRelease(client,billId),
           versions:rows.map(r=>({id:r.id,publication:r.publication,sourceComplete:r.source_complete,status:r.status,
-            canonicalTextSha256:r.canonical_text_sha256,createdAt:iso(r.created_at),indexStatus:r.index_status??'missing',reviewChecks:r.review_checks??[],errors:[]})),
+            canonicalTextSha256:r.canonical_text_sha256,createdAt:iso(r.created_at),indexStatus:r.index_status??'missing',reviewChecks:r.review_checks??[],warnings:r.warnings??[],errors:[]})),
           imports:requests.map(r=>({id:r.id,jobId:r.job_id,kind:r.kind,state:r.state,jobStatus:r.job_status,versionId:r.version_id,
             errorCode:r.error_code,createdAt:iso(r.created_at)}))};
       });

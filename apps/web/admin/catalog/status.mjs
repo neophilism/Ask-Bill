@@ -9,7 +9,7 @@ export function catalogReadiness(version,{translations=[]}={}) {
     version.warnings.length||version.errors.length)issues.push('SOURCE_REVIEW_REQUIRED');
  if(!Array.isArray(version.reviewChecks)||new Set(version.reviewChecks).size<6)
     issues.push('PUBLICATION_REVIEW_INCOMPLETE');
- if(version.indexStatus!=='ready')issues.push('SEARCH_INDEX_NOT_READY');
+ if(version.indexStatus!=='complete')issues.push('SEARCH_INDEX_NOT_READY');
  if(typeof sourceHash!=='string'||!HASH.test(sourceHash))issues.push('SOURCE_DIGEST_UNVERIFIED');
  const translationStatuses=translations.map(translation=>{
    const language=typeof translation?.language==='string'?translation.language:'unknown';
