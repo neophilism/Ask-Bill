@@ -138,6 +138,7 @@ def audit(doc, data):
             boundaries = sum(n == 1 for n in edges.values())
             misoriented = sum(len(directions) == 2 and directions[0] == directions[1]
                               for directions in edge_directions.values())
+            euler = len(positions) - len(edges) + len(indices)//3
             if degenerate:
                 problems.append(label + ": " + str(degenerate) + " degenerate triangles")
             if nonmanifold:
@@ -148,10 +149,13 @@ def audit(doc, data):
                 problems.append(label + ": " + str(misoriented) + " inconsistently wound edges")
             if not boundaries and signed_volume <= 1e-10:
                 problems.append(label + ": closed surface has inward or zero volume")
+            if not boundaries and not nonmanifold and euler != 2:
+                problems.append(label + ": unexpected closed-surface topology")
             metrics.append({"mesh": label, "vertices": len(positions),
                             "triangles": len(indices) // 3, "boundaryEdges": boundaries,
                             "degenerateTriangles": degenerate, "nonmanifoldEdges": nonmanifold,
                             "misorientedEdges": misoriented,
+                            "eulerCharacteristic": euler,
                             "signedVolume": signed_volume})
     return {"passesStructuralAudit": not problems, "meshes": metrics, "problems": problems,
             "deformationStressPosesVerified": False}

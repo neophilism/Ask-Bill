@@ -72,6 +72,7 @@ class TestOption10(unittest.TestCase):
         for mesh in solids:
             self.assertEqual(mesh['boundaryEdges'],0,mesh['mesh'])
             self.assertEqual(mesh['misorientedEdges'],0,mesh['mesh'])
+            self.assertEqual(mesh['eulerCharacteristic'],2,mesh['mesh'])
             self.assertGreater(mesh['signedVolume'],0,mesh['mesh'])
 
     def test_page_compression_and_extreme_mouth_preserve_triangle_orientation(self):
