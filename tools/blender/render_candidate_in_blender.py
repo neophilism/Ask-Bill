@@ -137,6 +137,13 @@ def render_stress_poses(scene, camera, output, baseline, front_hash):
 def proof_render(output):
     if not bpy.data.filepath.endswith('.blend'):
         raise RuntimeError('Open the native Bill .blend candidate before rendering')
+    blend_path=Path(bpy.data.filepath)
+    blend_bytes=blend_path.read_bytes()
+    blend_hash=hashlib.sha256(blend_bytes).hexdigest()
+    glb_path=Path('assets/bill/runtime/Bill-Candidate.glb')
+    if not glb_path.is_file():
+        raise RuntimeError('Missing source GLB for render provenance')
+    glb_bytes=glb_path.read_bytes()
     mesh_objects = [o for o in bpy.data.objects if o.type == 'MESH']
     if not any('CONTINUOUS_FOLIO' in o.name for o in mesh_objects):
         raise RuntimeError('Refusing to render without original continuous parchment body')
@@ -217,6 +224,10 @@ def proof_render(output):
     stress=render_stress_poses(scene,camera,output,baseline,files[0]['sha256'])
     result={'status':'unapproved candidate turnarounds and stress poses',
             'blender':bpy.app.version_string,'meshCount':len(mesh_objects),
+            'editableSource':{'path':blend_path.name,'bytes':len(blend_bytes),
+                              'sha256':blend_hash},
+            'sourceGLB':{'path':str(glb_path),'bytes':len(glb_bytes),
+                         'sha256':hashlib.sha256(glb_bytes).hexdigest()},
             'files':files,'stressPoses':stress}
     (output/'render-evidence.json').write_text(json.dumps(result,indent=2,sort_keys=True)+'\n')
     print('BLENDER_TURNAROUND_AUDIT='+json.dumps(result,sort_keys=True),flush=True)
