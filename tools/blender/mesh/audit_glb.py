@@ -105,7 +105,7 @@ def audit(doc, data):
                     for row in weights
                 ):
                     problems.append(label + ": invalid joint weights")
-            degenerate, edges = 0, Counter()
+            degenerate, edges, signed_volume = 0, Counter(), 0.0
             for t in range(0, len(indices), 3):
                 ids = indices[t:t + 3]
                 a, b, c = (positions[i] for i in ids)
@@ -114,6 +114,9 @@ def audit(doc, data):
                 cross = (u[1] * v[2] - u[2] * v[1],
                          u[2] * v[0] - u[0] * v[2],
                          u[0] * v[1] - u[1] * v[0])
+                signed_volume += (a[0] * (b[1] * c[2] - b[2] * c[1]) +
+                                  a[1] * (b[2] * c[0] - b[0] * c[2]) +
+                                  a[2] * (b[0] * c[1] - b[1] * c[0])) / 6
                 if len(set(ids)) < 3 or sum(x*x for x in cross) < 1e-16:
                     degenerate += 1
                 for k in range(3):
@@ -126,9 +129,12 @@ def audit(doc, data):
                 problems.append(label + ": " + str(nonmanifold) + " over-connected edges")
             if label == "ONE_CONTINUOUS_FOLIO_PARCHMENT" and boundaries:
                 problems.append(label + ": " + str(boundaries) + " open boundary edges")
+            if not boundaries and signed_volume <= 1e-10:
+                problems.append(label + ": closed surface has inward or zero volume")
             metrics.append({"mesh": label, "vertices": len(positions),
                             "triangles": len(indices) // 3, "boundaryEdges": boundaries,
-                            "degenerateTriangles": degenerate, "nonmanifoldEdges": nonmanifold})
+                            "degenerateTriangles": degenerate, "nonmanifoldEdges": nonmanifold,
+                            "signedVolume": signed_volume})
     return {"passesStructuralAudit": not problems, "meshes": metrics, "problems": problems,
             "deformationStressPosesVerified": False}
 

@@ -197,6 +197,8 @@ def ellipsoid(glb,name,pos,scale,material,parent,segments=16,rings=10):
     for i in range(segments):
         n=(i+1)%segments
         tri.extend([last+i,bottom,last+n])
+    # The ring traversal above is inward-facing; glTF front faces use CCW.
+    for k in range(0,len(tri),3):tri[k+1],tri[k+2]=tri[k+2],tri[k+1]
     mesh=glb.mesh(name,p,tri,material)
     return glb.node(name,mesh,parent,translation=pos)
 
@@ -275,6 +277,8 @@ def sheet_surface():
                 v=face*stride+j*(segments+1)+i
                 pos[v][1]+=.11*fold
                 pos[v][2]+=.19*fold
+    # Front and back panels were inward-facing in the candidate generator.
+    for k in range(0,len(indices),3):indices[k+1],indices[k+2]=indices[k+2],indices[k+1]
     return pos,uv,indices,joints,weights,[('TailFlutter',t1),('PaperBreathe',t2)]
 
 
