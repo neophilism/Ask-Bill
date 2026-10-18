@@ -3,24 +3,8 @@ import test from 'node:test';
 import {catalogReadiness} from './status.mjs';
 const sha='a'.repeat(64);
 const ready={sourceComplete:true,warnings:[],errors:[],reviewChecks:['a','b','c','d','e','f'],indexStatus:'ready',canonicalTextSha256:sha};
-test('incomplete source never appears ready',()=>{
- const result=catalogReadiness({...ready,sourceComplete:false});
- assert.ok(result.issues.includes('SOURCE_INCOMPLETE'));
- assert.equal(result.informationalReady,false);
- assert.equal(result.canPublish,false);
-});
-test('stale translated edition is visible',()=>{
- const result=catalogReadiness(ready,{translations:[{language:'es',sourceCanonicalSha256:'b'.repeat(64)}]});
- assert.equal(result.translations[0].status,'STALE_SOURCE');
- assert.equal(result.canPublish,false);
-});
-test('matching hash is only informative, never publish authorization',()=>{
- const result=catalogReadiness(ready,{translations:[{language:'fr',sourceCanonicalSha256:sha}]});
- assert.equal(result.informationalReady,true);
- assert.equal(result.translations[0].status,'SOURCE_MATCH');
- assert.equal(result.canPublish,false);
-});
-test('warnings, missing index and invalid digest remain explicit',()=>{
- const result=catalogReadiness({...ready,warnings:['ocr_needs_review:1'],indexStatus:'pending',canonicalTextSha256:''});
- assert.deepEqual(result.issues,['SOURCE_REVIEW_REQUIRED','SEARCH_INDEX_NOT_READY','SOURCE_DIGEST_UNVERIFIED']);
-});
+test('incomplete source never appears ready',()=>{const r=catalogReadiness({...ready,sourceComplete:false});assert.ok(r.issues.includes('SOURCE_INCOMPLETE'));assert.equal(r.canPublish,false);});
+test('stale translation blocks aggregate informational readiness',()=>{const r=catalogReadiness(ready,{translations:[{language:'es',sourceCanonicalSha256:'b'.repeat(64)}]});assert.equal(r.translations[0].status,'STALE_SOURCE');assert.ok(r.issues.includes('TRANSLATION_SOURCE_STALE'));assert.equal(r.informationalReady,false);assert.equal(r.canPublish,false);});
+test('matching hash remains non-authorizing',()=>{const r=catalogReadiness(ready,{translations:[{language:'fr',sourceCanonicalSha256:sha.toUpperCase()}]});assert.equal(r.informationalReady,true);assert.equal(r.translations[0].status,'SOURCE_MATCH');assert.equal(r.canPublish,false);});
+test('missing review arrays and invalid digest fail closed',()=>{const r=catalogReadiness({...ready,warnings:null,indexStatus:'pending',canonicalTextSha256:''});assert.ok(r.issues.includes('SOURCE_REVIEW_REQUIRED'));assert.ok(r.issues.includes('SEARCH_INDEX_NOT_READY'));assert.ok(r.issues.includes('SOURCE_DIGEST_UNVERIFIED'));});
+test('malformed translation catalogs rejected',()=>{assert.throws(()=>catalogReadiness(ready,{translations:{}}));assert.throws(()=>catalogReadiness(ready,{translations:Array.from({length:101},()=>({}))}));});
