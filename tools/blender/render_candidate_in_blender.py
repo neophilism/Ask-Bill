@@ -67,7 +67,7 @@ def mesh_areas():
     return result
 
 
-def render_stress_poses(scene, camera, output, baseline):
+def render_stress_poses(scene, camera, output, baseline, front_hash):
     stress_dir = output/'stress'
     stress_dir.mkdir(exist_ok=True)
     records=[]
@@ -85,6 +85,7 @@ def render_stress_poses(scene, camera, output, baseline):
     target_camera(camera,(0,0,1.9))
     scene.render.resolution_x=320
     scene.render.resolution_y=440
+    seen_hashes={front_hash}
     for name, rotations, shapes, scales in poses:
         changed=[]
         try:
@@ -113,8 +114,12 @@ def render_stress_poses(scene, camera, output, baseline):
             data=path.read_bytes()
             if not data.startswith(b'\x89PNG\r\n\x1a\n') or len(data)<4000:
                 raise RuntimeError('Missing stress-pose render: '+name)
+            image_hash=hashlib.sha256(data).hexdigest()
+            if image_hash in seen_hashes:
+                raise RuntimeError('Stress pose is visually unchanged or duplicated: '+name)
+            seen_hashes.add(image_hash)
             records.append({'pose':name,'file':'stress/'+path.name,'bytes':len(data),
-                            'sha256':hashlib.sha256(data).hexdigest(),
+                            'sha256':image_hash,
                             'minimumTriangleArea':min(areas.values())})
         finally:
             for kind,item,old in reversed(changed):
@@ -209,7 +214,7 @@ def proof_render(output):
             raise RuntimeError('Invalid/empty render output: '+str(path))
         files.append({'file':path.name,'width':w,'height':h,
                       'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()})
-    stress=render_stress_poses(scene,camera,output,baseline)
+    stress=render_stress_poses(scene,camera,output,baseline,files[0]['sha256'])
     result={'status':'unapproved candidate turnarounds and stress poses',
             'blender':bpy.app.version_string,'meshCount':len(mesh_objects),
             'files':files,'stressPoses':stress}
