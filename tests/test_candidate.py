@@ -9,7 +9,9 @@ import unittest
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tools'/'blender'))
+sys.path.insert(0,str(ROOT/'tools'/'blender'/'mesh'))
 from generate_bill import build
+from audit_glb import audit, load_glb
 
 
 def parse(data):
@@ -57,6 +59,19 @@ class TestOption10(unittest.TestCase):
         self.assertEqual(len(prim['targets']),2)
         self.assertEqual(len(self.doc['skins'][0]['joints']),3)
         self.assertFalse(any('curl' in m['name'].lower() for m in self.doc['meshes'] if m!=folio[0]))
+
+    def test_all_expected_solid_primitives_are_watertight_and_outward(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'candidate.glb'
+            build(path)
+            report=audit(*load_glb(path))
+        self.assertTrue(report['passesStructuralAudit'],report['problems'])
+        solids=[m for m in report['meshes'] if m['mesh']!='MouthWithVisemes']
+        self.assertTrue(solids)
+        for mesh in solids:
+            self.assertEqual(mesh['boundaryEdges'],0,mesh['mesh'])
+            self.assertEqual(mesh['misorientedEdges'],0,mesh['mesh'])
+            self.assertGreater(mesh['signedVolume'],0,mesh['mesh'])
 
     def test_elbows_knees_and_eyelids_have_independent_controls(self):
         nodes=self.doc['nodes']
