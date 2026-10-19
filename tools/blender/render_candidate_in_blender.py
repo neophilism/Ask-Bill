@@ -77,7 +77,7 @@ def render_stress_poses(scene, camera, output, baseline, front_hash):
                         'Rig_Hip_L': .54, 'Rig_Hip_R': -.54,
                         'Rig_Knee_L': -.8, 'Rig_Knee_R': .8}, {}, {}),
         ('compressed-body', {}, {'TailFlutter': 1.0, 'PaperBreathe': 1.0},
-         {'SingleSheet_Body': .72}),
+         {'ONE_CONTINUOUS_FOLIO_PARCHMENT': .72}),
         ('extreme-expression', {'Rig_Eyelid_0': .20, 'Rig_Eyelid_1': -.20},
                                {'viseme_AA': 1.0}, {}),
     ]
