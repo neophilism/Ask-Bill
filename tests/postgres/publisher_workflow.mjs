@@ -104,6 +104,22 @@ test('durable publisher intake, exact release, corrections, and lease fences wit
       assert.equal(Number(metadata.byte_length),receipt.bytes);assert.equal(metadata.storage_key,receipt.key);
       const list=await workflow.getBill({actor:actor(),billId});assert.equal(list.imports[0].state,'completed');assert.equal(list.imports[0].jobStatus,'completed');
     });
+    await t.test('tour curation is private, source-pinned, MFA-gated and tenant-scoped',async()=>{
+      assert.equal((await workflow.getVersion({actor:actor('viewer'),billId,versionId})).tourDraft,null);
+      const stepIds=version.provisions.slice(0,2).map(p=>p.id),input={billId,versionId,stepIds,expectedCanonicalSha256:version.canonicalTextSha256};
+      await rejected(()=>workflow.saveTourDraft({actor:actor('viewer','publish'),...input}),'ACTION_FORBIDDEN');
+      await rejected(()=>workflow.saveTourDraft({actor:{...actor('owner','publish'),mfaVerifiedByTrustedServer:false},...input}),'MFA_REQUIRED');
+      await rejected(()=>workflow.saveTourDraft({actor:actor('owner','publish'),...input,expectedCanonicalSha256:'0'.repeat(64)}),'VERSION_CONFLICT');
+      await rejected(()=>workflow.saveTourDraft({actor:actor('owner','publish'),...input,stepIds:[randomUUID()]}),'TOUR_INVALID');
+      const saved=await workflow.saveTourDraft({actor:actor('owner','publish'),...input});assert.equal(saved.stepCount,2);
+      const visible=await workflow.getVersion({actor:actor('viewer'),billId,versionId});
+      assert.deepEqual(visible.tourDraft.stepIds,stepIds);assert.equal(visible.tourDraft.stale,false);
+      const client=await pool.connect();try{
+        await client.query('BEGIN');await client.query("SELECT set_config('ask_bill.publisher_id',$1,true)",[OTHER]);
+        const rows=await client.query('SELECT version_id FROM ask_bill.publisher_tour_drafts WHERE version_id=$1::uuid',[versionId]);
+        assert.equal(rows.rows.length,0);await client.query('ROLLBACK');
+      }finally{client.release();}
+    });
     await t.test('review checks, exact canonical pin, MFA, original storage, and release compare-and-swap all gate publication',async()=>{
       await rejected(()=>workflow.reviewVersion({actor:{...actor('owner','publish'),mfaVerifiedByTrustedServer:false},billId,versionId,
         checks:PUBLISHER_REVIEW_CHECKS,expectedCanonicalSha256:version.canonicalTextSha256}),'MFA_REQUIRED');
@@ -269,3 +285,4 @@ test('durable publisher intake, exact release, corrections, and lease fences wit
     });
   }finally{await pool?.end();await admin.end();}
 });
+
