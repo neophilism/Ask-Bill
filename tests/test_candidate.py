@@ -9,7 +9,10 @@ import unittest
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tools'/'blender'))
+sys.path.insert(0,str(ROOT/'tools'/'blender'/'mesh'))
 from generate_bill import build
+from audit_glb import audit, load_glb
+from stress_glb import run as stress_run, stress_primitive
 
 
 def parse(data):
@@ -57,6 +60,53 @@ class TestOption10(unittest.TestCase):
         self.assertEqual(len(prim['targets']),2)
         self.assertEqual(len(self.doc['skins'][0]['joints']),3)
         self.assertFalse(any('curl' in m['name'].lower() for m in self.doc['meshes'] if m!=folio[0]))
+
+    def test_all_expected_solid_primitives_are_watertight_and_outward(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'candidate.glb'
+            build(path)
+            report=audit(*load_glb(path))
+        self.assertTrue(report['passesStructuralAudit'],report['problems'])
+        solids=[m for m in report['meshes'] if m['mesh']!='MouthWithVisemes']
+        self.assertTrue(solids)
+        for mesh in solids:
+            self.assertEqual(mesh['boundaryEdges'],0,mesh['mesh'])
+            self.assertEqual(mesh['misorientedEdges'],0,mesh['mesh'])
+            self.assertEqual(mesh['eulerCharacteristic'],2,mesh['mesh'])
+            self.assertGreater(mesh['signedVolume'],0,mesh['mesh'])
+
+    def test_page_compression_and_extreme_mouth_preserve_triangle_orientation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'candidate.glb'
+            build(path)
+            stress=stress_run(path)
+            doc,data=load_glb(path)
+        self.assertTrue(stress['passesNumericalStress'],stress['cases'])
+        self.assertFalse(stress['visualAndJointClearanceVerified'])
+        collapsed=stress_primitive(doc,data,'ONE_CONTINUOUS_FOLIO_PARCHMENT',{},0)
+        self.assertFalse(collapsed['passesNumericalStress'])
+        with self.assertRaises(ValueError):
+            stress_primitive(doc,data,'MouthWithVisemes',{'unknown_viseme':1})
+
+    def test_elbows_knees_and_eyelids_have_independent_controls(self):
+        nodes=self.doc['nodes']
+        by_name={node['name']:i for i,node in enumerate(nodes)}
+        for side in ('L','R'):
+            shoulder=nodes[by_name['Rig_Shoulder_'+side]]
+            elbow=by_name['Rig_Elbow_'+side]
+            self.assertIn(elbow,shoulder['children'])
+            self.assertIn(by_name['Paper_Forearm_'+side],nodes[elbow]['children'])
+            self.assertIn(by_name['Glove_'+side],nodes[elbow]['children'])
+            hip=nodes[by_name['Rig_Hip_'+side]]
+            knee=by_name['Rig_Knee_'+side]
+            self.assertIn(knee,hip['children'])
+            self.assertIn(by_name['Paper_Shin_'+side],nodes[knee]['children'])
+            self.assertIn(by_name['Rig_Shoe_'+side],nodes[knee]['children'])
+        for eye in ('0','1'):
+            eye_node=nodes[by_name['Rig_Eye_'+eye]]
+            lid=by_name['Rig_Eyelid_'+eye]
+            self.assertIn(lid,eye_node['children'])
+            self.assertIn(by_name['Upper_Eyelid_'+eye],nodes[lid]['children'])
 
     def test_eight_action_clips_genuine_channels(self):
         found={a['name'] for a in self.doc['animations']}
@@ -106,3 +156,4 @@ class TestOption10(unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main()
+
