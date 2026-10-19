@@ -355,10 +355,33 @@ export function createPublisherWorkflow({pool,publisherId,storage,congressClient
         const reviewed=(await client.query(`SELECT checks FROM ask_bill.publisher_version_reviews WHERE publisher_id=$1::uuid AND version_id=$2::uuid
           AND canonical_sha256=$3 ORDER BY created_at DESC,id DESC LIMIT 1`,[publisher,versionId,version.canonical_text_sha256])).rows[0];
         const parsed=(await client.query('SELECT warnings,previous_version_id FROM ask_bill.publisher_version_extractions WHERE publisher_id=$1::uuid AND version_id=$2::uuid',[publisher,versionId])).rows[0];
+        const tour=(await client.query('SELECT source_sha256,step_ids,updated_at FROM ask_bill.publisher_tour_drafts WHERE publisher_id=$1::uuid AND bill_id=$2::uuid AND version_id=$3::uuid',
+          [publisher,billId,versionId])).rows[0];
         return {id:versionId,publisherId:publisher,billId,title:version.title,publication:version.publication,sourceComplete:version.source_complete,
           status:version.status,rawByteSha256:version.raw_byte_sha256,canonicalTextSha256:version.canonical_text_sha256,canonicalText:source.canonicalText,
           provisions:source.provisions.map(({id,heading,text})=>({id,heading,text})),reviewChecks:reviewed?.checks??[],indexStatus:index?.status??'missing',
-          activeReleaseId:await activeRelease(client,billId),warnings:parsed?.warnings??[],previousVersionId:parsed?.previous_version_id??null};
+          activeReleaseId:await activeRelease(client,billId),warnings:parsed?.warnings??[],previousVersionId:parsed?.previous_version_id??null,
+          tourDraft:tour?{sourceSha256:tour.source_sha256,stepIds:tour.step_ids,
+            stale:tour.source_sha256!==version.canonical_text_sha256,updatedAt:iso(tour.updated_at)}:null};
+      });
+    },
+    async saveTourDraft({actor,billId,versionId,stepIds,expectedCanonicalSha256}={}){
+      billId=id(billId);versionId=id(versionId);
+      if(!HEX.test(expectedCanonicalSha256??'')||!Array.isArray(stepIds)||stepIds.length<1||stepIds.length>12||
+        new Set(stepIds).size!==stepIds.length||stepIds.some(value=>!UUID.test(value)))fail('TOUR_INVALID');
+      return authorized(actor,'publish',async(client,trusted)=>{
+        const version=await versionRow(client,billId,versionId,{lock:true});
+        if(version.canonical_text_sha256!==expectedCanonicalSha256)fail('VERSION_CONFLICT');
+        const source=await sourceProvisions(client,version),allowed=new Set(source.provisions.map(p=>p.id));
+        if(stepIds.some(value=>!allowed.has(value)))fail('TOUR_INVALID');
+        await client.query(`INSERT INTO ask_bill.publisher_tour_drafts
+          (publisher_id,bill_id,version_id,source_sha256,step_ids,updated_by)
+          VALUES($1::uuid,$2::uuid,$3::uuid,$4,$5::jsonb,$6::uuid)
+          ON CONFLICT (publisher_id,version_id) DO UPDATE SET source_sha256=EXCLUDED.source_sha256,
+          step_ids=EXCLUDED.step_ids,updated_by=EXCLUDED.updated_by,updated_at=now()`,
+          [publisher,billId,versionId,expectedCanonicalSha256,JSON.stringify(stepIds),trusted.userId]);
+        await audit(client,trusted.userId,'tour.draft.saved',versionId,{billId,sourceSha256:expectedCanonicalSha256,stepCount:stepIds.length});
+        return {saved:true,versionId,stepCount:stepIds.length};
       });
     },
     async getOriginal({actor,billId,versionId}={}){

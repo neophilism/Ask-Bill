@@ -62,7 +62,7 @@ async function fields(req,{upload=false}={}){
  const entries=[...data.entries()];if(entries.length>24)fail('REQUEST_INVALID');
  const out={};for(const [name,value] of entries){
   if(!/^[A-Za-z][A-Za-z0-9]{0,50}$/.test(name))fail('REQUEST_INVALID');
-  if(name==='checks'){out.checks??=[];out.checks.push(value);continue;}
+  if(name==='checks'||name==='stepIds'){out[name]??=[];out[name].push(value);continue;}
   if(Object.hasOwn(out,name))fail('REQUEST_INVALID');out[name]=value;
  }
  return out;
@@ -160,11 +160,11 @@ export function createPublisherHandler({auth,repository,storage,expectedOrigin,p
     const created=await call('createBill',{actor,title:string(input.title),jurisdiction:string(input.jurisdiction,{min:2,max:100})});
     return redirect(res,billPath(id(created?.id)));
    }
-   const route=url.pathname.match(/^\/admin\/bills\/([a-f0-9-]{36})(?:\/versions\/([a-f0-9-]{36}))?\/(uploads|imports|corrections|review|publish|withdraw)$/i);
+   const route=url.pathname.match(/^\/admin\/bills\/([a-f0-9-]{36})(?:\/versions\/([a-f0-9-]{36}))?\/(uploads|imports|corrections|review|publish|tour|withdraw)$/i);
    if(!route)fail('NOT_FOUND');
    const billId=id(route[1]),versionId=route[2]?id(route[2]):null,operation=route[3];
-   if(['corrections','review','publish'].includes(operation)!==Boolean(versionId))fail('NOT_FOUND');
-   const action=operation==='withdraw'?'withdraw':['corrections','review','publish'].includes(operation)?'publish':'upload';
+   if(['corrections','review','publish','tour'].includes(operation)!==Boolean(versionId))fail('NOT_FOUND');
+   const action=operation==='withdraw'?'withdraw':['corrections','review','publish','tour'].includes(operation)?'publish':'upload';
    const actor=await auth.authorize({...request,action});
    if(operation==='uploads'){
     if(!storage||typeof storage.putQuarantine!=='function'||typeof storage.promoteQuarantine!=='function')fail('SERVICE_NOT_CONFIGURED');
@@ -200,6 +200,15 @@ export function createPublisherHandler({auth,repository,storage,expectedOrigin,p
     const result=await call('saveCorrection',{actor,billId,proposal});
     return redirect(res,versionPath(billId,id(result?.versionId??proposal.newVersion.id)));
    }
+   if(operation==='tour'){
+    const version=await fetchVersion(actor,billId,versionId);
+    if(exactDigest(input.expectedCanonicalSha256)!==version.canonicalTextSha256)fail('VERSION_CONFLICT');
+    const stepIds=input.stepIds;
+    if(!Array.isArray(stepIds)||stepIds.length<1||stepIds.length>12||new Set(stepIds).size!==stepIds.length||
+      stepIds.some(value=>!UUID.test(value)||!version.provisions.some(p=>p.id===value)))fail('TOUR_INVALID');
+    await call('saveTourDraft',{actor,billId,versionId,stepIds,expectedCanonicalSha256:version.canonicalTextSha256});
+    return redirect(res,versionPath(billId,versionId));
+   }
    if(operation==='review'){
     if(!Array.isArray(input.checks)||input.checks.length!==6||new Set(input.checks).size!==6||input.checks.some(c=>!Object.hasOwn(REVIEW_CHECKS,c)))fail('REVIEW_INCOMPLETE');
     await call('reviewVersion',{actor,billId,versionId,checks:input.checks,expectedCanonicalSha256:exactDigest(input.expectedCanonicalSha256)});
@@ -225,3 +234,4 @@ export function createPublisherHandler({auth,repository,storage,expectedOrigin,p
   }
  };
 }
+
