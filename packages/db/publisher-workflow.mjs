@@ -366,7 +366,7 @@ export function createPublisherWorkflow({pool,publisherId,storage,congressClient
           ORDER BY language LIMIT 100`,[publisher,billId])).rows.map(r=>({language:r.language,
           sourceCanonicalSha256:r.source_sha256,sourceVersionId:r.source_version_id,updatedAt:iso(r.updated_at),
           ...(trusted.role==='viewer'?{}:{text:r.draft_text})}));
-        return {id:versionId,publisherId:publisher,billId,title:version.title,publication:version.publication,sourceComplete:version.source_complete,
+        return {id:versionId,publisherId:publisher,billId,title:version.title,language:version.language,publication:version.publication,sourceComplete:version.source_complete,
           status:version.status,rawByteSha256:version.raw_byte_sha256,canonicalTextSha256:version.canonical_text_sha256,canonicalText:source.canonicalText,
           provisions:source.provisions.map(({id,heading,text})=>({id,heading,text})),reviewChecks:reviewed?.checks??[],indexStatus:index?.status??'missing',
           activeReleaseId:await activeRelease(client,billId),warnings:parsed?.warnings??[],previousVersionId:parsed?.previous_version_id??null,
@@ -376,11 +376,12 @@ export function createPublisherWorkflow({pool,publisherId,storage,congressClient
     },
     async saveTranslationDraft({actor,billId,versionId,language,text,expectedCanonicalSha256}={}){
       billId=id(billId);versionId=id(versionId);
-      if(typeof language!=='string'||! /^[a-z]{2,3}(?:-[A-Z]{2})?$/.test(language)||language==='en'||
+      if(typeof language!=='string'||! /^[a-z]{2,3}(?:-[A-Z]{2})?$/.test(language)||
         !clean(text,1,100000)||!text.trim()||Buffer.byteLength(text)>100000||!HEX.test(expectedCanonicalSha256??''))fail('TRANSLATION_INVALID');
       return authorized(actor,'publish',async(client,trusted)=>{
         const version=await versionRow(client,billId,versionId,{lock:true});
         if(version.canonical_text_sha256!==expectedCanonicalSha256)fail('VERSION_CONFLICT');
+        if(language===version.language)fail('TRANSLATION_INVALID');
         await client.query(`INSERT INTO ask_bill.publisher_translation_drafts
           (publisher_id,bill_id,language,source_version_id,source_sha256,draft_text,updated_by)
           VALUES($1::uuid,$2::uuid,$3,$4::uuid,$5,$6,$7::uuid)

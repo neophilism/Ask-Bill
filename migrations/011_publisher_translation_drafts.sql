@@ -4,7 +4,7 @@ BEGIN;
 CREATE TABLE IF NOT EXISTS ask_bill.publisher_translation_drafts (
   publisher_id uuid NOT NULL,
   bill_id uuid NOT NULL,
-  language text NOT NULL CHECK (language ~ '^[a-z]{2,3}(-[A-Z]{2})?$' AND language <> 'en'),
+  language text NOT NULL CHECK (language ~ '^[a-z]{2,3}(-[A-Z]{2})?$'),
   source_version_id uuid NOT NULL,
   source_sha256 text NOT NULL CHECK (source_sha256 ~ '^[a-f0-9]{64}$'),
   draft_text text NOT NULL CHECK (octet_length(draft_text) BETWEEN 1 AND 100000),

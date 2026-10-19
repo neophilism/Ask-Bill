@@ -213,7 +213,7 @@ export function createPublisherHandler({auth,repository,storage,expectedOrigin,p
     const version=await fetchVersion(actor,billId,versionId);
     if(exactDigest(input.expectedCanonicalSha256)!==version.canonicalTextSha256)fail('VERSION_CONFLICT');
     const language=string(input.language,{max:6});
-    if(!/^[a-z]{2,3}(?:-[A-Z]{2})?$/.test(language)||language==='en')fail('TRANSLATION_INVALID');
+    if(!/^[a-z]{2,3}(?:-[A-Z]{2})?$/.test(language)||language===version.language)fail('TRANSLATION_INVALID');
     await call('saveTranslationDraft',{actor,billId,versionId,language,
       text:string(input.text,{max:100000,trim:false}),expectedCanonicalSha256:version.canonicalTextSha256});
     return redirect(res,versionPath(billId,versionId));
