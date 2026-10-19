@@ -217,6 +217,8 @@ test('durable publisher intake, exact release, corrections, and lease fences wit
       const queued=await official.requestOfficialImport({actor:actor('owner','upload'),billId,identity}),job=await claim();assert.equal(job.jobId,queued.jobId);
       const event=await official.handleImportJob(scope(job));assert.equal(await complete(job,event),true);assert.equal(fetches,1);
       const imported=await official.getVersion({actor:actor(),billId,versionId:event.payload.versionId});
+      const request=(await official.getBill({actor:actor(),billId})).imports.find(item=>item.jobId===queued.jobId);
+      assert.deepEqual(request.identity,identity);
       assert.equal(imported.status,'unknown');assert.equal(imported.sourceComplete,false);assert.equal(imported.publication,'private');
       assert.match(imported.canonicalText,/Be it enacted by the Congress\./);assert.match(imported.canonicalText,/1\.\nProgram\./);
       const provenance=(await admin.query('SELECT origin,source_url FROM ask_bill.source_import_events WHERE publisher_id=$1::uuid AND version_id=$2::uuid',[PUB,imported.id])).rows[0];

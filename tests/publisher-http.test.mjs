@@ -14,7 +14,7 @@ const jwk={...publicKey.export({format:'jwk'}),kid:'fixture-key',alg:'RS256',use
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const error=code=>{const e=new Error(code);e.code=code;throw e;};
 async function setup(t,{configured=true}={}){
- let role='owner',mfa=true,nonce,writes=0;const sessions=new Map(),transactions=new Map(),objects=new Map(),bills=new Map(),versions=new Map(),tours=new Map(),cookies=new Map();
+ let role='owner',mfa=true,nonce,writes=0;const sessions=new Map(),transactions=new Map(),objects=new Map(),bills=new Map(),versions=new Map(),tours=new Map(),cookies=new Map(),imports=[];
  const auth=createOidcPublisherAuth({issuer,clientId:'publisher-test',clientSecret:'server-client-test-secret',publisherId:P,expectedOrigin:origin,redirectUri:origin+'/admin/auth/callback',
   store:{
    async saveLoginTransaction(v){transactions.set(v.stateHash,v);},
@@ -41,7 +41,7 @@ async function setup(t,{configured=true}={}){
  function verFor(actor,billId,versionId){billFor(actor,billId);const v=versions.get(versionId);if(!v||v.billId!==billId)error('NOT_FOUND');return v;}
  const repository={
   async listBills({actor}){guard(actor);return [...bills.values()].map(b=>({...b,versionCount:[...versions.values()].filter(v=>v.billId===b.id).length}));},
-  async getBill({actor,billId}){const b=billFor(actor,billId);return {...b,versions:[...versions.values()].filter(v=>v.billId===billId),imports:[]};},
+  async getBill({actor,billId}){const b=billFor(actor,billId);return {...b,versions:[...versions.values()].filter(v=>v.billId===billId),imports:imports.filter(item=>item.billId===billId)};},
   async createBill({actor,title,jurisdiction}){guard(actor);writes++;const b={id:randomUUID(),publisherId:P,title,jurisdiction,activeReleaseId:null};bills.set(b.id,b);return b;},
   async recordUpload({actor,billId,object,language}){const b=billFor(actor,billId);writes++;const raw=await storage.getPrivateSource({...object});const canonicalText=raw.content.toString('utf8'),versionId=randomUUID();
    versions.set(versionId,{id:versionId,billId,publisherId:P,title:b.title,language,publication:'private',sourceComplete:false,status:'draft',createdAt:new Date().toISOString(),rawByteSha256:object.sha256,canonicalTextSha256:hash(canonicalText),canonicalText,provisions:[{id:randomUUID(),heading:'Source text',text:canonicalText}],reviewChecks:[],indexStatus:'complete'});return {versionId};},
@@ -55,7 +55,10 @@ async function setup(t,{configured=true}={}){
   },
   async getOriginal({actor,billId,versionId}){const v=verFor(actor,billId,versionId),raw=await storage.getPrivateSource({publisherId:P,sha256:v.rawByteSha256});
    return {publisherId:P,billId,versionId,sha256:raw.sha256,bytes:raw.bytes,mime:raw.mime,content:raw.content};},
-  async requestOfficialImport({actor,billId,identity}){billFor(actor,billId);assert.equal(identity.congress,119);writes++;return {jobId:randomUUID()};},
+  async requestOfficialImport({actor,billId,identity}){billFor(actor,billId);assert.equal(identity.congress,119);writes++;
+   const jobId=randomUUID(),failed=!imports.some(item=>item.billId===billId&&item.kind==='congress');
+   imports.unshift({billId,jobId,kind:'congress',state:failed?'failed':'completed',
+    jobStatus:failed?'dead':'completed',errorCode:failed?'SOURCE_UNAVAILABLE':null,identity,createdAt:new Date().toISOString()});return {jobId};},
   async reviewVersion({actor,billId,versionId,checks,expectedCanonicalSha256}){const v=verFor(actor,billId,versionId);assert.equal(actor.mfaVerifiedByTrustedServer,true);if(v.canonicalTextSha256!==expectedCanonicalSha256)error('VERSION_CONFLICT');writes++;v.reviewChecks=[...checks];v.sourceComplete=true;v.publication='reviewed';},
   async publishRelease({actor,billId,versionId,expectedReleaseId}){const b=billFor(actor,billId),v=verFor(actor,billId,versionId);assert.equal(actor.mfaVerifiedByTrustedServer,true);if(v.publication!=='reviewed')error('PUBLICATION_NOT_READY');if(b.activeReleaseId!==expectedReleaseId)error('VERSION_CONFLICT');writes++;b.activeReleaseId=randomUUID();b.activeVersionId=versionId;v.publication='published';return {published:true};},
   async withdrawRelease({actor,billId,releaseId}){const b=billFor(actor,billId);assert.equal(actor.role,'owner');if(b.activeReleaseId!==releaseId)error('VERSION_CONFLICT');writes++;versions.get(b.activeVersionId).publication='withdrawn';b.activeReleaseId=null;b.activeVersionId=null;return {withdrawn:true};},
@@ -116,6 +119,18 @@ test('full owner workflow uploads privately, reviews, publishes, corrects immuta
  assert.equal((await f.post('/admin/bills/'+billId+'/imports',{congress:'119',billType:'hr',billNumber:'10'})).status,303);
  assert.equal((await f.post('/admin/bills/'+billId+'/withdraw',{releaseId:f.bills.get(billId).activeReleaseId,confirmed:'true'})).status,303);
  assert.equal(f.versions.get(versionId).publication,'withdrawn');assert.equal(f.bills.get(billId).activeReleaseId,null);
+});
+test('failed official refresh is visible, retryable, and source correction stays private',async t=>{
+ const f=await setup(t);await f.login();const billId=await f.addBill(),versionId=await f.upload(billId),
+  billPath='/admin/bills/'+billId,version=f.versions.get(versionId);
+ assert.equal((await f.post(billPath+'/imports',{congress:'119',billType:'hr',billNumber:'42'})).status,303);
+ const failed=await f.request(billPath);assert.match(await failed.text(),/Retry this official source import/);
+ assert.equal((await f.post(billPath+'/imports',{congress:'119',billType:'hr',billNumber:'42'})).status,303);
+ const corrected=await f.post(billPath+'/versions/'+versionId+'/corrections',{
+   expectedCanonicalSha256:version.canonicalTextSha256,provisionId:version.provisions[0].id,
+   expectedQuote:'Congress',replacement:'The Congress'});
+ assert.equal(corrected.status,303);const next=f.versions.get(corrected.headers.get('location').split('/').pop());
+ assert.equal(next.publication,'private');assert.equal(version.publication,'private');
 });
 test('viewer permissions, stale MFA, CSRF, cross-origin forms and stale source hashes block all writes',async t=>{
  const f=await setup(t);await f.login();const billId=await f.addBill(),versionId=await f.upload(billId),base='/admin/bills/'+billId+'/versions/'+versionId,before=f.getWrites();
