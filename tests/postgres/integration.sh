@@ -100,7 +100,7 @@ psql_container < migrations/007_retention.sql > /dev/null
 psql_container < migrations/007_retention.sql > /dev/null
 psql_container < tests/postgres/retention.sql
 echo '[Ask Bill application] Apply anonymous sessions, publisher workflow and identity constraints twice'
-for migration in migrations/008_anonymous_sessions.sql migrations/009_publisher_workflow.sql migrations/010_publisher_tour_drafts.sql packages/auth/migrations/001_publisher_auth.sql packages/auth/migrations/002_identity_binding.sql; do
+for migration in migrations/008_anonymous_sessions.sql migrations/009_publisher_workflow.sql migrations/010_publisher_tour_drafts.sql migrations/011_publisher_translation_drafts.sql packages/auth/migrations/001_publisher_auth.sql packages/auth/migrations/002_identity_binding.sql; do
   psql_container < "$migration" > /dev/null
   psql_container < "$migration" > /dev/null
 done

@@ -65,6 +65,10 @@ verify current membership, MFA, source hash and provision membership. This draft
 does not publish or change the public source-only tour. A correction creates a
 new source version and requires a new tour selection. Catalog pack warnings and
 stale translation source hashes are informational and never authorize publish.
+Editors and owners can save private translation drafts pinned to the exact source
+digest; the catalog compares each draft with every version so a correction shows
+the draft as stale. Draft text is tenant scoped and is never served to public
+readers or included in a release pack. Migration 011 adds this private store.
 Failed official imports can be retried by an editor or owner using the same
 validated Congress identity; each retry is a new audited request.
 

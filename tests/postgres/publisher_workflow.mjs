@@ -120,6 +120,23 @@ test('durable publisher intake, exact release, corrections, and lease fences wit
         assert.equal(rows.rows.length,0);await client.query('ROLLBACK');
       }finally{client.release();}
     });
+    await t.test('translation drafts are private, source-pinned and stale after correction',async()=>{
+      const input={billId,versionId,language:'es',text:'Traducción privada de la fuente.',expectedCanonicalSha256:version.canonicalTextSha256};
+      await rejected(()=>workflow.saveTranslationDraft({actor:actor('viewer','publish'),...input}),'ACTION_FORBIDDEN');
+      await rejected(()=>workflow.saveTranslationDraft({actor:{...actor('editor','publish'),mfaVerifiedByTrustedServer:false},...input}),'MFA_REQUIRED');
+      await rejected(()=>workflow.saveTranslationDraft({actor:actor('editor','publish'),...input,expectedCanonicalSha256:'0'.repeat(64)}),'VERSION_CONFLICT');
+      await rejected(()=>workflow.saveTranslationDraft({actor:actor('editor','publish'),...input,language:'en'}),'TRANSLATION_INVALID');
+      await workflow.saveTranslationDraft({actor:actor('editor','publish'),...input});
+      const detail=await workflow.getVersion({actor:actor('viewer'),billId,versionId});
+      assert.equal(detail.translations[0].language,'es');
+      assert.equal(detail.translations[0].sourceCanonicalSha256,version.canonicalTextSha256);
+      assert.equal((await workflow.getBill({actor:actor('viewer'),billId})).versions[0].translations[0].language,'es');
+      const client=await pool.connect();try{
+        await client.query('BEGIN');await client.query("SELECT set_config('ask_bill.publisher_id',$1,true)",[OTHER]);
+        assert.equal((await client.query('SELECT language FROM ask_bill.publisher_translation_drafts WHERE bill_id=$1::uuid',[billId])).rows.length,0);
+        await client.query('ROLLBACK');
+      }finally{client.release();}
+    });
     await t.test('review checks, exact canonical pin, MFA, original storage, and release compare-and-swap all gate publication',async()=>{
       await rejected(()=>workflow.reviewVersion({actor:{...actor('owner','publish'),mfaVerifiedByTrustedServer:false},billId,versionId,
         checks:PUBLISHER_REVIEW_CHECKS,expectedCanonicalSha256:version.canonicalTextSha256}),'MFA_REQUIRED');

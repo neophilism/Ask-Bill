@@ -160,11 +160,11 @@ export function createPublisherHandler({auth,repository,storage,expectedOrigin,p
     const created=await call('createBill',{actor,title:string(input.title),jurisdiction:string(input.jurisdiction,{min:2,max:100})});
     return redirect(res,billPath(id(created?.id)));
    }
-   const route=url.pathname.match(/^\/admin\/bills\/([a-f0-9-]{36})(?:\/versions\/([a-f0-9-]{36}))?\/(uploads|imports|corrections|review|publish|tour|withdraw)$/i);
+   const route=url.pathname.match(/^\/admin\/bills\/([a-f0-9-]{36})(?:\/versions\/([a-f0-9-]{36}))?\/(uploads|imports|corrections|review|publish|tour|translations|withdraw)$/i);
    if(!route)fail('NOT_FOUND');
    const billId=id(route[1]),versionId=route[2]?id(route[2]):null,operation=route[3];
-   if(['corrections','review','publish','tour'].includes(operation)!==Boolean(versionId))fail('NOT_FOUND');
-   const action=operation==='withdraw'?'withdraw':['corrections','review','publish','tour'].includes(operation)?'publish':'upload';
+   if(['corrections','review','publish','tour','translations'].includes(operation)!==Boolean(versionId))fail('NOT_FOUND');
+   const action=operation==='withdraw'?'withdraw':['corrections','review','publish','tour','translations'].includes(operation)?'publish':'upload';
    const actor=await auth.authorize({...request,action});
    if(operation==='uploads'){
     if(!storage||typeof storage.putQuarantine!=='function'||typeof storage.promoteQuarantine!=='function')fail('SERVICE_NOT_CONFIGURED');
@@ -207,6 +207,15 @@ export function createPublisherHandler({auth,repository,storage,expectedOrigin,p
     if(!Array.isArray(stepIds)||stepIds.length<1||stepIds.length>12||new Set(stepIds).size!==stepIds.length||
       stepIds.some(value=>!UUID.test(value)||!version.provisions.some(p=>p.id===value)))fail('TOUR_INVALID');
     await call('saveTourDraft',{actor,billId,versionId,stepIds,expectedCanonicalSha256:version.canonicalTextSha256});
+    return redirect(res,versionPath(billId,versionId));
+   }
+   if(operation==='translations'){
+    const version=await fetchVersion(actor,billId,versionId);
+    if(exactDigest(input.expectedCanonicalSha256)!==version.canonicalTextSha256)fail('VERSION_CONFLICT');
+    const language=string(input.language,{max:6});
+    if(!/^[a-z]{2,3}(?:-[A-Z]{2})?$/.test(language)||language==='en')fail('TRANSLATION_INVALID');
+    await call('saveTranslationDraft',{actor,billId,versionId,language,
+      text:string(input.text,{max:100000,trim:false}),expectedCanonicalSha256:version.canonicalTextSha256});
     return redirect(res,versionPath(billId,versionId));
    }
    if(operation==='review'){
