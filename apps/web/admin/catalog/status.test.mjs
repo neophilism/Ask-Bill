@@ -30,4 +30,17 @@ test('translation language cannot inject publisher markup',()=>{
  assert.doesNotMatch(html,/<script>/);
  assert.match(html,/&lt;script&gt;/);
 });
+test('failed official refresh offers scoped retry only to editors and owners',()=>{
+ const bill={id:'bill-1',title:'Review source',jurisdiction:'United States',versions:[],
+   imports:[{kind:'congress',state:'failed',jobStatus:'dead',errorCode:'SOURCE_UNAVAILABLE',
+     createdAt:'2026-10-18T00:00:00Z',identity:{congress:119,billType:'hr',billNumber:42}}]};
+ const owner=renderPublisherBill({context:{role:'owner',csrfToken:'safe-token',recentMfa:true},bill,importsAvailable:true});
+ assert.match(owner,/Retry this official source import/);
+ assert.match(owner,/name="csrfToken" value="safe-token"/);
+ assert.match(owner,/name="billNumber" value="42"/);
+ const viewer=renderPublisherBill({context:{role:'viewer',csrfToken:'safe-token',recentMfa:false},bill,importsAvailable:true});
+ assert.doesNotMatch(viewer,/Retry this official source import/);
+ const offline=renderPublisherBill({context:{role:'owner',csrfToken:'safe-token',recentMfa:true},bill,importsAvailable:false});
+ assert.doesNotMatch(offline,/Retry this official source import/);
+});
 
