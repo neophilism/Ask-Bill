@@ -104,6 +104,41 @@ test('durable publisher intake, exact release, corrections, and lease fences wit
       assert.equal(Number(metadata.byte_length),receipt.bytes);assert.equal(metadata.storage_key,receipt.key);
       const list=await workflow.getBill({actor:actor(),billId});assert.equal(list.imports[0].state,'completed');assert.equal(list.imports[0].jobStatus,'completed');
     });
+    await t.test('tour curation is private, source-pinned, MFA-gated and tenant-scoped',async()=>{
+      assert.equal((await workflow.getVersion({actor:actor('viewer'),billId,versionId})).tourDraft,null);
+      const stepIds=version.provisions.slice(0,2).map(p=>p.id),input={billId,versionId,stepIds,expectedCanonicalSha256:version.canonicalTextSha256};
+      await rejected(()=>workflow.saveTourDraft({actor:actor('viewer','publish'),...input}),'ACTION_FORBIDDEN');
+      await rejected(()=>workflow.saveTourDraft({actor:{...actor('owner','publish'),mfaVerifiedByTrustedServer:false},...input}),'MFA_REQUIRED');
+      await rejected(()=>workflow.saveTourDraft({actor:actor('owner','publish'),...input,expectedCanonicalSha256:'0'.repeat(64)}),'VERSION_CONFLICT');
+      await rejected(()=>workflow.saveTourDraft({actor:actor('owner','publish'),...input,stepIds:[randomUUID()]}),'TOUR_INVALID');
+      const saved=await workflow.saveTourDraft({actor:actor('owner','publish'),...input});assert.equal(saved.stepCount,2);
+      const visible=await workflow.getVersion({actor:actor('viewer'),billId,versionId});
+      assert.deepEqual(visible.tourDraft.stepIds,stepIds);assert.equal(visible.tourDraft.stale,false);
+      const client=await pool.connect();try{
+        await client.query('BEGIN');await client.query("SELECT set_config('ask_bill.publisher_id',$1,true)",[OTHER]);
+        const rows=await client.query('SELECT version_id FROM ask_bill.publisher_tour_drafts WHERE version_id=$1::uuid',[versionId]);
+        assert.equal(rows.rows.length,0);await client.query('ROLLBACK');
+      }finally{client.release();}
+    });
+    await t.test('translation drafts are private, source-pinned and stale after correction',async()=>{
+      const input={billId,versionId,language:'es',text:'Traducción privada de la fuente.',expectedCanonicalSha256:version.canonicalTextSha256};
+      await rejected(()=>workflow.saveTranslationDraft({actor:actor('viewer','publish'),...input}),'ACTION_FORBIDDEN');
+      await rejected(()=>workflow.saveTranslationDraft({actor:{...actor('editor','publish'),mfaVerifiedByTrustedServer:false},...input}),'MFA_REQUIRED');
+      await rejected(()=>workflow.saveTranslationDraft({actor:actor('editor','publish'),...input,expectedCanonicalSha256:'0'.repeat(64)}),'VERSION_CONFLICT');
+      await rejected(()=>workflow.saveTranslationDraft({actor:actor('editor','publish'),...input,language:'en'}),'TRANSLATION_INVALID');
+      await workflow.saveTranslationDraft({actor:actor('editor','publish'),...input});
+      const detail=await workflow.getVersion({actor:actor('viewer'),billId,versionId});
+      assert.equal(detail.translations[0].language,'es');
+      assert.equal(detail.translations[0].sourceCanonicalSha256,version.canonicalTextSha256);
+      assert.equal(detail.translations[0].text,undefined,'viewer receives provenance without draft text');
+      assert.equal((await workflow.getVersion({actor:actor('editor'),billId,versionId})).translations[0].text,input.text);
+      assert.equal((await workflow.getBill({actor:actor('viewer'),billId})).versions[0].translations[0].language,'es');
+      const client=await pool.connect();try{
+        await client.query('BEGIN');await client.query("SELECT set_config('ask_bill.publisher_id',$1,true)",[OTHER]);
+        assert.equal((await client.query('SELECT language FROM ask_bill.publisher_translation_drafts WHERE bill_id=$1::uuid',[billId])).rows.length,0);
+        await client.query('ROLLBACK');
+      }finally{client.release();}
+    });
     await t.test('review checks, exact canonical pin, MFA, original storage, and release compare-and-swap all gate publication',async()=>{
       await rejected(()=>workflow.reviewVersion({actor:{...actor('owner','publish'),mfaVerifiedByTrustedServer:false},billId,versionId,
         checks:PUBLISHER_REVIEW_CHECKS,expectedCanonicalSha256:version.canonicalTextSha256}),'MFA_REQUIRED');
@@ -142,6 +177,8 @@ test('durable publisher intake, exact release, corrections, and lease fences wit
       assert.equal(next.publication,'private');assert.equal(next.sourceComplete,false);assert.equal(next.indexStatus,'complete');
       assert.deepEqual(next.reviewChecks,[]);assert.equal(next.previousVersionId,versionId);assert.equal(next.rawByteSha256,original.rawByteSha256);
       assert.notEqual(next.canonicalTextSha256,original.canonicalTextSha256);assert.equal(next.canonicalText,proposal.newVersion.canonicalText);
+      assert.equal(next.translations[0].language,'es');
+      assert.notEqual(next.translations[0].sourceCanonicalSha256,next.canonicalTextSha256,'correction must expose stale translation source');
       assert.ok(next.provisions.every(p=>!original.provisions.some(old=>p.id===old.id)));
       assert.equal((await lookup({publisherId:PUB,billId,versionId})).canonicalSha256,original.canonicalTextSha256);
       assert.equal(await lookup({publisherId:PUB,billId,versionId:next.id}),null);
@@ -201,6 +238,8 @@ test('durable publisher intake, exact release, corrections, and lease fences wit
       const queued=await official.requestOfficialImport({actor:actor('owner','upload'),billId,identity}),job=await claim();assert.equal(job.jobId,queued.jobId);
       const event=await official.handleImportJob(scope(job));assert.equal(await complete(job,event),true);assert.equal(fetches,1);
       const imported=await official.getVersion({actor:actor(),billId,versionId:event.payload.versionId});
+      const request=(await official.getBill({actor:actor(),billId})).imports.find(item=>item.jobId===queued.jobId);
+      assert.deepEqual(request.identity,identity);
       assert.equal(imported.status,'unknown');assert.equal(imported.sourceComplete,false);assert.equal(imported.publication,'private');
       assert.match(imported.canonicalText,/Be it enacted by the Congress\./);assert.match(imported.canonicalText,/1\.\nProgram\./);
       const provenance=(await admin.query('SELECT origin,source_url FROM ask_bill.source_import_events WHERE publisher_id=$1::uuid AND version_id=$2::uuid',[PUB,imported.id])).rows[0];
@@ -269,3 +308,4 @@ test('durable publisher intake, exact release, corrections, and lease fences wit
     });
   }finally{await pool?.end();await admin.end();}
 });
+
