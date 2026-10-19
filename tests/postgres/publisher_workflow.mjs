@@ -175,6 +175,8 @@ test('durable publisher intake, exact release, corrections, and lease fences wit
       assert.equal(next.publication,'private');assert.equal(next.sourceComplete,false);assert.equal(next.indexStatus,'complete');
       assert.deepEqual(next.reviewChecks,[]);assert.equal(next.previousVersionId,versionId);assert.equal(next.rawByteSha256,original.rawByteSha256);
       assert.notEqual(next.canonicalTextSha256,original.canonicalTextSha256);assert.equal(next.canonicalText,proposal.newVersion.canonicalText);
+      assert.equal(next.translations[0].language,'es');
+      assert.notEqual(next.translations[0].sourceCanonicalSha256,next.canonicalTextSha256,'correction must expose stale translation source');
       assert.ok(next.provisions.every(p=>!original.provisions.some(old=>p.id===old.id)));
       assert.equal((await lookup({publisherId:PUB,billId,versionId})).canonicalSha256,original.canonicalTextSha256);
       assert.equal(await lookup({publisherId:PUB,billId,versionId:next.id}),null);
