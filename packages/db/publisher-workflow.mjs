@@ -354,17 +354,18 @@ export function createPublisherWorkflow({pool,publisherId,storage,congressClient
     },
     async getVersion({actor,billId,versionId}={}){
       billId=id(billId);versionId=id(versionId);
-      return authorized(actor,'view',async client=>{
+      return authorized(actor,'view',async(client,trusted)=>{
         const version=await versionRow(client,billId,versionId),source=await sourceProvisions(client,version),index=await indexRow(client,versionId);
         const reviewed=(await client.query(`SELECT checks FROM ask_bill.publisher_version_reviews WHERE publisher_id=$1::uuid AND version_id=$2::uuid
           AND canonical_sha256=$3 ORDER BY created_at DESC,id DESC LIMIT 1`,[publisher,versionId,version.canonical_text_sha256])).rows[0];
         const parsed=(await client.query('SELECT warnings,previous_version_id FROM ask_bill.publisher_version_extractions WHERE publisher_id=$1::uuid AND version_id=$2::uuid',[publisher,versionId])).rows[0];
         const tour=(await client.query('SELECT source_sha256,step_ids,updated_at FROM ask_bill.publisher_tour_drafts WHERE publisher_id=$1::uuid AND bill_id=$2::uuid AND version_id=$3::uuid',
           [publisher,billId,versionId])).rows[0];
-        const translations=(await client.query(`SELECT language,source_sha256,source_version_id,updated_at
+        const translations=(await client.query(`SELECT language,source_sha256,source_version_id,updated_at,draft_text
           FROM ask_bill.publisher_translation_drafts WHERE publisher_id=$1::uuid AND bill_id=$2::uuid
           ORDER BY language LIMIT 100`,[publisher,billId])).rows.map(r=>({language:r.language,
-          sourceCanonicalSha256:r.source_sha256,sourceVersionId:r.source_version_id,updatedAt:iso(r.updated_at)}));
+          sourceCanonicalSha256:r.source_sha256,sourceVersionId:r.source_version_id,updatedAt:iso(r.updated_at),
+          ...(trusted.role==='viewer'?{}:{text:r.draft_text})}));
         return {id:versionId,publisherId:publisher,billId,title:version.title,publication:version.publication,sourceComplete:version.source_complete,
           status:version.status,rawByteSha256:version.raw_byte_sha256,canonicalTextSha256:version.canonical_text_sha256,canonicalText:source.canonicalText,
           provisions:source.provisions.map(({id,heading,text})=>({id,heading,text})),reviewChecks:reviewed?.checks??[],indexStatus:index?.status??'missing',

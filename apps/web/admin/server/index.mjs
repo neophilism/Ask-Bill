@@ -53,11 +53,11 @@ async function bytes(req,max){
  if(declared!==undefined&&length!==Number(declared))fail('REQUEST_INVALID');
  return Buffer.concat(chunks);
 }
-async function fields(req,{upload=false}={}){
+async function fields(req,{upload=false,maxBytes=65536}={}){
  const type=req.headers['content-type']??'';let data;
  if(upload&&/^multipart\/form-data;\s*boundary=/i.test(type)){
   try{data=await new Response(await bytes(req,MAX_UPLOAD+65536),{headers:{'content-type':type}}).formData()}catch(error){if(error.code)throw error;fail('REQUEST_INVALID');}
- }else if(/^application\/x-www-form-urlencoded(?:;|$)/i.test(type))data=new URLSearchParams((await bytes(req,65536)).toString('utf8'));
+ }else if(/^application\/x-www-form-urlencoded(?:;|$)/i.test(type))data=new URLSearchParams((await bytes(req,maxBytes)).toString('utf8'));
  else fail('CONTENT_TYPE_REQUIRED');
  const entries=[...data.entries()];if(entries.length>24)fail('REQUEST_INVALID');
  const out={};for(const [name,value] of entries){
@@ -150,7 +150,7 @@ export function createPublisherHandler({auth,repository,storage,expectedOrigin,p
    if(req.method!=='POST')fail('METHOD_NOT_ALLOWED');
    const upload=url.pathname.endsWith('/uploads');
    if(upload&&context.role==='viewer')fail('ACTION_FORBIDDEN');
-   const input=await fields(req,{upload});
+   const input=await fields(req,{upload,maxBytes:url.pathname.endsWith('/translations')?400000:65536});
    const request={cookieHeader:req.headers.cookie,csrfToken:input.csrfToken,requestOrigin:req.headers.origin,method:'POST',publisherId:publisher};
    if(url.pathname==='/admin/auth/logout'){
     const result=await auth.logout(request);return redirect(res,'/admin',result.setCookies);

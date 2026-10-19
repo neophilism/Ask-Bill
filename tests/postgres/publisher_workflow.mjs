@@ -130,6 +130,8 @@ test('durable publisher intake, exact release, corrections, and lease fences wit
       const detail=await workflow.getVersion({actor:actor('viewer'),billId,versionId});
       assert.equal(detail.translations[0].language,'es');
       assert.equal(detail.translations[0].sourceCanonicalSha256,version.canonicalTextSha256);
+      assert.equal(detail.translations[0].text,undefined,'viewer receives provenance without draft text');
+      assert.equal((await workflow.getVersion({actor:actor('editor'),billId,versionId})).translations[0].text,input.text);
       assert.equal((await workflow.getBill({actor:actor('viewer'),billId})).versions[0].translations[0].language,'es');
       const client=await pool.connect();try{
         await client.query('BEGIN');await client.query("SELECT set_config('ask_bill.publisher_id',$1,true)",[OTHER]);

@@ -45,7 +45,7 @@ async function setup(t,{configured=true}={}){
   async createBill({actor,title,jurisdiction}){guard(actor);writes++;const b={id:randomUUID(),publisherId:P,title,jurisdiction,activeReleaseId:null};bills.set(b.id,b);return b;},
   async recordUpload({actor,billId,object,language}){const b=billFor(actor,billId);writes++;const raw=await storage.getPrivateSource({...object});const canonicalText=raw.content.toString('utf8'),versionId=randomUUID();
    versions.set(versionId,{id:versionId,billId,publisherId:P,title:b.title,language,publication:'private',sourceComplete:false,status:'draft',createdAt:new Date().toISOString(),rawByteSha256:object.sha256,canonicalTextSha256:hash(canonicalText),canonicalText,provisions:[{id:randomUUID(),heading:'Source text',text:canonicalText}],reviewChecks:[],indexStatus:'complete'});return {versionId};},
-  async getVersion({actor,billId,versionId}){return {...verFor(actor,billId,versionId),activeReleaseId:billFor(actor,billId).activeReleaseId,tourDraft:tours.get(versionId)??null,translations:[...translations.values()].filter(d=>d.billId===billId)};},
+  async getVersion({actor,billId,versionId}){return {...verFor(actor,billId,versionId),activeReleaseId:billFor(actor,billId).activeReleaseId,tourDraft:tours.get(versionId)??null,translations:[...translations.values()].filter(d=>d.billId===billId).map(d=>actor.role==='viewer'?{...d,text:undefined}:d)};},
   async saveTranslationDraft({actor,billId,versionId,language,text,expectedCanonicalSha256}){
    const v=verFor(actor,billId,versionId);assert.equal(actor.mfaVerifiedByTrustedServer,true);
    if(v.canonicalTextSha256!==expectedCanonicalSha256)error('VERSION_CONFLICT');
@@ -166,8 +166,10 @@ test('translation drafts remain private and show stale source after correction',
   version=f.versions.get(versionId),base='/admin/bills/'+billId+'/versions/'+versionId;
  const saved=await f.post(base+'/translations',{expectedCanonicalSha256:version.canonicalTextSha256,language:'es',text:'Texto traducido privado.'});
  assert.equal(saved.status,303);assert.match(await (await f.request(base)).text(),/Source matches this version/);
+ assert.match(await (await f.request(base)).text(),/Texto traducido privado/);
  assert.equal((await f.post(base+'/translations',{expectedCanonicalSha256:'f'.repeat(64),language:'fr',text:'Traduction'})).status,409);
  f.setRole('viewer');assert.equal((await f.post(base+'/translations',{expectedCanonicalSha256:version.canonicalTextSha256,language:'fr',text:'Traduction'})).status,403);
+ assert.doesNotMatch(await (await f.request(base)).text(),/Texto traducido privado/);
  f.setRole('owner');const correction=await f.post(base+'/corrections',{expectedCanonicalSha256:version.canonicalTextSha256,
   provisionId:version.provisions[0].id,expectedQuote:'Congress',replacement:'The Congress'});
  assert.equal(correction.status,303);const corrected=await f.request(correction.headers.get('location'));
