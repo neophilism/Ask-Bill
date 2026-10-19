@@ -4,7 +4,7 @@
   "roadmapVersion": 1,
   "planVerified": true,
   "plannedPrCount": 112,
-  "observedAt": "2026-10-17T16:07:32Z",
+  "observedAt": "2026-10-19T00:04:42Z",
   "approval": {
     "basis": "Owner explicitly directed the complete Ask Bill architecture and PR plan (16 October 2026) and installation of foundational commit.",
     "source": "docs/DEVELOPMENT_PLAN.md"
@@ -1994,7 +1994,9 @@
       "title": "Production topology and deformation mesh",
       "origin": "original",
       "prs": [],
-      "contributingPrs": [],
+      "contributingPrs": [
+        105
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-047"
@@ -2013,7 +2015,7 @@
         "Run geometry audits and render bent-limb, compressed-body and extreme-expression pose tests."
       ],
       "rollback": "Restore the last clean mesh and regenerate dependent exports.",
-      "implementationStatus": "not_started",
+      "implementationStatus": "in_progress",
       "operationalAcceptance": "not_run",
       "phase": "F4",
       "gate": "G4",
@@ -2249,7 +2251,9 @@
       "title": "Pointing presentation reading and social gestures",
       "origin": "original",
       "prs": [],
-      "contributingPrs": [102],
+      "contributingPrs": [
+        102
+      ],
       "priorEvidencePrs": [],
       "dependsOn": [
         "AB-050",
@@ -5884,6 +5888,18 @@
       "mergedAt": null,
       "closedAt": null,
       "draft": false
+    },
+    {
+      "id": 105,
+      "number": 105,
+      "title": "AB-048: Production topology and deformation mesh",
+      "state": "open",
+      "url": "https://github.com/neophilism/Ask-Bill/pull/105",
+      "createdAt": "2026-10-18T21:41:50Z",
+      "updatedAt": "2026-10-19T00:01:21Z",
+      "mergedAt": null,
+      "closedAt": null,
+      "draft": true
     }
   ]
 }
