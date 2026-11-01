@@ -14,8 +14,9 @@ const ORIGINAL_EXTENSIONS=Object.freeze({'text/plain':'txt','text/markdown':'md'
 const fail=code=>{const error=new Error(code);error.code=code;throw error;};
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const isObject=value=>value&&typeof value==='object'&&!Array.isArray(value);
-const statuses={ORIGIN_FORBIDDEN:403,CSRF_FORBIDDEN:403,ACTION_FORBIDDEN:403,MFA_REQUIRED:403,PUBLISHER_FORBIDDEN:403,MEMBERSHIP_REVOKED:403,UPLOAD_LIMIT:413,REQUEST_TOO_LARGE:413,NOT_FOUND:404,VERSION_CONFLICT:409,QUOTE_MISMATCH:409,QUOTE_AMBIGUOUS:409,METHOD_NOT_ALLOWED:405,AUTH_RATE_LIMITED:429};
+const statuses={TOUR_SOURCE_INVALID:409,ORIGIN_FORBIDDEN:403,CSRF_FORBIDDEN:403,ACTION_FORBIDDEN:403,MFA_REQUIRED:403,PUBLISHER_FORBIDDEN:403,MEMBERSHIP_REVOKED:403,UPLOAD_LIMIT:413,REQUEST_TOO_LARGE:413,NOT_FOUND:404,VERSION_CONFLICT:409,QUOTE_MISMATCH:409,QUOTE_AMBIGUOUS:409,METHOD_NOT_ALLOWED:405,AUTH_RATE_LIMITED:429};
 const messages={
+ TOUR_SOURCE_INVALID:'The saved tour no longer matches this source. Review and save its selected passages before publishing.',
  MFA_REQUIRED:'A fresh multi-factor sign-in is required for this action. Return to the source page and verify your identity.',
  ACTION_FORBIDDEN:'Your publisher role does not permit this action.',
  ORIGIN_FORBIDDEN:'This request did not come from the publisher website. Open the publisher page and try again.',
@@ -53,16 +54,16 @@ async function bytes(req,max){
  if(declared!==undefined&&length!==Number(declared))fail('REQUEST_INVALID');
  return Buffer.concat(chunks);
 }
-async function fields(req,{upload=false}={}){
+async function fields(req,{upload=false,maxBytes=65536}={}){
  const type=req.headers['content-type']??'';let data;
  if(upload&&/^multipart\/form-data;\s*boundary=/i.test(type)){
   try{data=await new Response(await bytes(req,MAX_UPLOAD+65536),{headers:{'content-type':type}}).formData()}catch(error){if(error.code)throw error;fail('REQUEST_INVALID');}
- }else if(/^application\/x-www-form-urlencoded(?:;|$)/i.test(type))data=new URLSearchParams((await bytes(req,65536)).toString('utf8'));
+ }else if(/^application\/x-www-form-urlencoded(?:;|$)/i.test(type))data=new URLSearchParams((await bytes(req,maxBytes)).toString('utf8'));
  else fail('CONTENT_TYPE_REQUIRED');
  const entries=[...data.entries()];if(entries.length>24)fail('REQUEST_INVALID');
  const out={};for(const [name,value] of entries){
   if(!/^[A-Za-z][A-Za-z0-9]{0,50}$/.test(name))fail('REQUEST_INVALID');
-  if(name==='checks'){out.checks??=[];out.checks.push(value);continue;}
+  if(name==='checks'||name==='stepIds'){out[name]??=[];out[name].push(value);continue;}
   if(Object.hasOwn(out,name))fail('REQUEST_INVALID');out[name]=value;
  }
  return out;
@@ -150,7 +151,7 @@ export function createPublisherHandler({auth,repository,storage,expectedOrigin,p
    if(req.method!=='POST')fail('METHOD_NOT_ALLOWED');
    const upload=url.pathname.endsWith('/uploads');
    if(upload&&context.role==='viewer')fail('ACTION_FORBIDDEN');
-   const input=await fields(req,{upload});
+   const input=await fields(req,{upload,maxBytes:url.pathname.endsWith('/translations')?400000:65536});
    const request={cookieHeader:req.headers.cookie,csrfToken:input.csrfToken,requestOrigin:req.headers.origin,method:'POST',publisherId:publisher};
    if(url.pathname==='/admin/auth/logout'){
     const result=await auth.logout(request);return redirect(res,'/admin',result.setCookies);
@@ -160,11 +161,11 @@ export function createPublisherHandler({auth,repository,storage,expectedOrigin,p
     const created=await call('createBill',{actor,title:string(input.title),jurisdiction:string(input.jurisdiction,{min:2,max:100})});
     return redirect(res,billPath(id(created?.id)));
    }
-   const route=url.pathname.match(/^\/admin\/bills\/([a-f0-9-]{36})(?:\/versions\/([a-f0-9-]{36}))?\/(uploads|imports|corrections|review|publish|withdraw)$/i);
+   const route=url.pathname.match(/^\/admin\/bills\/([a-f0-9-]{36})(?:\/versions\/([a-f0-9-]{36}))?\/(uploads|imports|corrections|review|publish|tour|translations|withdraw)$/i);
    if(!route)fail('NOT_FOUND');
    const billId=id(route[1]),versionId=route[2]?id(route[2]):null,operation=route[3];
-   if(['corrections','review','publish'].includes(operation)!==Boolean(versionId))fail('NOT_FOUND');
-   const action=operation==='withdraw'?'withdraw':['corrections','review','publish'].includes(operation)?'publish':'upload';
+   if(['corrections','review','publish','tour','translations'].includes(operation)!==Boolean(versionId))fail('NOT_FOUND');
+   const action=operation==='withdraw'?'withdraw':['corrections','review','publish','tour','translations'].includes(operation)?'publish':'upload';
    const actor=await auth.authorize({...request,action});
    if(operation==='uploads'){
     if(!storage||typeof storage.putQuarantine!=='function'||typeof storage.promoteQuarantine!=='function')fail('SERVICE_NOT_CONFIGURED');
@@ -199,6 +200,24 @@ export function createPublisherHandler({auth,repository,storage,expectedOrigin,p
     const proposal=prepareExtractionCorrection({publisherId:publisher,source:{publisherId:publisher,billId,versionId,rawByteSha256:version.rawByteSha256,canonicalSha256:version.canonicalTextSha256,publication:version.publication,text:version.canonicalText,legalStatus:version.status},versionId,newVersionId:randomUUID(),provisionId,oldText:version.canonicalText,expectedQuote,start,end:start+Array.from(expectedQuote).length,replacement,actor});
     const result=await call('saveCorrection',{actor,billId,proposal});
     return redirect(res,versionPath(billId,id(result?.versionId??proposal.newVersion.id)));
+   }
+   if(operation==='tour'){
+    const version=await fetchVersion(actor,billId,versionId);
+    if(exactDigest(input.expectedCanonicalSha256)!==version.canonicalTextSha256)fail('VERSION_CONFLICT');
+    const stepIds=input.stepIds;
+    if(!Array.isArray(stepIds)||stepIds.length<1||stepIds.length>12||new Set(stepIds).size!==stepIds.length||
+      stepIds.some(value=>!UUID.test(value)||!version.provisions.some(p=>p.id===value)))fail('TOUR_INVALID');
+    await call('saveTourDraft',{actor,billId,versionId,stepIds,expectedCanonicalSha256:version.canonicalTextSha256});
+    return redirect(res,versionPath(billId,versionId));
+   }
+   if(operation==='translations'){
+    const version=await fetchVersion(actor,billId,versionId);
+    if(exactDigest(input.expectedCanonicalSha256)!==version.canonicalTextSha256)fail('VERSION_CONFLICT');
+    const language=string(input.language,{max:6});
+    if(!/^[a-z]{2,3}(?:-[A-Z]{2})?$/.test(language)||language===version.language)fail('TRANSLATION_INVALID');
+    await call('saveTranslationDraft',{actor,billId,versionId,language,
+      text:string(input.text,{max:100000,trim:false}),expectedCanonicalSha256:version.canonicalTextSha256});
+    return redirect(res,versionPath(billId,versionId));
    }
    if(operation==='review'){
     if(!Array.isArray(input.checks)||input.checks.length!==6||new Set(input.checks).size!==6||input.checks.some(c=>!Object.hasOwn(REVIEW_CHECKS,c)))fail('REVIEW_INCOMPLETE');

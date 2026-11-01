@@ -7,14 +7,15 @@ import {createSourceCandidate,privateSourceObjectKey,recordSourceObjectQuery,
   findSourceObjectQuery,assertMatchingStoredObject,recordSourceEventQuery} from '../content/provenance/index.mjs';
 import {buildSearchGeneration} from '../content/search/index.mjs';
 import {planReviewedRelease} from '../content/releases/index.mjs';
+import {PUBLISHER_REVIEW_CHECKS,completePublisherReview} from '../content/releases/review-checks.mjs';
+export {PUBLISHER_REVIEW_CHECKS};
+import {snapshotTourSteps} from '../content/releases/tour-selection.mjs';
 
 const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
 const HEX=/^[a-f0-9]{64}$/,MAX_BYTES=25*1024*1024,MAX_TEXT=1500000;
 const MIME=new Set(['text/plain','text/markdown','application/xml','text/xml','application/pdf',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document']);
 const CANON='reader-canon-v1';
-export const PUBLISHER_REVIEW_CHECKS=Object.freeze(['source_complete','extraction_verified','citations_exact',
-  'exceptions_reviewed','index_complete','rights_verified']);
 export class PublisherWorkflowError extends Error {
   constructor(code){super(code);this.name='PublisherWorkflowError';this.code=code;}
 }
@@ -49,8 +50,7 @@ function extraction(value){
     provisions,warnings:[...value.warnings]};
 }
 function reviewChecks(value){
-  if(!Array.isArray(value)||value.length!==6||new Set(value).size!==6||
-    value.some(x=>!PUBLISHER_REVIEW_CHECKS.includes(x)))fail('REVIEW_INCOMPLETE');
+  if(!completePublisherReview(value))fail('REVIEW_INCOMPLETE');
   return [...PUBLISHER_REVIEW_CHECKS];
 }
 function actorInput(actor,publisherId,action){
@@ -306,20 +306,30 @@ export function createPublisherWorkflow({pool,publisherId,storage,congressClient
       return authorized(actor,'view',async client=>{
         const bill=await billRow(client,billId);
         const rows=(await client.query(`SELECT v.id,v.publication,v.source_complete,v.status,v.canonical_text_sha256,v.created_at,
-          (SELECT g.status FROM ask_bill.search_active a JOIN ask_bill.search_generations g ON g.publisher_id=a.publisher_id
+          (SELECT CASE WHEN g.source_sha256=v.canonical_text_sha256 THEN g.status ELSE 'stale' END FROM ask_bill.search_active a JOIN ask_bill.search_generations g ON g.publisher_id=a.publisher_id
             AND g.version_id=a.version_id AND g.id=a.generation_id WHERE a.publisher_id=v.publisher_id AND a.version_id=v.id) AS index_status,
           (SELECT r.checks FROM ask_bill.publisher_version_reviews r WHERE r.publisher_id=v.publisher_id AND r.version_id=v.id
-            AND r.canonical_sha256=v.canonical_text_sha256 ORDER BY r.created_at DESC,r.id DESC LIMIT 1) AS review_checks
+            AND r.canonical_sha256=v.canonical_text_sha256 ORDER BY r.created_at DESC,r.id DESC LIMIT 1) AS review_checks,
+          (SELECT e.warnings FROM ask_bill.publisher_version_extractions e WHERE e.publisher_id=v.publisher_id AND e.version_id=v.id) AS warnings
           FROM ask_bill.bill_versions v WHERE v.publisher_id=$1::uuid AND v.bill_id=$2::uuid ORDER BY v.created_at DESC,v.id LIMIT 501`,[publisher,billId])).rows;
         if(rows.length>500)fail('RESULT_LIMIT');
-        const requests=(await client.query(`SELECT r.id,r.job_id,r.kind,r.state,r.version_id,r.error_code,r.created_at,j.status AS job_status
+        const requests=(await client.query(`SELECT r.id,r.job_id,r.kind,r.state,r.version_id,r.error_code,r.created_at,
+          CASE WHEN r.kind='congress' THEN r.payload ELSE NULL END AS source_identity,j.status AS job_status
           FROM ask_bill.publisher_source_requests r JOIN ask_bill.jobs j ON j.publisher_id=r.publisher_id AND j.id=r.job_id
           WHERE r.publisher_id=$1::uuid AND r.bill_id=$2::uuid ORDER BY r.created_at DESC,r.id LIMIT 100`,[publisher,billId])).rows;
+        const translations=(await client.query(`SELECT language,source_sha256,source_version_id,updated_at
+          FROM ask_bill.publisher_translation_drafts WHERE publisher_id=$1::uuid AND bill_id=$2::uuid
+          ORDER BY language LIMIT 100`,[publisher,billId])).rows.map(r=>({language:r.language,
+          sourceCanonicalSha256:r.source_sha256,sourceVersionId:r.source_version_id,updatedAt:iso(r.updated_at)}));
         return {id:billId,publisherId:publisher,title:bill.title,jurisdiction:bill.jurisdiction,activeReleaseId:await activeRelease(client,billId),
           versions:rows.map(r=>({id:r.id,publication:r.publication,sourceComplete:r.source_complete,status:r.status,
-            canonicalTextSha256:r.canonical_text_sha256,createdAt:iso(r.created_at),indexStatus:r.index_status??'missing',reviewChecks:r.review_checks??[],errors:[]})),
-          imports:requests.map(r=>({id:r.id,jobId:r.job_id,kind:r.kind,state:r.state,jobStatus:r.job_status,versionId:r.version_id,
-            errorCode:r.error_code,createdAt:iso(r.created_at)}))};
+            canonicalTextSha256:r.canonical_text_sha256,createdAt:iso(r.created_at),indexStatus:r.index_status??'missing',reviewChecks:r.review_checks??[],warnings:r.warnings??[],errors:[],translations})),
+          imports:requests.map(r=>{
+            let identity=null;
+            if(r.kind==='congress')try{identity=congressBillIdentity(r.source_identity);}catch{ /* corrupt rows have no retry shortcut */ }
+            return {id:r.id,jobId:r.job_id,kind:r.kind,state:r.state,jobStatus:r.job_status,versionId:r.version_id,
+              errorCode:r.error_code,createdAt:iso(r.created_at),identity};
+          })};
       });
     },
     async createBill({actor,title,jurisdiction}={}){
@@ -344,15 +354,62 @@ export function createPublisherWorkflow({pool,publisherId,storage,congressClient
     },
     async getVersion({actor,billId,versionId}={}){
       billId=id(billId);versionId=id(versionId);
-      return authorized(actor,'view',async client=>{
+      return authorized(actor,'view',async(client,trusted)=>{
         const version=await versionRow(client,billId,versionId),source=await sourceProvisions(client,version),index=await indexRow(client,versionId);
         const reviewed=(await client.query(`SELECT checks FROM ask_bill.publisher_version_reviews WHERE publisher_id=$1::uuid AND version_id=$2::uuid
           AND canonical_sha256=$3 ORDER BY created_at DESC,id DESC LIMIT 1`,[publisher,versionId,version.canonical_text_sha256])).rows[0];
         const parsed=(await client.query('SELECT warnings,previous_version_id FROM ask_bill.publisher_version_extractions WHERE publisher_id=$1::uuid AND version_id=$2::uuid',[publisher,versionId])).rows[0];
-        return {id:versionId,publisherId:publisher,billId,title:version.title,publication:version.publication,sourceComplete:version.source_complete,
+        const tour=(await client.query('SELECT source_sha256,step_ids,updated_at FROM ask_bill.publisher_tour_drafts WHERE publisher_id=$1::uuid AND bill_id=$2::uuid AND version_id=$3::uuid',
+          [publisher,billId,versionId])).rows[0];
+        const translations=(await client.query(`SELECT language,source_sha256,source_version_id,updated_at,draft_text
+          FROM ask_bill.publisher_translation_drafts WHERE publisher_id=$1::uuid AND bill_id=$2::uuid
+          ORDER BY language LIMIT 100`,[publisher,billId])).rows.map(r=>({language:r.language,
+          sourceCanonicalSha256:r.source_sha256,sourceVersionId:r.source_version_id,updatedAt:iso(r.updated_at),
+          ...(trusted.role==='viewer'?{}:{text:r.draft_text})}));
+        return {id:versionId,publisherId:publisher,billId,title:version.title,language:version.language,publication:version.publication,sourceComplete:version.source_complete,
           status:version.status,rawByteSha256:version.raw_byte_sha256,canonicalTextSha256:version.canonical_text_sha256,canonicalText:source.canonicalText,
-          provisions:source.provisions.map(({id,heading,text})=>({id,heading,text})),reviewChecks:reviewed?.checks??[],indexStatus:index?.status??'missing',
-          activeReleaseId:await activeRelease(client,billId),warnings:parsed?.warnings??[],previousVersionId:parsed?.previous_version_id??null};
+          provisions:source.provisions.map(({id,heading,text})=>({id,heading,text})),reviewChecks:reviewed?.checks??[],indexStatus:index?.source_sha256===version.canonical_text_sha256?index.status:index?'stale':'missing',
+          activeReleaseId:await activeRelease(client,billId),warnings:parsed?.warnings??[],errors:[],previousVersionId:parsed?.previous_version_id??null,
+          translations,tourDraft:tour?{sourceSha256:tour.source_sha256,stepIds:tour.step_ids,
+            stale:tour.source_sha256!==version.canonical_text_sha256,updatedAt:iso(tour.updated_at)}:null};
+      });
+    },
+    async saveTranslationDraft({actor,billId,versionId,language,text,expectedCanonicalSha256}={}){
+      billId=id(billId);versionId=id(versionId);
+      if(typeof language!=='string'||! /^[a-z]{2,3}(?:-[A-Z]{2})?$/.test(language)||
+        !clean(text,1,100000)||!text.trim()||Buffer.byteLength(text)>100000||!HEX.test(expectedCanonicalSha256??''))fail('TRANSLATION_INVALID');
+      return authorized(actor,'publish',async(client,trusted)=>{
+        const version=await versionRow(client,billId,versionId,{lock:true});
+        if(version.canonical_text_sha256!==expectedCanonicalSha256)fail('VERSION_CONFLICT');
+        if(language===version.language)fail('TRANSLATION_INVALID');
+        await client.query(`INSERT INTO ask_bill.publisher_translation_drafts
+          (publisher_id,bill_id,language,source_version_id,source_sha256,draft_text,updated_by)
+          VALUES($1::uuid,$2::uuid,$3,$4::uuid,$5,$6,$7::uuid)
+          ON CONFLICT (publisher_id,bill_id,language) DO UPDATE SET source_version_id=EXCLUDED.source_version_id,
+            source_sha256=EXCLUDED.source_sha256,draft_text=EXCLUDED.draft_text,
+            updated_by=EXCLUDED.updated_by,updated_at=clock_timestamp()`,
+          [publisher,billId,language,versionId,expectedCanonicalSha256,text,trusted.userId]);
+        await audit(client,trusted.userId,'translation.draft_saved',billId,{versionId,language,sourceSha256:expectedCanonicalSha256});
+        return {billId,versionId,language,sourceCanonicalSha256:expectedCanonicalSha256};
+      });
+    },
+    async saveTourDraft({actor,billId,versionId,stepIds,expectedCanonicalSha256}={}){
+      billId=id(billId);versionId=id(versionId);
+      if(!HEX.test(expectedCanonicalSha256??'')||!Array.isArray(stepIds)||stepIds.length<1||stepIds.length>12||
+        new Set(stepIds).size!==stepIds.length||stepIds.some(value=>!UUID.test(value)))fail('TOUR_INVALID');
+      return authorized(actor,'publish',async(client,trusted)=>{
+        const version=await versionRow(client,billId,versionId,{lock:true});
+        if(version.canonical_text_sha256!==expectedCanonicalSha256)fail('VERSION_CONFLICT');
+        const source=await sourceProvisions(client,version),allowed=new Set(source.provisions.map(p=>p.id));
+        if(stepIds.some(value=>!allowed.has(value)))fail('TOUR_INVALID');
+        await client.query(`INSERT INTO ask_bill.publisher_tour_drafts
+          (publisher_id,bill_id,version_id,source_sha256,step_ids,updated_by)
+          VALUES($1::uuid,$2::uuid,$3::uuid,$4,$5::jsonb,$6::uuid)
+          ON CONFLICT (publisher_id,version_id) DO UPDATE SET source_sha256=EXCLUDED.source_sha256,
+          step_ids=EXCLUDED.step_ids,updated_by=EXCLUDED.updated_by,updated_at=now()`,
+          [publisher,billId,versionId,expectedCanonicalSha256,JSON.stringify(stepIds),trusted.userId]);
+        await audit(client,trusted.userId,'tour.draft.saved',versionId,{billId,sourceSha256:expectedCanonicalSha256,stepCount:stepIds.length});
+        return {saved:true,versionId,stepCount:stepIds.length};
       });
     },
     async getOriginal({actor,billId,versionId}={}){
@@ -399,11 +456,16 @@ export function createPublisherWorkflow({pool,publisherId,storage,congressClient
         if(!review)fail('SOURCE_NOT_REVIEWED');
         if(index?.status!=='complete'||index.source_sha256!==version.canonical_text_sha256)fail('PUBLICATION_NOT_READY');
         await verifyStored({sha256:original.sha256,key:original.storage_key,bytes:Number(original.byte_length),mime:original.mime_type});
+        const draft=(await client.query('SELECT source_sha256,step_ids FROM ask_bill.publisher_tour_drafts WHERE publisher_id=$1::uuid AND bill_id=$2::uuid AND version_id=$3::uuid',
+          [publisher,billId,versionId])).rows[0];
+        let tourStepIds;
+        try{tourStepIds=snapshotTourSteps(draft,{versionId,canonicalSha256:version.canonical_text_sha256,provisions:source.provisions});}
+        catch{fail('TOUR_SOURCE_INVALID');}
         const publishedAt=version.published_at?iso(version.published_at):timestamp();
         if(Date.parse(publishedAt)<Date.parse(version.retrieved_at))fail('CLOCK_INVALID');
         const pack={schema:'ask-bill-reader-v1',canonicalizationVersion:CANON,publisherId:publisher,billId,versionId,
           title:version.title,jurisdiction:version.jurisdiction,language:version.language,status:version.status,publication:'published',sourceComplete:true,
-          retrievedAt:iso(version.retrieved_at),publishedAt,canonicalSha256:version.canonical_text_sha256,
+          retrievedAt:iso(version.retrieved_at),publishedAt,canonicalSha256:version.canonical_text_sha256,...(tourStepIds?{tourStepIds}:{}),
           provisions:source.provisions.map(p=>({id:'s'+p.id.replace(/-/g,''),heading:p.heading,text:p.text,sha256:sha(p.text)}))};
         const bytes=Buffer.from(JSON.stringify(pack)),packSha256=sha(bytes);
         async function storePack(content,digest){
@@ -560,3 +622,5 @@ export function createPublisherWorkflow({pool,publisherId,storage,congressClient
     }
   });
 }
+
+

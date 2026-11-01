@@ -19,6 +19,7 @@ forms, source reading and version navigation work without JavaScript.
 | Original source upload | `POST /admin/bills/:billId/uploads` | Editor or owner |
 | Official Congress import | `POST /admin/bills/:billId/imports` | Editor or owner |
 | Extraction correction | `POST /admin/bills/:billId/versions/:versionId/corrections` | Editor or owner with current MFA |
+| Private source-only tour draft | `POST /admin/bills/:billId/versions/:versionId/tour` | Editor or owner with current MFA |
 | Record publication review | `POST /admin/bills/:billId/versions/:versionId/review` | Editor or owner with current MFA |
 | Activate reviewed release | `POST /admin/bills/:billId/versions/:versionId/publish` | Editor or owner with current MFA |
 | Withdraw active release | `POST /admin/bills/:billId/withdraw` | Owner with current MFA |
@@ -58,6 +59,19 @@ are explicit publisher attestations; source storage, current hashes and search
 readiness must also pass the durable publishing service. Activation carries the
 expected previous release ID so concurrent publisher changes fail as conflicts.
 
+Tour curation saves one private, source-hash-pinned ordered selection of up to 12
+existing provision IDs per version. The server and PostgreSQL workflow both
+verify current membership, MFA, source hash and provision membership. This draft
+does not immediately change the public source-only tour. Explicit publication snapshots its verified source IDs into the immutable public pack; the public tour loads only that published, hash-bound snapshot, never the private draft. Later edits require explicit publication again. A correction creates a
+new source version and requires a new tour selection. Catalog pack warnings and
+stale translation source hashes are informational and never authorize publish.
+Editors and owners can save private translation drafts pinned to the exact source
+digest; the catalog compares each draft with every version so a correction shows
+the draft as stale. Draft text is tenant scoped and is never served to public
+readers or included in a release pack. Migration 011 adds this private store.
+Failed official imports can be retried by an editor or owner using the same
+validated Congress identity; each retry is a new audited request.
+
 ## Verification and configuration
 
 - `node tests/publisher-http.test.mjs` exercises actual HTTP, cryptographic OIDC
@@ -77,3 +91,7 @@ Live activation still requires a configured identity provider, explicit
 publisher enrollment, private object store, durable database and validated
 credentialed round trips. Local adapter or browser tests do not constitute
 evidence that those external services are connected.
+
+
+Published tour metadata is optional: legacy releases keep the default source-order introduction. Missing, corrupt, foreign or stale optional tour metadata cannot hide independently verified source text. Neither tour selection nor translation drafts grant publication authority. Review, current MFA, source integrity, membership and release compare-and-swap remain required.
+

@@ -51,3 +51,17 @@ test('tenant mismatches fail closed and never expose the private publication',as
  try{const res=await fetch('http://127.0.0.1:'+server.address().port+path+'/tour/1');assert.equal(res.status,404);assert.equal(await res.text(),'Not found');}
  finally{await new Promise(ok=>server.close(ok));}
 });
+
+test('only published verified selections curate the tour; missing or foreign IDs are rejected',()=>{
+ const source=pack();
+ const selected=createSourceOnlyTour({pack:{...source,tourStepIds:['sec-2']}});
+ assert.equal(selected.publisherCurated,true);
+ assert.equal(selected.steps.length,1);
+ assert.equal(selected.steps[0].provisionId,'sec-2');
+ assert.equal(selected.steps[0].quote,texts[1]);
+ assert.equal(selected.tourHasMoreSections,true);
+ for(const tourStepIds of [[],['foreign'],['sec-1','sec-1'],Array(1)]){
+  assert.throws(()=>createSourceOnlyTour({pack:{...source,tourStepIds}}),SourceTourError);
+ }
+ assert.equal(createSourceOnlyTour({pack:source}).publisherCurated,false);
+});

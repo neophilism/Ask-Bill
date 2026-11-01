@@ -44,7 +44,8 @@ test('only active released complete versions are fetched in tenant-bound read-on
  assert.deepEqual(pool.calls[3].params,[publisher,version]);
  assert.equal(pool.calls[3].sql,PUBLIC_PROVISION_BUDGET_SQL);
  assert.equal(pool.calls[4].sql,PUBLIC_PROVISIONS_SQL);
- assert.equal(pool.calls[5].sql,'COMMIT');
+ assert.equal(pool.calls.at(-1).sql,'COMMIT');
+ assert.ok(pool.calls.every(call=>!call.sql.includes('publisher_tour_drafts')),'public lookup must never consult a private tour draft');
  assert.equal(pool.state.released,1);
  assert.match(ACTIVE_RELEASE_SQL,/JOIN ask_bill.release_active|FROM ask_bill.release_active/);
  assert.match(ACTIVE_RELEASE_SQL,/source_complete=true/);

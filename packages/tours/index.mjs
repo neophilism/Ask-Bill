@@ -1,5 +1,6 @@
 /** AB-089: exact, version-pinned source-reading tour. No AI, speech or animation. */
 import {createHash} from 'node:crypto';
+import {validatedPublishedTourSteps} from '../content/releases/tour-selection.mjs';
 import {validatePublishedReaderPack,publicBillLink} from '../ui/reader/index.mjs';
 export class SourceTourError extends Error{constructor(code){super(code);this.code=code;this.name='SourceTourError';}}
 const deny=code=>{throw new SourceTourError(code)};
@@ -10,7 +11,10 @@ const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&g
 export function createSourceOnlyTour({pack,maxSteps=12}={}){
  let p;try{p=validatePublishedReaderPack(pack)}catch{deny('PUBLISHED_SOURCE_REQUIRED')}
  if(!Number.isSafeInteger(maxSteps)||maxSteps<1||maxSteps>20)deny('INVALID_TOUR_BUDGET');
- const selected=p.provisions.slice(0,maxSteps);
+ const curated=pack.tourStepIds===undefined?undefined:validatedPublishedTourSteps(pack.tourStepIds,p.provisions);
+ if(pack.tourStepIds!==undefined&&!curated)deny('PUBLISHED_TOUR_INVALID');
+ const byId=new Map(p.provisions.map(section=>[section.id,section]));
+ const selected=curated?curated.slice(0,maxSteps).map(id=>byId.get(id)):p.provisions.slice(0,maxSteps);
  const steps=selected.map((s,i)=>{
   const points=cp(s.text),excerpt=points.slice(0,250).join('');
   return Object.freeze({index:i+1,versionId:p.versionId,provisionId:s.id,
@@ -22,7 +26,7 @@ export function createSourceOnlyTour({pack,maxSteps=12}={}){
   publisherId:p.publisherId,title:p.title,status:p.status,
   sourceSha256:p.canonicalSha256,totalSections:p.provisions.length,
   steps:Object.freeze(steps),tourHasMoreSections:p.provisions.length>steps.length,
-  sourceOnly:true,verifiedSourceOnly:true,audioEnabled:false,modelEnabled:false});
+  publisherCurated:!!curated,sourceOnly:true,verifiedSourceOnly:true,audioEnabled:false,modelEnabled:false});
  issued.add(result);
  return result;
 }

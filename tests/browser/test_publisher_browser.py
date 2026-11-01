@@ -38,7 +38,8 @@ def run():
                 assert page.get_by_role("heading", name="Publication review", exact=True).is_visible()
                 assert page.get_by_label("Exact passage to correct").is_visible()
                 assert page.get_by_label("Correct replacement").is_visible()
-                assert page.get_by_role("checkbox").count() == 7
+                assert page.get_by_role("heading", name="Source-only tour draft").is_visible()
+                assert page.get_by_role("checkbox").count() == 8
                 size = page.evaluate("({width: innerWidth, scroll: document.documentElement.scrollWidth})")
                 assert size["scroll"] <= size["width"] + 1, (width, size)
                 assert not errors, errors
@@ -72,3 +73,4 @@ def run():
 
 if __name__ == "__main__":
     run()
+

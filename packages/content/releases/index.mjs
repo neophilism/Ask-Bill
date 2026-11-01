@@ -1,10 +1,10 @@
 /** AB-024: review-gated, immutable release candidate plans. No public storage is written. */
 import {createHash} from 'node:crypto';
+import {completePublisherReview} from './review-checks.mjs';
 export class ReleaseError extends Error{constructor(code){super(code);this.name='ReleaseError';this.code=code;}}
 const fail=c=>{throw new ReleaseError(c)};
 const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
 const hex=/^[a-f0-9]{64}$/,hash=t=>createHash('sha256').update(t).digest('hex');
-const checks=new Set(['source_complete','extraction_verified','citations_exact','exceptions_reviewed','index_complete','rights_verified']);
 const freeze=o=>Object.freeze(o);
 export function planReviewedRelease({publisherId,version,provenance,index,review,assets}={}){
  if(typeof publisherId!=='string'||!uuid.test(publisherId)||!version||
@@ -19,8 +19,7 @@ export function planReviewedRelease({publisherId,version,provenance,index,review
    index.activated!==true)fail('INDEX_NOT_COMPLETE');
  if(!review||review.publisherId!==publisherId||review.versionId!==version.id||
    !uuid.test(review.reviewerId)||!hex.test(review.reviewSha256)||
-   !Array.isArray(review.checks)||review.checks.length!==checks.size||
-   new Set(review.checks).size!==checks.size||review.checks.some(x=>!checks.has(x))||
+   !completePublisherReview(review.checks)||
    review.mfaVerifiedByTrustedServer!==true)fail('REVIEW_NOT_APPROVED');
  if(!assets||assets.scope!=='public-packs'||assets.publisherId!==publisherId||
    assets.versionId!==version.id||!hex.test(assets.manifestSha256)||
@@ -43,3 +42,4 @@ export function assertNoPartialPublication({planned,uploaded,activePointer}={}){
     activePointer.publisherId!==planned.manifest.publisherId)return freeze({state:'not_published',reason:'ATOMIC_POINTER_NOT_VERIFIED'});
  return freeze({state:'activation_verified',releaseHash:planned.releaseHash,versionId:planned.manifest.versionId});
 }
+

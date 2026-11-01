@@ -4,6 +4,7 @@
  * No production connection or publisher is configured in this package.
  */
 import {createHash} from 'node:crypto';
+import {loadPublishedTourSteps} from './public-tour.mjs';
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const DIGEST=/^[a-f0-9]{64}$/;
 const hash=t=>createHash('sha256').update(t,'utf8').digest('hex');
@@ -108,6 +109,8 @@ export function createActiveReleaseLookup({pool,publisherId}={}){
      retrievedAt:iso(row.retrieved_at),publishedAt:iso(row.published_at),
      canonicalSha256:row.canonical_text_sha256,provisions
    };
+   const tourStepIds=await loadPublishedTourSteps(client,pack);
+   if(tourStepIds)pack.tourStepIds=tourStepIds;
    await client.query('COMMIT');
    return pack;
   }catch{

@@ -14,7 +14,7 @@ const jwk={...publicKey.export({format:'jwk'}),kid:'fixture-key',alg:'RS256',use
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const error=code=>{const e=new Error(code);e.code=code;throw e;};
 async function setup(t,{configured=true}={}){
- let role='owner',mfa=true,nonce,writes=0;const sessions=new Map(),transactions=new Map(),objects=new Map(),bills=new Map(),versions=new Map(),cookies=new Map();
+ let role='owner',mfa=true,nonce,writes=0;const sessions=new Map(),transactions=new Map(),objects=new Map(),bills=new Map(),versions=new Map(),tours=new Map(),translations=new Map(),cookies=new Map(),imports=[];
  const auth=createOidcPublisherAuth({issuer,clientId:'publisher-test',clientSecret:'server-client-test-secret',publisherId:P,expectedOrigin:origin,redirectUri:origin+'/admin/auth/callback',
   store:{
    async saveLoginTransaction(v){transactions.set(v.stateHash,v);},
@@ -41,14 +41,29 @@ async function setup(t,{configured=true}={}){
  function verFor(actor,billId,versionId){billFor(actor,billId);const v=versions.get(versionId);if(!v||v.billId!==billId)error('NOT_FOUND');return v;}
  const repository={
   async listBills({actor}){guard(actor);return [...bills.values()].map(b=>({...b,versionCount:[...versions.values()].filter(v=>v.billId===b.id).length}));},
-  async getBill({actor,billId}){const b=billFor(actor,billId);return {...b,versions:[...versions.values()].filter(v=>v.billId===billId),imports:[]};},
+  async getBill({actor,billId}){const b=billFor(actor,billId);return {...b,versions:[...versions.values()].filter(v=>v.billId===billId).map(v=>({...v,translations:[...translations.values()].filter(d=>d.billId===billId)})),imports:imports.filter(item=>item.billId===billId)};},
   async createBill({actor,title,jurisdiction}){guard(actor);writes++;const b={id:randomUUID(),publisherId:P,title,jurisdiction,activeReleaseId:null};bills.set(b.id,b);return b;},
   async recordUpload({actor,billId,object,language}){const b=billFor(actor,billId);writes++;const raw=await storage.getPrivateSource({...object});const canonicalText=raw.content.toString('utf8'),versionId=randomUUID();
    versions.set(versionId,{id:versionId,billId,publisherId:P,title:b.title,language,publication:'private',sourceComplete:false,status:'draft',createdAt:new Date().toISOString(),rawByteSha256:object.sha256,canonicalTextSha256:hash(canonicalText),canonicalText,provisions:[{id:randomUUID(),heading:'Source text',text:canonicalText}],reviewChecks:[],indexStatus:'complete'});return {versionId};},
-  async getVersion({actor,billId,versionId}){return {...verFor(actor,billId,versionId),activeReleaseId:billFor(actor,billId).activeReleaseId};},
+  async getVersion({actor,billId,versionId}){return {...verFor(actor,billId,versionId),activeReleaseId:billFor(actor,billId).activeReleaseId,tourDraft:tours.get(versionId)??null,translations:[...translations.values()].filter(d=>d.billId===billId).map(d=>actor.role==='viewer'?{...d,text:undefined}:d)};},
+  async saveTranslationDraft({actor,billId,versionId,language,text,expectedCanonicalSha256}){
+   const v=verFor(actor,billId,versionId);assert.equal(actor.mfaVerifiedByTrustedServer,true);
+   if(v.canonicalTextSha256!==expectedCanonicalSha256)error('VERSION_CONFLICT');
+   writes++;translations.set(billId+':'+language,{billId,language,sourceCanonicalSha256:expectedCanonicalSha256,text,updatedAt:new Date().toISOString()});return {saved:true};
+  },
+  async saveTourDraft({actor,billId,versionId,stepIds,expectedCanonicalSha256}){
+   const v=verFor(actor,billId,versionId);assert.equal(actor.mfaVerifiedByTrustedServer,true);
+   if(v.canonicalTextSha256!==expectedCanonicalSha256)error('VERSION_CONFLICT');
+   if(stepIds.some(id=>!v.provisions.some(p=>p.id===id)))error('TOUR_INVALID');
+   writes++;tours.set(versionId,{stepIds,sourceSha256:expectedCanonicalSha256,stale:false,updatedAt:new Date().toISOString()});
+   return {saved:true};
+  },
   async getOriginal({actor,billId,versionId}){const v=verFor(actor,billId,versionId),raw=await storage.getPrivateSource({publisherId:P,sha256:v.rawByteSha256});
    return {publisherId:P,billId,versionId,sha256:raw.sha256,bytes:raw.bytes,mime:raw.mime,content:raw.content};},
-  async requestOfficialImport({actor,billId,identity}){billFor(actor,billId);assert.equal(identity.congress,119);writes++;return {jobId:randomUUID()};},
+  async requestOfficialImport({actor,billId,identity}){billFor(actor,billId);assert.equal(identity.congress,119);writes++;
+   const jobId=randomUUID(),failed=!imports.some(item=>item.billId===billId&&item.kind==='congress');
+   imports.unshift({billId,jobId,kind:'congress',state:failed?'failed':'completed',
+    jobStatus:failed?'dead':'completed',errorCode:failed?'SOURCE_UNAVAILABLE':null,identity,createdAt:new Date().toISOString()});return {jobId};},
   async reviewVersion({actor,billId,versionId,checks,expectedCanonicalSha256}){const v=verFor(actor,billId,versionId);assert.equal(actor.mfaVerifiedByTrustedServer,true);if(v.canonicalTextSha256!==expectedCanonicalSha256)error('VERSION_CONFLICT');writes++;v.reviewChecks=[...checks];v.sourceComplete=true;v.publication='reviewed';},
   async publishRelease({actor,billId,versionId,expectedReleaseId}){const b=billFor(actor,billId),v=verFor(actor,billId,versionId);assert.equal(actor.mfaVerifiedByTrustedServer,true);if(v.publication!=='reviewed')error('PUBLICATION_NOT_READY');if(b.activeReleaseId!==expectedReleaseId)error('VERSION_CONFLICT');writes++;b.activeReleaseId=randomUUID();b.activeVersionId=versionId;v.publication='published';return {published:true};},
   async withdrawRelease({actor,billId,releaseId}){const b=billFor(actor,billId);assert.equal(actor.role,'owner');if(b.activeReleaseId!==releaseId)error('VERSION_CONFLICT');writes++;versions.get(b.activeVersionId).publication='withdrawn';b.activeReleaseId=null;b.activeVersionId=null;return {withdrawn:true};},
@@ -110,6 +125,18 @@ test('full owner workflow uploads privately, reviews, publishes, corrects immuta
  assert.equal((await f.post('/admin/bills/'+billId+'/withdraw',{releaseId:f.bills.get(billId).activeReleaseId,confirmed:'true'})).status,303);
  assert.equal(f.versions.get(versionId).publication,'withdrawn');assert.equal(f.bills.get(billId).activeReleaseId,null);
 });
+test('failed official refresh is visible, retryable, and source correction stays private',async t=>{
+ const f=await setup(t);await f.login();const billId=await f.addBill(),versionId=await f.upload(billId),
+  billPath='/admin/bills/'+billId,version=f.versions.get(versionId);
+ assert.equal((await f.post(billPath+'/imports',{congress:'119',billType:'hr',billNumber:'42'})).status,303);
+ const failed=await f.request(billPath);assert.match(await failed.text(),/Retry this official source import/);
+ assert.equal((await f.post(billPath+'/imports',{congress:'119',billType:'hr',billNumber:'42'})).status,303);
+ const corrected=await f.post(billPath+'/versions/'+versionId+'/corrections',{
+   expectedCanonicalSha256:version.canonicalTextSha256,provisionId:version.provisions[0].id,
+   expectedQuote:'Congress',replacement:'The Congress'});
+ assert.equal(corrected.status,303);const next=f.versions.get(corrected.headers.get('location').split('/').pop());
+ assert.equal(next.publication,'private');assert.equal(version.publication,'private');
+});
 test('viewer permissions, stale MFA, CSRF, cross-origin forms and stale source hashes block all writes',async t=>{
  const f=await setup(t);await f.login();const billId=await f.addBill(),versionId=await f.upload(billId),base='/admin/bills/'+billId+'/versions/'+versionId,before=f.getWrites();
  assert.equal((await f.post('/admin/bills',{title:'bad',jurisdiction:'US',csrfToken:'Z'.repeat(43)})).status,403);
@@ -119,6 +146,35 @@ test('viewer permissions, stale MFA, CSRF, cross-origin forms and stale source h
  f.setRole('owner');f.setMfa(false);await f.login();assert.equal((await f.review(billId,versionId)).status,403);assert.equal(f.getWrites(),before);
  f.setMfa(true);await f.login();const result=await f.post(base+'/corrections',{expectedCanonicalSha256:'f'.repeat(64),provisionId:f.versions.get(versionId).provisions[0].id,expectedQuote:'Congress',replacement:'A Congress'});
  assert.equal(result.status,409);assert.equal(f.getWrites(),before);
+});
+test('source-only tour draft can be curated without changing publication',async t=>{
+ const f=await setup(t);await f.login();const billId=await f.addBill(),versionId=await f.upload(billId),
+  version=f.versions.get(versionId),base='/admin/bills/'+billId+'/versions/'+versionId;
+ const before=f.getWrites();
+ const page=await f.request(base);assert.match(await page.text(),/Source-only tour draft/);
+ const saved=await f.post(base+'/tour',{expectedCanonicalSha256:version.canonicalTextSha256,stepIds:version.provisions[0].id});
+ assert.equal(saved.status,303,await saved.clone().text());assert.equal(f.getWrites(),before+1);
+ const reopened=await f.request(base);assert.match(await reopened.text(),/1 selected passages/);
+ assert.equal(version.publication,'private');
+ assert.equal((await f.post(base+'/tour',{expectedCanonicalSha256:'f'.repeat(64),stepIds:version.provisions[0].id})).status,409);
+ assert.equal((await f.post(base+'/tour',{expectedCanonicalSha256:version.canonicalTextSha256,stepIds:randomUUID()})).status,400);
+ f.setRole('viewer');assert.equal((await f.post(base+'/tour',{expectedCanonicalSha256:version.canonicalTextSha256,stepIds:version.provisions[0].id})).status,403);
+ assert.equal(f.getWrites(),before+1);
+});
+test('translation drafts remain private and show stale source after correction',async t=>{
+ const f=await setup(t);await f.login();const billId=await f.addBill(),versionId=await f.upload(billId),
+  version=f.versions.get(versionId),base='/admin/bills/'+billId+'/versions/'+versionId;
+ const saved=await f.post(base+'/translations',{expectedCanonicalSha256:version.canonicalTextSha256,language:'es',text:'Texto traducido privado.'});
+ assert.equal(saved.status,303);assert.match(await (await f.request(base)).text(),/Source matches this version/);
+ assert.match(await (await f.request(base)).text(),/Texto traducido privado/);
+ assert.equal((await f.post(base+'/translations',{expectedCanonicalSha256:'f'.repeat(64),language:'fr',text:'Traduction'})).status,409);
+ f.setRole('viewer');assert.equal((await f.post(base+'/translations',{expectedCanonicalSha256:version.canonicalTextSha256,language:'fr',text:'Traduction'})).status,403);
+ assert.doesNotMatch(await (await f.request(base)).text(),/Texto traducido privado/);
+ f.setRole('owner');const correction=await f.post(base+'/corrections',{expectedCanonicalSha256:version.canonicalTextSha256,
+  provisionId:version.provisions[0].id,expectedQuote:'Congress',replacement:'The Congress'});
+ assert.equal(correction.status,303);const corrected=await f.request(correction.headers.get('location'));
+ assert.match(await corrected.text(),/Source changed; update translation/);
+ assert.equal(version.publication,'private');
 });
 test('duplicate and ambiguous correction input fail closed, and no unknown bill upload reaches storage',async t=>{
  const f=await setup(t);await f.login();const billId=await f.addBill(),versionId=await f.upload(billId,'repeat then repeat'),v=f.versions.get(versionId),before=f.getWrites();
@@ -154,3 +210,4 @@ test('corrected versions download the unchanged original and corrupted private o
  const denied=await f.request(base+newId+'/original');assert.notEqual(denied.status,200);assert.equal(denied.headers.get('content-disposition'),null);
  assert.doesNotMatch(await denied.text(),/corrupted different bytes|Original scanned wording/);
 });
+
