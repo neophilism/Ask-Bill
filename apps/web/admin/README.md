@@ -62,7 +62,7 @@ expected previous release ID so concurrent publisher changes fail as conflicts.
 Tour curation saves one private, source-hash-pinned ordered selection of up to 12
 existing provision IDs per version. The server and PostgreSQL workflow both
 verify current membership, MFA, source hash and provision membership. This draft
-does not publish or change the public source-only tour. A correction creates a
+does not immediately change the public source-only tour. Explicit publication snapshots its verified source IDs into the immutable public pack; the public tour loads only that published, hash-bound snapshot, never the private draft. Later edits require explicit publication again. A correction creates a
 new source version and requires a new tour selection. Catalog pack warnings and
 stale translation source hashes are informational and never authorize publish.
 Editors and owners can save private translation drafts pinned to the exact source
@@ -91,4 +91,7 @@ Live activation still requires a configured identity provider, explicit
 publisher enrollment, private object store, durable database and validated
 credentialed round trips. Local adapter or browser tests do not constitute
 evidence that those external services are connected.
+
+
+Published tour metadata is optional: legacy releases keep the default source-order introduction. Missing, corrupt, foreign or stale optional tour metadata cannot hide independently verified source text. Neither tour selection nor translation drafts grant publication authority. Review, current MFA, source integrity, membership and release compare-and-swap remain required.
 

@@ -14,8 +14,9 @@ const ORIGINAL_EXTENSIONS=Object.freeze({'text/plain':'txt','text/markdown':'md'
 const fail=code=>{const error=new Error(code);error.code=code;throw error;};
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const isObject=value=>value&&typeof value==='object'&&!Array.isArray(value);
-const statuses={ORIGIN_FORBIDDEN:403,CSRF_FORBIDDEN:403,ACTION_FORBIDDEN:403,MFA_REQUIRED:403,PUBLISHER_FORBIDDEN:403,MEMBERSHIP_REVOKED:403,UPLOAD_LIMIT:413,REQUEST_TOO_LARGE:413,NOT_FOUND:404,VERSION_CONFLICT:409,QUOTE_MISMATCH:409,QUOTE_AMBIGUOUS:409,METHOD_NOT_ALLOWED:405,AUTH_RATE_LIMITED:429};
+const statuses={TOUR_SOURCE_INVALID:409,ORIGIN_FORBIDDEN:403,CSRF_FORBIDDEN:403,ACTION_FORBIDDEN:403,MFA_REQUIRED:403,PUBLISHER_FORBIDDEN:403,MEMBERSHIP_REVOKED:403,UPLOAD_LIMIT:413,REQUEST_TOO_LARGE:413,NOT_FOUND:404,VERSION_CONFLICT:409,QUOTE_MISMATCH:409,QUOTE_AMBIGUOUS:409,METHOD_NOT_ALLOWED:405,AUTH_RATE_LIMITED:429};
 const messages={
+ TOUR_SOURCE_INVALID:'The saved tour no longer matches this source. Review and save its selected passages before publishing.',
  MFA_REQUIRED:'A fresh multi-factor sign-in is required for this action. Return to the source page and verify your identity.',
  ACTION_FORBIDDEN:'Your publisher role does not permit this action.',
  ORIGIN_FORBIDDEN:'This request did not come from the publisher website. Open the publisher page and try again.',
@@ -243,4 +244,3 @@ export function createPublisherHandler({auth,repository,storage,expectedOrigin,p
   }
  };
 }
-

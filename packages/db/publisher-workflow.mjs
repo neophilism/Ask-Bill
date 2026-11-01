@@ -9,6 +9,7 @@ import {buildSearchGeneration} from '../content/search/index.mjs';
 import {planReviewedRelease} from '../content/releases/index.mjs';
 import {PUBLISHER_REVIEW_CHECKS,completePublisherReview} from '../content/releases/review-checks.mjs';
 export {PUBLISHER_REVIEW_CHECKS};
+import {snapshotTourSteps} from '../content/releases/tour-selection.mjs';
 
 const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
 const HEX=/^[a-f0-9]{64}$/,MAX_BYTES=25*1024*1024,MAX_TEXT=1500000;
@@ -455,11 +456,16 @@ export function createPublisherWorkflow({pool,publisherId,storage,congressClient
         if(!review)fail('SOURCE_NOT_REVIEWED');
         if(index?.status!=='complete'||index.source_sha256!==version.canonical_text_sha256)fail('PUBLICATION_NOT_READY');
         await verifyStored({sha256:original.sha256,key:original.storage_key,bytes:Number(original.byte_length),mime:original.mime_type});
+        const draft=(await client.query('SELECT source_sha256,step_ids FROM ask_bill.publisher_tour_drafts WHERE publisher_id=$1::uuid AND bill_id=$2::uuid AND version_id=$3::uuid',
+          [publisher,billId,versionId])).rows[0];
+        let tourStepIds;
+        try{tourStepIds=snapshotTourSteps(draft,{versionId,canonicalSha256:version.canonical_text_sha256,provisions:source.provisions});}
+        catch{fail('TOUR_SOURCE_INVALID');}
         const publishedAt=version.published_at?iso(version.published_at):timestamp();
         if(Date.parse(publishedAt)<Date.parse(version.retrieved_at))fail('CLOCK_INVALID');
         const pack={schema:'ask-bill-reader-v1',canonicalizationVersion:CANON,publisherId:publisher,billId,versionId,
           title:version.title,jurisdiction:version.jurisdiction,language:version.language,status:version.status,publication:'published',sourceComplete:true,
-          retrievedAt:iso(version.retrieved_at),publishedAt,canonicalSha256:version.canonical_text_sha256,
+          retrievedAt:iso(version.retrieved_at),publishedAt,canonicalSha256:version.canonical_text_sha256,...(tourStepIds?{tourStepIds}:{}),
           provisions:source.provisions.map(p=>({id:'s'+p.id.replace(/-/g,''),heading:p.heading,text:p.text,sha256:sha(p.text)}))};
         const bytes=Buffer.from(JSON.stringify(pack)),packSha256=sha(bytes);
         async function storePack(content,digest){

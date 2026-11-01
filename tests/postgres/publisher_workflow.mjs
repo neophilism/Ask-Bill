@@ -13,6 +13,7 @@ import {prepareExtractionCorrection} from '../../packages/content/audit/index.mj
 import {congressBillIdentity} from '../../packages/content/connectors/congress/index.mjs';
 import {createWorkerApplication} from '../../apps/worker/application.mjs';
 import {makePdf} from '../fixtures/createPdf.mjs';
+import {createSourceOnlyTour} from '../../packages/tours/index.mjs';
 const {Pool}=createRequire(new URL('../../packages/db/package.json',import.meta.url))('pg');
 const databaseUrl=process.env.ASK_BILL_TEST_DATABASE_URL;
 const PUB='ac0a0001-1111-4111-8111-111111111111',OTHER='ac0a0002-2222-4222-8222-222222222222';
@@ -155,6 +156,15 @@ test('durable publisher intake, exact release, corrections, and lease fences wit
       storage.setCorrupt(false);assert.equal(await lookup({publisherId:PUB,billId,versionId}),null);
       firstRelease=await workflow.publishRelease({actor:actor('owner','publish'),billId,versionId});assert.equal(firstRelease.published,true);
       const publicPack=await lookup({publisherId:PUB,billId,versionId});assert.equal(publicPack.canonicalSha256,version.canonicalTextSha256);
+      const selectedSteps=version.provisions.slice(0,2).map(p=>'s'+p.id.replaceAll('-',''));
+      assert.deepEqual(publicPack.tourStepIds,selectedSteps);
+      const publishedTour=createSourceOnlyTour({pack:publicPack});
+      assert.equal(publishedTour.publisherCurated,true);
+      assert.deepEqual(publishedTour.steps.map(s=>s.provisionId),selectedSteps);
+      await workflow.saveTourDraft({actor:actor('owner','publish'),billId,versionId,
+        expectedCanonicalSha256:version.canonicalTextSha256,stepIds:[version.provisions[1].id]});
+      const unchanged=await lookup({publisherId:PUB,billId,versionId});
+      assert.deepEqual(unchanged.tourStepIds,selectedSteps,'editing a private draft must not mutate a published snapshot');
       assert.ok(publicPack.provisions.every(p=>/^s[a-f0-9]{32}$/.test(p.id)&&hash(p.text)===p.sha256));
       assert.equal(publicPack.provisions.map(p=>p.text).join('\n\n'),version.canonicalText);
       const stored=(await admin.query('SELECT pack_bytes FROM ask_bill.publisher_public_packs WHERE publisher_id=$1::uuid AND version_id=$2::uuid AND sha256=$3',[PUB,versionId,firstRelease.packSha256])).rows[0];

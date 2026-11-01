@@ -21,7 +21,7 @@ function tourPanel(version,context){
  if(!version.provisions.length)return '';
  const draft=version.tourDraft,selected=new Set(draft?.stale?[]:draft?.stepIds??[]);
  const versionPath=path(version.billId,version.id);
- return `<section class="card" aria-labelledby="tour-title"><h2 id="tour-title">Source-only tour draft</h2><p>Select up to 12 passages in source order. This private draft does not change a published tour or legal text.</p>${draft?.stale?'<p class="notice">The source changed; select passages again before using this draft.</p>':''}${draft&&!draft.stale?`<p>${esc(draft.stepIds.length)} selected passages. Last saved ${esc(date(draft.updatedAt))}.</p>`:''}${canEdit(context)?`<form method="post" action="${versionPath}/tour">${csrf(context)}${hidden('expectedCanonicalSha256',version.canonicalTextSha256)}${version.provisions.map(p=>`<label class="check"><input type="checkbox" name="stepIds" value="${esc(p.id)}" ${selected.has(p.id)?'checked':''}>${esc(p.heading||p.id)}</label>`).join('')}<button type="submit" ${context.recentMfa?'':'disabled'}>Save private tour draft</button></form>`:'<p>An editor or owner can curate this draft.</p>'}</section>`;
+ return `<section class="card" aria-labelledby="tour-title"><h2 id="tour-title">Source-only tour draft</h2><p>Select up to 12 passages in source order. Saving this private draft does not change an existing release or legal text. Its selected passages are included when you explicitly publish this version again.</p>${draft?.stale?'<p class="notice">The source changed; select passages again before using this draft.</p>':''}${draft&&!draft.stale?`<p>${esc(draft.stepIds.length)} selected passages. Last saved ${esc(date(draft.updatedAt))}.</p>`:''}${canEdit(context)?`<form method="post" action="${versionPath}/tour">${csrf(context)}${hidden('expectedCanonicalSha256',version.canonicalTextSha256)}${version.provisions.map(p=>`<label class="check"><input type="checkbox" name="stepIds" value="${esc(p.id)}" ${selected.has(p.id)?'checked':''}>${esc(p.heading||p.id)}</label>`).join('')}<button type="submit" ${context.recentMfa?'':'disabled'}>Save private tour draft</button></form>`:'<p>An editor or owner can curate this draft.</p>'}</section>`;
 }
 function translationPanel(version,context){
  const drafts=version.translations??[],versionPath=path(version.billId,version.id);
@@ -75,4 +75,5 @@ export function renderPublisherVersion({context,version,message,error}={}){
 export function renderPublisherError({context,error='This publisher request could not be completed.'}={}){
  return page({title:'Publisher request unavailable',context,error,body:'<h1>Review your publishing request</h1><p>No new publication was confirmed. Return to your library to inspect the current source and try again.</p><p><a href="/admin">Return to your bills</a></p>'});
 }
+
 
