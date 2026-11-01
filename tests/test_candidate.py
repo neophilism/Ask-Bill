@@ -12,7 +12,8 @@ sys.path.insert(0,str(ROOT/'tools'/'blender'))
 sys.path.insert(0,str(ROOT/'tools'/'blender'/'mesh'))
 from generate_bill import build
 from audit_glb import audit, load_glb
-from stress_glb import run as stress_run, stress_primitive
+from stress_glb import run as stress_run, stress_primitive, stress_skin
+from audit_glb import accessor
 
 
 def parse(data):
@@ -95,12 +96,16 @@ class TestOption10(unittest.TestCase):
             shoulder=nodes[by_name['Rig_Shoulder_'+side]]
             elbow=by_name['Rig_Elbow_'+side]
             self.assertIn(elbow,shoulder['children'])
-            self.assertIn(by_name['Paper_Forearm_'+side],nodes[elbow]['children'])
+            arm=nodes[by_name['Continuous_Arm_'+side]]
+            self.assertEqual(self.doc['skins'][arm['skin']]['joints'],
+                             [by_name['Rig_Shoulder_'+side], elbow])
             self.assertIn(by_name['Glove_'+side],nodes[elbow]['children'])
             hip=nodes[by_name['Rig_Hip_'+side]]
             knee=by_name['Rig_Knee_'+side]
             self.assertIn(knee,hip['children'])
-            self.assertIn(by_name['Paper_Shin_'+side],nodes[knee]['children'])
+            leg=nodes[by_name['Continuous_Leg_'+side]]
+            self.assertEqual(self.doc['skins'][leg['skin']]['joints'],
+                             [by_name['Rig_Hip_'+side], knee])
             self.assertIn(by_name['Rig_Shoe_'+side],nodes[knee]['children'])
         for eye in ('0','1'):
             eye_node=nodes[by_name['Rig_Eye_'+eye]]
@@ -123,6 +128,35 @@ class TestOption10(unittest.TestCase):
                     idx=self.doc['nodes'][chan['target']['node']]['mesh']
                     count*=len(self.doc['meshes'][idx]['primitives'][0]['targets'])
                 self.assertEqual(aout['count'],count)
+
+    def test_connected_limb_loops_blend_and_actually_deform(self):
+        for side in ('L','R'):
+            for part in ('Arm','Leg'):
+                name='Continuous_'+part+'_'+side
+                mesh=next(m for m in self.doc['meshes'] if m['name']==name)
+                attrs=mesh['primitives'][0]['attributes']
+                weights=accessor(self.doc,self.bin,attrs['WEIGHTS_0'])
+                self.assertTrue(any(0<w[0]<1 and 0<w[1]<1 for w in weights))
+                self.assertTrue(any(w[0]==1 for w in weights))
+                self.assertTrue(any(w[1]==1 for w in weights))
+                edges={}
+                indices=[v[0] for v in accessor(self.doc,self.bin,mesh['primitives'][0]['indices'])]
+                for i in range(0,len(indices),3):
+                    tri=indices[i:i+3]
+                    for a,b in zip(tri,tri[1:]+tri[:1]):
+                        edges.setdefault(a,set()).add(b)
+                        edges.setdefault(b,set()).add(a)
+                seen={0};todo=[0]
+                while todo:
+                    for other in edges[todo.pop()]-seen:
+                        seen.add(other);todo.append(other)
+                self.assertEqual(len(seen),len(weights),name)
+                rest=stress_skin(self.doc,self.bin,name,0)
+                self.assertLess(rest['maximumVertexDisplacement'],1e-6)
+                for angle in (-1.3,1.3):
+                    posed=stress_skin(self.doc,self.bin,name,angle)
+                    self.assertTrue(posed['passesNumericalStress'],posed)
+                    self.assertGreater(posed['maximumVertexDisplacement'],.3)
 
     def test_visemes_are_real_morph_offsets(self):
         m=[m for m in self.doc['meshes'] if m['name']=='MouthWithVisemes']
@@ -156,4 +190,5 @@ class TestOption10(unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main()
+
 

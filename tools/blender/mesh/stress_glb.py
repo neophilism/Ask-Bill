@@ -60,6 +60,66 @@ def stress_primitive(doc, data, name, morph_weights, vertical_scale=1.0):
             'passesNumericalStress': smallest_ratio >= .05 and reversed_faces == 0}
 
 
+def stress_skin(doc, data, name, joint_angle):
+    """Evaluate the candidate two-joint skin in world space, not rigid proxies."""
+    node = next(n for n in doc['nodes'] if n.get('name') == name)
+    mesh = doc['meshes'][node['mesh']]
+    primitive = mesh['primitives'][0]
+    attrs = primitive['attributes']
+    base = accessor(doc, data, attrs['POSITION'])
+    joints = accessor(doc, data, attrs['JOINTS_0'])
+    weights = accessor(doc, data, attrs['WEIGHTS_0'])
+    skin = doc['skins'][node['skin']]
+    binds = accessor(doc, data, skin['inverseBindMatrices'])
+    if len(skin['joints']) != 2 or len(binds) != 2 or len(joints) != len(base) or len(weights) != len(base):
+        raise ValueError('invalid two-joint stress skin')
+    # Candidate rest joints use translation-only transforms; reject other
+    # layouts instead of pretending this fixture is a general glTF evaluator.
+    first, second = (doc['nodes'][n] for n in skin['joints'])
+    if skin['joints'][1] not in first.get('children', []) or any(
+            field in joint for joint in (first, second) for field in ('rotation', 'scale', 'matrix')):
+        raise ValueError('unsupported candidate joint transforms')
+    origin = first['translation']
+    pivot = [origin[i]+second['translation'][i] for i in range(3)]
+    if not math.isfinite(joint_angle):
+        raise ValueError('invalid stress angle')
+    shape = []
+    for point, joint_ids, row in zip(base, joints, weights):
+        if any(j not in (0, 1) for j in joint_ids) or abs(sum(row)-1) > 1e-5:
+            raise ValueError('invalid skin influence')
+        result = [0., 0., 0.]
+        for joint_id, weight in zip(joint_ids, row):
+            if weight == 0:
+                continue
+            bind = binds[joint_id]
+            if tuple(bind[:12]) != (1.,0.,0.,0.,0.,1.,0.,0.,0.,0.,1.,0.) or bind[15] != 1:
+                raise ValueError('unsupported inverse bind transform')
+            local = [point[i]+bind[12+i] for i in range(3)]
+            if joint_id == 1:
+                y,z = local[1:]
+                local[1] = math.cos(joint_angle)*y-math.sin(joint_angle)*z
+                local[2] = math.sin(joint_angle)*y+math.cos(joint_angle)*z
+            translation = origin if joint_id == 0 else pivot
+            for axis in range(3):
+                result[axis] += weight*(local[axis]+translation[axis])
+        shape.append(result)
+    indices = [v[0] for v in accessor(doc, data, primitive['indices'])]
+    if not indices or len(indices) % 3:
+        raise ValueError('missing skin triangles')
+    ratios = []
+    for offset in range(0, len(indices), 3):
+        ids = indices[offset:offset+3]
+        rest = math.sqrt(sum(v*v for v in triangle_vector(base, *ids)))
+        posed = math.sqrt(sum(v*v for v in triangle_vector(shape, *ids)))
+        if rest < 1e-10 or not math.isfinite(posed):
+            raise ValueError('invalid skin triangle')
+        ratios.append(posed/rest)
+    return {'mesh': name, 'jointAngleRadians': joint_angle,
+            'minimumAreaRatio': min(ratios),
+            'maximumVertexDisplacement': max(math.dist(a,b) for a,b in zip(base,shape)),
+            'passesNumericalStress': min(ratios) >= .05}
+
+
 def run(path):
     doc, data = load_glb(path)
     cases = {
@@ -69,6 +129,11 @@ def run(path):
         'extreme-mouth': stress_primitive(doc, data,
             'MouthWithVisemes', {'viseme_AA': 1.0}),
     }
+    for side in ('L', 'R'):
+        for part in ('Arm', 'Leg'):
+            name = 'Continuous_'+part+'_'+side
+            for angle in (-1.3, 1.3):
+                cases[name+':'+str(angle)] = stress_skin(doc, data, name, angle)
     return {'passesNumericalStress': all(c['passesNumericalStress'] for c in cases.values()),
             'cases': cases, 'visualAndJointClearanceVerified': False}
 
@@ -84,3 +149,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

@@ -224,6 +224,52 @@ def tube(glb,name,start,end,radius,mat,parent,radials=9):
     return glb.node(name,glb.mesh(name,p,idx,mat),parent)
 
 
+def deforming_limb(glb, name, origin, joint_offset, end_offset, radii, mat,
+                   parent, first_joint, second_joint, radials=12, rings=16):
+    """One closed limb with longitudinal loops and a smooth two-joint blend."""
+    points=[]; indices=[]; joints=[]; weights=[]
+    for ring in range(rings+1):
+        t=ring/rings
+        if t <= .5:
+            local=[v*t*2 for v in joint_offset]
+            tangent=joint_offset
+        else:
+            local=[joint_offset[k]+end_offset[k]*(t-.5)*2 for k in range(3)]
+            tangent=end_offset
+        length=math.sqrt(sum(v*v for v in tangent))
+        direction=[v/length for v in tangent]
+        axis=[direction[1],-direction[0],0.]
+        axis_length=math.sqrt(sum(v*v for v in axis))
+        axis=[v/axis_length for v in axis]
+        across=[direction[1]*axis[2]-direction[2]*axis[1],
+                direction[2]*axis[0]-direction[0]*axis[2],
+                direction[0]*axis[1]-direction[1]*axis[0]]
+        radius=radii[0]+(radii[1]-radii[0])*t
+        blend=max(0.,min(1.,(t-.35)/.30))
+        blend=blend*blend*(3-2*blend)
+        for radial in range(radials):
+            angle=2*PI*radial/radials
+            points.append([origin[k]+local[k]+radius*(
+                math.cos(angle)*axis[k]+math.sin(angle)*across[k]) for k in range(3)])
+            joints.append([0,1,0,0]);weights.append([1-blend,blend,0.,0.])
+    for ring in range(rings):
+        for radial in range(radials):
+            a=ring*radials+radial;b=ring*radials+(radial+1)%radials
+            indices.extend([a,b,a+radials,b,b+radials,a+radials])
+    indices.extend([v for i in range(1,radials-1) for v in (0,i+1,i)])
+    last=rings*radials
+    indices.extend([v for i in range(1,radials-1) for v in (last,last+i,last+i+1)])
+    bind_positions=[origin,[origin[k]+joint_offset[k] for k in range(3)]]
+    inverse_bind=[[1,0,0,0,0,1,0,0,0,0,1,0,-p[0],-p[1],-p[2],1]
+                  for p in bind_positions]
+    skin=len(glb.doc['skins'])
+    glb.doc['skins'].append({'name':name+' deformation',
+        'inverseBindMatrices':glb.accessor(inverse_bind,'MAT4'),
+        'joints':[first_joint,second_joint],'skeleton':first_joint})
+    mesh=glb.mesh(name,points,indices,mat,joints=joints,weights=weights)
+    return glb.node(name,mesh,parent,skin=skin)
+
+
 def sheet_surface():
     segments=36;levels=44
     pos=[];uv=[];indices=[];weights=[];joints=[];t1=[];t2=[]
@@ -356,10 +402,10 @@ def build(path):
     shoulders=[]
     for side,sign in [('L',-1),('R',1)]:
         parent=g.node('Rig_Shoulder_'+side,parent=root,translation=[sign*.82,2.18,.065]);shoulders.append(parent)
-        tube(g,'Paper_UpperArm_'+side,[0,0,0],[sign*.20,-.37,.02],.135,navy,parent)
         elbow=g.node('Rig_Elbow_'+side,parent=parent,translation=[sign*.20,-.37,.02])
-        ellipsoid(g,'Elbow_Cover_'+side,[0,0,0],[.14,.14,.135],navy,elbow)
-        tube(g,'Paper_Forearm_'+side,[0,0,0],[sign*.13,-.32,.015],.125,navy,elbow)
+        deforming_limb(g,'Continuous_Arm_'+side,[sign*.82,2.18,.065],
+            [sign*.20,-.37,.02],[sign*.13,-.32,.015],(.135,.125),
+            navy,root,parent,elbow)
         tube(g,'Folded_Cuff_'+side,[sign*.11,-.29,.015],[sign*.15,-.39,.015],.15,ivory,elbow)
         ellipsoid(g,'Glove_'+side,[sign*.16,-.47,.045],[.17,.19,.093],white,elbow)
         for k in range(3):
@@ -367,10 +413,10 @@ def build(path):
     hips=[]
     for side,sign in [('L',-1),('R',1)]:
         hip=g.node('Rig_Hip_'+side,parent=root,translation=[sign*.33,.99,-.015]);hips.append(hip)
-        tube(g,'Paper_Thigh_'+side,[0,0,0],[0,-.34,.03],.105,ivory,hip)
         knee=g.node('Rig_Knee_'+side,parent=hip,translation=[0,-.34,.03])
-        ellipsoid(g,'Knee_Cover_'+side,[0,0,0],[.115,.12,.115],ivory,knee)
-        tube(g,'Paper_Shin_'+side,[0,0,0],[0,-.34,.03],.10,ivory,knee)
+        deforming_limb(g,'Continuous_Leg_'+side,[sign*.33,.99,-.015],
+            [0,-.34,.03],[0,-.34,.03],(.105,.10),
+            ivory,root,hip,knee)
         shoe=g.node('Rig_Shoe_'+side,parent=knee,translation=[0,-.37,.16])
         ellipsoid(g,'Shoe_'+side,[0,0,0],[.185,.11,.31],navy,shoe)
         ellipsoid(g,'Buckle_'+side,[0,.10,.02],[.075,.025,.06],gold,shoe)
@@ -417,4 +463,5 @@ def main():
 
 
 if __name__=='__main__':main()
+
 

@@ -30,11 +30,19 @@ joint clearance, material finish, or owner art acceptance.
 
 The parchment is one capped front/back sheet with a continuous upper-right
 fold, rather than a separate strip attached to a capped edge. Eye details,
-upper eyelids, articulated arm and leg segments, elbow and knee covers, gloves,
-and shoes are separate material and control regions. Stress views bend elbows
+upper eyelids, connected skinned arm and leg surfaces, gloves, and shoes are
+separate material and control regions. Each limb is a capped longitudinal-loop
+mesh with normalized two-joint weights blended through the elbow or knee;
+rigid joint-cover spheres no longer hide a seam between separate limb segments. Stress views bend elbows
 and knees, compress the sheet, and exercise eyelid and mouth expressions.
 
-Remaining production work includes refined connected limb deformation loops,
+The dependency-free stress evaluator exercises each actual limb skin at both
+-1.3 and +1.3 radians, checks minimum triangle area, and records actual vertex
+displacement. Connectivity, identity bind pose and normalized weight tests are
+separate from Blender's evaluated-mesh and render checks. The evaluator rejects
+unsupported joint transforms instead of claiming to be a general glTF runtime.
+
+Remaining production work includes art-directed joint correctives,
 final UV seams and art-directed materials, corrective poses, visual review of
 all stress renders, an accepted native source file with provenance and hash,
 and a final export bound to `assets/manifest.json`. Keep the AB-048 PR draft
