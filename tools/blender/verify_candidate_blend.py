@@ -21,6 +21,13 @@ def main():
     sheet_objects=[o.name for o in meshes if any(token in (o.name+' '+o.data.name) for token in ('SingleSheet','CONTINUOUS_FOLIO_PARCHMENT'))]
     if not sheet_objects:
         raise RuntimeError('Continuous sheet mesh missing. Objects: '+repr([o.name for o in meshes]))
+    sheet=next(o for o in meshes if o.name in sheet_objects)
+    seam_count=sum(bool(edge.use_seam) for edge in sheet.data.edges)
+    edge_face_count=sum(poly.material_index==1 for poly in sheet.data.polygons)
+    if not sheet.data.uv_layers.active or len(sheet.data.materials)<2:
+        raise RuntimeError('Editable sheet UV or edge material region missing')
+    if not seam_count or not edge_face_count:
+        raise RuntimeError('Editable sheet seam or edge material faces missing')
     actions=[a.name for a in bpy.data.actions]
     if not actions:
         raise RuntimeError('No imported animations/actions')
@@ -32,7 +39,10 @@ def main():
     if max(shapes.values(),default=0)<13:
         raise RuntimeError('Facial viseme morph targets not imported')
     record={'file':str(path),'meshCount':len(meshes),'rigCount':len(rigs),
-            'actionCount':len(actions),'actions':actions[:50],'sheetObjects':sheet_objects,'shapeKeyCounts':shapes}
+            'actionCount':len(actions),'actions':actions[:50],'sheetObjects':sheet_objects,
+            'shapeKeyCounts':shapes,'sheetUvSeamEdges':seam_count,
+            'sheetEdgeMaterialFaces':edge_face_count}
     print('BLENDER_CANDIDATE_AUDIT='+json.dumps(record,sort_keys=True))
 
 if __name__=='__main__':main()
+
