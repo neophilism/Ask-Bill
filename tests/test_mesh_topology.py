@@ -54,6 +54,35 @@ class AuditTests(unittest.TestCase):
         self.assertFalse(result["passesStructuralAudit"])
         self.assertIn("scene has no meshes", result["problems"])
 
+    def test_empty_mesh_and_triangle_inventory_rejected(self):
+        doc, data = fixture()
+        doc["meshes"][0]["primitives"] = []
+        self.assertFalse(audit_glb.audit(doc, data)["passesStructuralAudit"])
+        doc, data = fixture()
+        doc["accessors"][2]["count"] = 0
+        with self.assertRaises(ValueError):
+            audit_glb.audit(doc, data)
+
+    def test_negative_external_and_misaligned_accessor_ranges_rejected(self):
+        for field, value in (("byteOffset", -4), ("byteOffset", 1), ("count", -1),
+                             ("count", True), ("count", 1_000_000), ("bufferView", -1)):
+            with self.subTest(field=field, value=value):
+                doc, data = fixture()
+                doc["accessors"][0][field] = value
+                with self.assertRaises(ValueError):
+                    audit_glb.audit(doc, data)
+        for field, value in (("byteOffset", -4), ("byteLength", -1),
+                             ("byteLength", 1_000_000), ("buffer", 1),
+                             ("byteStride", 13), ("byteStride", True)):
+            with self.subTest(field=field, value=value):
+                doc, data = fixture()
+                doc["bufferViews"][0][field] = value
+                with self.assertRaises(ValueError):
+                    audit_glb.audit(doc, data)
+        doc, data = fixture()
+        with self.assertRaises(ValueError):
+            audit_glb.accessor(doc, data, -1)
+
     def test_invalid_normals_rejected(self):
         for value in (float("nan"), 0.0):
             doc, data = fixture()
@@ -128,4 +157,5 @@ class AuditTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
 

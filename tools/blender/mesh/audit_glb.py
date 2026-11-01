@@ -45,18 +45,33 @@ def load_glb(path):
 
 
 def accessor(doc, data, index):
+    if type(index) is not int or not 0 <= index < len(doc["accessors"]):
+        raise ValueError("invalid accessor index")
     spec = doc["accessors"][index]
     if spec.get("sparse"):
         raise ValueError("sparse accessors require a separate audit")
-    view = doc["bufferViews"][spec["bufferView"]]
+    view_index = spec["bufferView"]
+    if type(view_index) is not int or not 0 <= view_index < len(doc["bufferViews"]):
+        raise ValueError("invalid buffer view index")
+    view = doc["bufferViews"][view_index]
+    if type(view.get("buffer")) is not int or view["buffer"] != 0:
+        raise ValueError("accessor requires the embedded buffer")
     fmt, size = FORMATS[spec["componentType"]]
     width = WIDTHS[spec["type"]]
     count = spec["count"]
     stride = view.get("byteStride", width * size)
-    if stride < width * size:
+    view_offset, view_length = view.get("byteOffset", 0), view["byteLength"]
+    accessor_offset = spec.get("byteOffset", 0)
+    if (type(count) is not int or count < 1 or
+            any(type(v) is not int or v < 0
+                for v in (view_offset, view_length, accessor_offset))):
+        raise ValueError("invalid accessor count or byte range")
+    if type(stride) is not int or stride < width * size or stride % size:
         raise ValueError("invalid accessor stride")
-    start = view.get("byteOffset", 0) + spec.get("byteOffset", 0)
-    end = view.get("byteOffset", 0) + view["byteLength"]
+    start = view_offset + accessor_offset
+    end = view_offset + view_length
+    if start % size or end > len(data) or start + (count - 1) * stride + width * size > end:
+        raise ValueError("accessor outside buffer view")
     out = []
     for i in range(count):
         pos = start + i * stride
@@ -71,6 +86,8 @@ def audit(doc, data):
     if not doc.get("meshes"):
         problems.append("scene has no meshes")
     for mesh in doc.get("meshes", []):
+        if not mesh.get("primitives"):
+            problems.append(mesh.get("name", "unnamed") + ": mesh has no primitives")
         for primitive in mesh.get("primitives", []):
             label = mesh.get("name", "unnamed")
             if primitive.get("mode", 4) != 4:
@@ -79,7 +96,7 @@ def audit(doc, data):
             attrs = primitive["attributes"]
             positions = accessor(doc, data, attrs["POSITION"])
             indices = [v[0] for v in accessor(doc, data, primitive["indices"])]
-            if not positions or len(indices) % 3:
+            if not positions or not indices or len(indices) % 3:
                 problems.append(label + ": missing vertices or incomplete triangles")
                 continue
             if any(not all(math.isfinite(x) for x in vertex) for vertex in positions):
@@ -176,4 +193,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
