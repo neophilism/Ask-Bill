@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {catalogReadiness} from './status.mjs';
-import {renderPublisherBill,renderPublisherVersion} from '../views/index.mjs';
+import {PUBLISHER_REVIEW_CHECKS,completePublisherReview} from '../../../../packages/content/releases/review-checks.mjs';
+import {renderPublisherBill,renderPublisherVersion,REVIEW_CHECKS} from '../views/index.mjs';
 const sha='a'.repeat(64);
-const ready={sourceComplete:true,warnings:[],errors:[],reviewChecks:['a','b','c','d','e','f'],indexStatus:'complete',canonicalTextSha256:sha};
+const ready={sourceComplete:true,warnings:[],errors:[],reviewChecks:[...PUBLISHER_REVIEW_CHECKS],indexStatus:'complete',canonicalTextSha256:sha};
 test('incomplete source never appears ready',()=>{const r=catalogReadiness({...ready,sourceComplete:false});assert.ok(r.issues.includes('SOURCE_INCOMPLETE'));assert.equal(r.canPublish,false);});
 test('stale translation blocks aggregate informational readiness',()=>{const r=catalogReadiness(ready,{translations:[{language:'es',sourceCanonicalSha256:'b'.repeat(64)}]});assert.equal(r.translations[0].status,'STALE_SOURCE');assert.ok(r.issues.includes('TRANSLATION_SOURCE_STALE'));assert.equal(r.informationalReady,false);assert.equal(r.canPublish,false);});
 test('matching hash remains non-authorizing',()=>{const r=catalogReadiness(ready,{translations:[{language:'fr',sourceCanonicalSha256:sha.toUpperCase()}]});assert.equal(r.informationalReady,true);assert.equal(r.translations[0].status,'SOURCE_MATCH');assert.equal(r.canPublish,false);});
@@ -42,5 +43,25 @@ test('failed official refresh offers scoped retry only to editors and owners',()
  assert.doesNotMatch(viewer,/Retry this official source import/);
  const offline=renderPublisherBill({context:{role:'owner',csrfToken:'safe-token',recentMfa:true},bill,importsAvailable:false});
  assert.doesNotMatch(offline,/Retry this official source import/);
+});
+
+
+test('readiness requires the exact review attestations, never an arbitrary count',()=>{
+ for(const reviewChecks of [['a','b','c','d','e','f'],
+  [...PUBLISHER_REVIEW_CHECKS,'unrecognized'],
+  [...PUBLISHER_REVIEW_CHECKS.slice(0,5),'source_complete'],
+  Object.assign(Array(6),Object.fromEntries(PUBLISHER_REVIEW_CHECKS.slice(0,5).map((v,i)=>[i,v])))]) {
+  const report=catalogReadiness({...ready,reviewChecks});
+  assert.ok(report.issues.includes('PUBLICATION_REVIEW_INCOMPLETE'));
+  assert.equal(report.informationalReady,false);
+ }
+ assert.equal(completePublisherReview([...PUBLISHER_REVIEW_CHECKS].reverse()),true);
+ assert.deepEqual(Object.keys(REVIEW_CHECKS).sort(),[...PUBLISHER_REVIEW_CHECKS].sort());
+});
+test('source-mismatched index is visible as an incomplete pack',()=>{
+ const version={...ready,id:'version-1',billId:'bill-1',title:'Source',publication:'private',
+  rawByteSha256:sha,provisions:[],indexStatus:'stale'};
+ assert.ok(catalogReadiness(version).issues.includes('SEARCH_INDEX_NOT_READY'));
+ assert.match(renderPublisherVersion({context:{role:'viewer'},version}),/version search index is not complete/);
 });
 

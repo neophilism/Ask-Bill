@@ -93,7 +93,7 @@ test('durable publisher intake, exact release, corrections, and lease fences wit
       assert.equal(await complete(job,event),true);
       version=await workflow.getVersion({actor:actor(),billId,versionId});
       assert.equal(version.publication,'private');assert.equal(version.sourceComplete,false);assert.equal(version.status,'unknown');
-      assert.equal(version.indexStatus,'complete');assert.ok(version.provisions.length>=2);
+      assert.equal(version.indexStatus,'complete');assert.deepEqual(version.errors,[]);assert.ok(version.provisions.length>=2);
       assert.equal(version.canonicalText,version.provisions.map(p=>p.text).join('\n\n'));
       assert.equal(version.rawByteSha256,receipt.sha256);assert.equal(hash(version.canonicalText),version.canonicalTextSha256);
       assert.equal(await lookup({publisherId:PUB,billId,versionId}),null);
@@ -308,4 +308,5 @@ test('durable publisher intake, exact release, corrections, and lease fences wit
     });
   }finally{await pool?.end();await admin.end();}
 });
+
 
